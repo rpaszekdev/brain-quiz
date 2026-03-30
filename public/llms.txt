@@ -1,0 +1,32 @@
+# Brain Atlas — Interactive 3D Brain Quiz
+
+> Interactive 3D brain anatomy quiz with 28 regions. Identify and locate brain structures in a free, no-login web app.
+
+## About
+
+Brain Atlas is a free, interactive neuroscience learning tool. Users explore a 3D brain model and test their knowledge of brain anatomy through two quiz modes:
+
+- **Identify Mode**: A brain region is highlighted — name it.
+- **Locate Mode**: Given a region name — click the correct area on the 3D model.
+
+The app covers 28 brain regions and is designed for students, educators, and anyone curious about cognitive neuroscience.
+
+## Features
+
+- Real-time 3D brain visualization (Three.js)
+- Two quiz modes: Identify and Locate
+- 28 anatomical brain regions
+- No login or account required
+- Mobile-friendly
+- Japanese-inspired minimal UI
+
+## Tech Stack
+
+- Next.js (React)
+- Three.js for 3D rendering
+- Tailwind CSS
+- TypeScript
+
+## Topics Covered
+
+Neuroanatomy, cognitive neuroscience, brain regions, frontal lobe, parietal lobe, temporal lobe, occipital lobe, cerebellum, brainstem, hippocampus, amygdala, thalamus, hypothalamus, basal ganglia, corpus callosum, prefrontal cortex, motor cortex, somatosensory cortex, Broca's area, Wernicke's area, visual cortex, auditory cortex.
