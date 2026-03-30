@@ -225,6 +225,12 @@ html, body {
   flex-direction: column;
   overflow: hidden;
   position: relative;
+  flex-shrink: 0;
+}
+
+.sidebar.left-panel {
+  border-left: none;
+  border-right: var(--border-subtle);
 }
 
 .sidebar-content {
@@ -730,6 +736,18 @@ html, body {
 
 [data-theme="dark"] .region-dot {
   border-color: rgba(255,255,255,0.1);
+}
+
+/* ═══════════════════════════════════════════════
+   BOTTOM DRAWER — overlay panel
+   ═══════════════════════════════════════════════ */
+
+.bottom-drawer {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+[data-theme="dark"] .bottom-drawer {
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
 }
 
 /* ═══════════════════════════════════════════════

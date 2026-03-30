@@ -680,80 +680,63 @@ export default function BrainQuizPage() {
   const renderExploreDetail = () => {
     if (!selectedRegion) return null;
     const details = BRAIN_DETAILS[selectedRegion.id];
-    const sections: { title: string; color: string; items: string[] }[] = [];
-    if (details?.functions)
-      sections.push({
-        title: "Functions",
-        color: "var(--ai)",
-        items: details.functions,
-      });
-    if (details?.pathways)
-      sections.push({
-        title: "Pathways",
-        color: "var(--ai)",
-        items: details.pathways,
-      });
-    if (details?.clinical)
-      sections.push({
-        title: "Clinical",
-        color: "var(--beni)",
-        items: details.clinical,
-      });
-    if (details?.keyFacts)
-      sections.push({
-        title: "Key Facts",
-        color: "var(--murasaki)",
-        items: details.keyFacts,
-      });
 
     return (
       <>
-        {/* Header bar */}
+        {/* Header */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            padding: "6px var(--ma-4)",
+            padding: "var(--ma-3) var(--ma-4)",
             borderBottom: "var(--border-subtle)",
             flexShrink: 0,
           }}
         >
-          <button
-            onClick={() => {
-              setSelectedRegion(null);
-              resetBrainView();
-            }}
+          <div
             style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontSize: 12,
-              color: "var(--sumi-light)",
-              padding: "2px 4px",
-              fontFamily: "var(--font-body)",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginBottom: 4,
             }}
           >
-            &larr; Close
-          </button>
-          <h2
-            style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: 15,
-              fontWeight: 500,
-              margin: 0,
-              flex: 1,
-            }}
-          >
-            {selectedRegion.name}
-          </h2>
-          <span className="badge">{selectedRegion.category}</span>
+            <button
+              onClick={() => {
+                setSelectedRegion(null);
+                resetBrainView();
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontSize: 11,
+                color: "var(--sumi-light)",
+                padding: "2px 4px",
+                fontFamily: "var(--font-body)",
+              }}
+            >
+              &larr;
+            </button>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: 16,
+                fontWeight: 500,
+                margin: 0,
+                flex: 1,
+              }}
+            >
+              {selectedRegion.name}
+            </h2>
+            <span className="badge">{selectedRegion.category}</span>
+          </div>
           <div
             style={{
               display: "flex",
               gap: "var(--ma-3)",
+              flexWrap: "wrap",
               fontSize: 11,
               color: "var(--sumi-light)",
+              paddingLeft: 28,
             }}
           >
             {details?.brodmann && <span>BA {details.brodmann}</span>}
@@ -762,27 +745,25 @@ export default function BrainQuizPage() {
             )}
           </div>
         </div>
-        {/* Horizontal scrollable content */}
+
+        {/* Scrollable detail sections */}
         <div
           style={{
             flex: 1,
-            overflowX: "auto",
             overflowY: "auto",
             padding: "var(--ma-3) var(--ma-4)",
             display: "flex",
-            gap: "var(--ma-5)",
+            flexDirection: "column",
+            gap: "var(--ma-3)",
           }}
         >
-          {sections.map((section) => (
-            <div
-              key={section.title}
-              style={{ minWidth: 220, flex: "0 0 auto" }}
-            >
+          {details?.functions && (
+            <div>
               <div
                 className="explore-section-title"
-                style={{ color: section.color }}
+                style={{ color: "var(--ai)" }}
               >
-                {section.title}
+                Functions
               </div>
               <ul
                 style={{
@@ -793,22 +774,89 @@ export default function BrainQuizPage() {
                   lineHeight: 1.6,
                 }}
               >
-                {section.items.map((item, i) => (
-                  <li key={i}>{item}</li>
+                {details.functions.map((f, i) => (
+                  <li key={i}>{f}</li>
                 ))}
               </ul>
             </div>
-          ))}
-          {details?.examTip && (
-            <div style={{ minWidth: 240, flex: "0 0 auto" }}>
-              <div className="exam-tip">
-                <strong style={{ color: "var(--kitsune)", fontSize: 11 }}>
-                  Exam Tip:{" "}
-                </strong>
-                <span style={{ color: "var(--sumi-deep)", fontSize: 12 }}>
-                  {details.examTip}
-                </span>
+          )}
+          {details?.pathways && (
+            <div>
+              <div
+                className="explore-section-title"
+                style={{ color: "var(--ai)" }}
+              >
+                Pathways
               </div>
+              <ul
+                style={{
+                  margin: 0,
+                  paddingLeft: 14,
+                  fontSize: 12,
+                  color: "var(--sumi-medium)",
+                  lineHeight: 1.6,
+                }}
+              >
+                {details.pathways.map((p, i) => (
+                  <li key={i}>{p}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {details?.clinical && (
+            <div>
+              <div
+                className="explore-section-title"
+                style={{ color: "var(--beni)" }}
+              >
+                Clinical
+              </div>
+              <ul
+                style={{
+                  margin: 0,
+                  paddingLeft: 14,
+                  fontSize: 12,
+                  color: "var(--sumi-medium)",
+                  lineHeight: 1.6,
+                }}
+              >
+                {details.clinical.map((c, i) => (
+                  <li key={i}>{c}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {details?.keyFacts && (
+            <div>
+              <div
+                className="explore-section-title"
+                style={{ color: "var(--murasaki)" }}
+              >
+                Key Facts
+              </div>
+              <ul
+                style={{
+                  margin: 0,
+                  paddingLeft: 14,
+                  fontSize: 12,
+                  color: "var(--sumi-medium)",
+                  lineHeight: 1.6,
+                }}
+              >
+                {details.keyFacts.map((f, i) => (
+                  <li key={i}>{f}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {details?.examTip && (
+            <div className="exam-tip">
+              <strong style={{ color: "var(--kitsune)", fontSize: 11 }}>
+                Exam Tip:{" "}
+              </strong>
+              <span style={{ color: "var(--sumi-deep)", fontSize: 12 }}>
+                {details.examTip}
+              </span>
             </div>
           )}
         </div>
@@ -1214,132 +1262,115 @@ export default function BrainQuizPage() {
         </div>
       )}
 
-      {/* ── Main area ── */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          minHeight: 0,
-        }}
-      >
-        {/* Top row: Brain + Sidebar */}
-        <div
-          style={{
-            flex: selectedRegion && appMode === "explore" ? "1 1 0%" : 1,
-            display: "flex",
-            minHeight: 0,
-            transition: "flex 0.3s ease",
-          }}
-        >
-          {/* 3D Brain Viewer */}
-          <div style={{ flex: 1, position: "relative", minWidth: 0 }}>
-            {/* Gizmo */}
-            <canvas
-              ref={gizmoCanvasRef}
-              width={120}
-              height={120}
-              style={{
-                position: "absolute",
-                top: 10,
-                right: 10,
-                width: 120,
-                height: 120,
-                zIndex: 20,
-                pointerEvents: "none",
-                borderRadius: "var(--radius-md)",
-                border: "var(--border-subtle)",
-                background:
-                  theme === "light"
-                    ? "rgba(245,242,235,0.6)"
-                    : "rgba(17,17,17,0.6)",
-                backdropFilter: "blur(8px)",
-              }}
-            />
+      {/* ── Main: Left Detail | Brain | Right Panel ── */}
+      <div style={{ flex: 1, display: "flex", minHeight: 0 }}>
+        {/* ── Left panel — explore detail (only in explore mode when region selected) ── */}
+        {!fullscreen && appMode === "explore" && selectedRegion && (
+          <div className="sidebar left-panel">{renderExploreDetail()}</div>
+        )}
 
-            {/* Fullscreen toggle */}
-            <button
-              className="viewer-overlay-btn"
-              onClick={() => setFullscreen((f) => !f)}
-              style={{ position: "absolute", top: 10, right: 140, zIndex: 20 }}
-            >
-              {fullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
-            </button>
+        {/* ── Center — 3D Brain Viewer ── */}
+        <div style={{ flex: 1, position: "relative", minWidth: 0 }}>
+          {/* Gizmo */}
+          <canvas
+            ref={gizmoCanvasRef}
+            width={120}
+            height={120}
+            style={{
+              position: "absolute",
+              top: 10,
+              right: 10,
+              width: 120,
+              height: 120,
+              zIndex: 20,
+              pointerEvents: "none",
+              borderRadius: "var(--radius-md)",
+              border: "var(--border-subtle)",
+              background:
+                theme === "light"
+                  ? "rgba(245,242,235,0.6)"
+                  : "rgba(17,17,17,0.6)",
+              backdropFilter: "blur(8px)",
+            }}
+          />
 
-            {/* Three.js container */}
-            <div
-              ref={containerRef}
-              style={{
-                width: "100%",
-                height: "100%",
-                position: "relative",
-                overflow: "hidden",
-                background: theme === "light" ? "#F5F2EB" : "#111111",
-              }}
-            >
-              {!viewerReady && (
-                <div
+          {/* Fullscreen toggle */}
+          <button
+            className="viewer-overlay-btn"
+            onClick={() => setFullscreen((f) => !f)}
+            style={{ position: "absolute", top: 10, right: 140, zIndex: 20 }}
+          >
+            {fullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+          </button>
+
+          {/* Three.js container */}
+          <div
+            ref={containerRef}
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "relative",
+              overflow: "hidden",
+              background: theme === "light" ? "#F5F2EB" : "#111111",
+            }}
+          >
+            {!viewerReady && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  zIndex: 10,
+                  background: "var(--washi-cream)",
+                  pointerEvents: "none",
+                }}
+              >
+                <div className="loading-spinner" />
+                <p
                   style={{
-                    position: "absolute",
-                    inset: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    zIndex: 10,
-                    background: "var(--washi-cream)",
-                    pointerEvents: "none",
+                    fontSize: 12,
+                    color: "var(--sumi-light)",
+                    fontFamily: "var(--font-mono)",
                   }}
                 >
-                  <div className="loading-spinner" />
-                  <p
-                    style={{
-                      fontSize: 12,
-                      color: "var(--sumi-light)",
-                      fontFamily: "var(--font-mono)",
-                    }}
-                  >
-                    {loadProgress}%
-                  </p>
+                  {loadProgress}%
+                </p>
+                <div
+                  style={{
+                    width: 160,
+                    height: 3,
+                    background: "var(--washi-warm)",
+                    borderRadius: 2,
+                    overflow: "hidden",
+                  }}
+                >
                   <div
                     style={{
-                      width: 160,
-                      height: 3,
-                      background: "var(--washi-warm)",
+                      height: "100%",
+                      width: `${loadProgress}%`,
+                      background: "var(--ai)",
                       borderRadius: 2,
-                      overflow: "hidden",
+                      transition: "width 0.3s ease",
                     }}
-                  >
-                    <div
-                      style={{
-                        height: "100%",
-                        width: `${loadProgress}%`,
-                        background: "var(--ai)",
-                        borderRadius: 2,
-                        transition: "width 0.3s ease",
-                      }}
-                    />
-                  </div>
+                  />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-
-          {/* ── Sidebar ── */}
-          {!fullscreen && (
-            <div className="sidebar">
-              {appMode === "explore" && renderExploreSidebar()}
-              {appMode === "quiz" && phase === "setup" && renderSetup()}
-              {appMode === "quiz" && phase === "playing" && renderPlaying()}
-              {appMode === "quiz" && phase === "result" && renderResult()}
-            </div>
-          )}
         </div>
 
-        {/* ── Bottom Drawer — explore detail ── */}
-        {!fullscreen && appMode === "explore" && selectedRegion && (
-          <div className="bottom-drawer">{renderExploreDetail()}</div>
+        {/* ── Right panel — region list (explore) or quiz controls ── */}
+        {!fullscreen && (
+          <div className="sidebar">
+            {appMode === "explore" && renderExploreSidebar()}
+            {appMode === "quiz" && phase === "setup" && renderSetup()}
+            {appMode === "quiz" && phase === "playing" && renderPlaying()}
+            {appMode === "quiz" && phase === "result" && renderResult()}
+          </div>
         )}
       </div>
     </div>
