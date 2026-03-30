@@ -2,36 +2,32 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Brain Quiz — Test Your Cognitive Neuroscience Knowledge',
+  title: '脳 — Brain Atlas',
   description:
-    'Challenge yourself with questions on brain anatomy, neural pathways, and cognitive neuroscience. From student basics to cutting-edge research. Free, no login required.',
+    'Interactive 3D brain quiz: identify and locate brain regions. Free, no login required. Challenge your friends!',
   keywords: [
     'cognitive neuroscience quiz',
     'brain anatomy quiz',
     'neuroscience practice test',
-    'brain quiz',
-    'neuroscience exam',
-    'brain anatomy test',
-    'cognitive psychology quiz',
+    'brain region quiz',
+    '3D brain',
+    'interactive brain',
   ],
   openGraph: {
-    title: 'Brain Quiz — Test Your Cognitive Neuroscience Knowledge',
+    title: '脳 — Brain Atlas',
     description:
-      'How well do you know the brain? 35 questions across 3 difficulty levels. Challenge your friends!',
+      'Interactive 3D brain quiz with 28 regions. Identify mode + Locate mode. Challenge your friends!',
     type: 'website',
     locale: 'en_US',
     siteName: 'CogNeuro Brain Quiz',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Brain Quiz — Test Your Cognitive Neuroscience Knowledge',
+    title: '脳 — Brain Atlas',
     description:
-      'How well do you know the brain? 35 questions across 3 difficulty levels. Challenge your friends!',
+      'Interactive 3D brain quiz with 28 regions. Identify mode + Locate mode. Challenge your friends!',
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -41,9 +37,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-background text-foreground antialiased">
-        {children}
-      </body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }

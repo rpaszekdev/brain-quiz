@@ -1,429 +1,1347 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { Copy, Check, Maximize2, Minimize2, Search, X } from "lucide-react";
+import * as THREE from "three";
+import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import {
-  Brain,
-  Zap,
-  BookOpen,
-  ChevronRight,
-  CheckCircle2,
-  Timer,
-  Trophy,
-} from 'lucide-react';
-import type { QuizQuestion, Difficulty, QuizMode } from '@/lib/types';
-import questionsData from '@/content/brain-quiz-questions.json';
-import DifficultySelector from '@/components/brain-quiz/DifficultySelector';
-import QuizCard from '@/components/brain-quiz/QuizCard';
-import ShareCard from '@/components/brain-quiz/ShareCard';
+  BRAIN_REGIONS,
+  getAllMeshFiles,
+  buildMeshToRegionMap,
+  type BrainRegion,
+} from "@/lib/brain-regions";
+import { OrientationGizmo } from "@/lib/brain-axis";
+import { BRAIN_DETAILS } from "@/lib/brain-details";
 
-const ALL_QUESTIONS = questionsData.questions as QuizQuestion[];
+// ─── Types ────────────────────────────────────────────
 
-function shuffleArray<T>(array: readonly T[]): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
+type AppMode = "explore" | "quiz";
+type QuizMode = "identify" | "locate";
+type QuizPhase = "setup" | "playing" | "result";
+
+interface QuizQuestion {
+  correctRegion: BrainRegion;
+  options: BrainRegion[];
+  correctIndex: number;
 }
 
-function formatTime(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
+// ─── Helpers ──────────────────────────────────────────
+
+function generateQuestions(count: number): QuizQuestion[] {
+  const candidates = BRAIN_REGIONS.filter((r) => r.meshFiles.length > 0);
+  const shuffled = [...candidates].sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, Math.min(count, candidates.length));
+
+  return selected.map((correct) => {
+    const wrong = candidates
+      .filter((r) => r.id !== correct.id)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+    const options = [...wrong, correct].sort(() => Math.random() - 0.5);
+    const correctIndex = options.findIndex((o) => o.id === correct.id);
+    return { correctRegion: correct, options, correctIndex };
+  });
 }
 
-type Phase = 'menu' | 'quiz' | 'results';
+const OPTION_LETTERS = ["A", "B", "C", "D"];
+const UNASSIGNED_COLOR = new THREE.Color(0.88, 0.87, 0.85);
+const SCENE_BG_LIGHT = 0xf5f2eb;
+const SCENE_BG_DARK = 0x111111;
+
+// ─── Component ────────────────────────────────────────
 
 export default function BrainQuizPage() {
-  const [phase, setPhase] = useState<Phase>('menu');
-  const [difficulty, setDifficulty] = useState<Difficulty>('student');
-  const [mode, setMode] = useState<QuizMode>('quick');
+  // App mode
+  const [appMode, setAppMode] = useState<AppMode>("explore");
+  const [selectedRegion, setSelectedRegion] = useState<BrainRegion | null>(
+    null,
+  );
+  const appModeRef = useRef<AppMode>("explore");
+
+  // Quiz state
+  const [mode, setMode] = useState<QuizMode>("identify");
+  const [phase, setPhase] = useState<QuizPhase>("setup");
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<(string | null)[]>([]);
-  const [showResult, setShowResult] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [score, setScore] = useState(0);
+  const [answered, setAnswered] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [clickedRegionId, setClickedRegionId] = useState<string | null>(null);
+  const [fullscreen, setFullscreen] = useState(false);
 
-  const filteredQuestions = useMemo(
-    () => ALL_QUESTIONS.filter((q) => q.difficulty === difficulty),
-    [difficulty]
+  // Theme state
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  // Three.js refs
+  const containerRef = useRef<HTMLDivElement>(null);
+  const gizmoCanvasRef = useRef<HTMLCanvasElement>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const controlsRef = useRef<OrbitControls | null>(null);
+  const raycasterRef = useRef<THREE.Raycaster>(new THREE.Raycaster());
+  const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2());
+  const gizmoRef = useRef<OrientationGizmo | null>(null);
+  const animFrameRef = useRef<number>(0);
+  const meshByFileRef = useRef<Map<string, THREE.Object3D>>(new Map());
+  const meshToRegionRef = useRef<Map<string, string>>(new Map());
+  const regionMaterialsRef = useRef<Map<string, THREE.MeshStandardMaterial[]>>(
+    new Map(),
   );
+  const allMeshObjectsRef = useRef<THREE.Object3D[]>([]);
 
-  const questionCount = useMemo(() => {
-    const available = filteredQuestions.length;
-    return mode === 'quick' ? Math.min(10, available) : available;
-  }, [mode, filteredQuestions]);
+  const [viewerReady, setViewerReady] = useState(false);
+  const [loadProgress, setLoadProgress] = useState(0);
 
-  const score = useMemo(
-    () =>
-      questions.reduce(
-        (acc, q, i) => acc + (answers[i] === q.correctAnswer ? 1 : 0),
-        0
-      ),
-    [questions, answers]
-  );
+  // Derived
+  const currentQuestion = phase === "playing" ? questions[currentIndex] : null;
 
-  // Timer logic for Quick 10 mode
-  useEffect(() => {
-    if (phase !== 'quiz' || mode !== 'quick' || timeRemaining === null) return;
+  // Explore state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [drawerExpanded, setDrawerExpanded] = useState(false);
 
-    if (timeRemaining <= 0) {
-      // Time's up — end quiz
-      if (timerRef.current) clearInterval(timerRef.current);
-      setPhase('results');
-      return;
+  // Share state
+  const [copied, setCopied] = useState(false);
+
+  // Grouped regions for explore list
+  const groupedRegions = useMemo(() => {
+    const withMesh = BRAIN_REGIONS.filter((r) => r.meshFiles.length > 0);
+    const groups: Record<string, BrainRegion[]> = {};
+    for (const r of withMesh) {
+      if (!groups[r.category]) groups[r.category] = [];
+      groups[r.category].push(r);
     }
+    // Sort groups alphabetically, regions within each group alphabetically
+    const sorted = Object.entries(groups).sort(([a], [b]) =>
+      a.localeCompare(b),
+    );
+    return sorted.map(([cat, regions]) => ({
+      category: cat,
+      regions: regions.sort((a, b) => a.name.localeCompare(b.name)),
+    }));
+  }, []);
 
-    timerRef.current = setInterval(() => {
-      setTimeRemaining((prev) => (prev !== null ? prev - 1 : null));
-    }, 1000);
+  const filteredRegions = useMemo(() => {
+    if (!searchQuery.trim()) return groupedRegions;
+    const q = searchQuery.toLowerCase();
+    return groupedRegions
+      .map((g) => ({
+        category: g.category,
+        regions: g.regions.filter(
+          (r) =>
+            r.name.toLowerCase().includes(q) ||
+            r.aliases.some((a) => a.toLowerCase().includes(q)) ||
+            r.category.toLowerCase().includes(q),
+        ),
+      }))
+      .filter((g) => g.regions.length > 0);
+  }, [searchQuery, groupedRegions]);
 
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [phase, mode, timeRemaining]);
+  // ─── Theme ──────────────────────────────────────────
+
+  useEffect(() => {
+    const saved = localStorage.getItem("md-reader-theme");
+    if (saved === "dark") {
+      setTheme("dark");
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next = prev === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("md-reader-theme", next);
+      if (sceneRef.current) {
+        sceneRef.current.background = new THREE.Color(
+          next === "dark" ? SCENE_BG_DARK : SCENE_BG_LIGHT,
+        );
+      }
+      return next;
+    });
+  }, []);
+
+  // ─── Three.js brain rendering ─────────────────────
+
+  const highlightRegion = useCallback((region: BrainRegion) => {
+    for (const r of BRAIN_REGIONS) {
+      const mats = regionMaterialsRef.current.get(r.id);
+      if (!mats) continue;
+      for (const mat of mats) {
+        if (r.id === region.id) {
+          mat.opacity = 1.0;
+          mat.emissiveIntensity = 0.5;
+        } else {
+          mat.opacity = 0.15;
+          mat.emissiveIntensity = 0.0;
+        }
+      }
+    }
+    for (const [file, mesh] of meshByFileRef.current) {
+      if (meshToRegionRef.current.get(file)) continue;
+      mesh.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          (child.material as THREE.MeshStandardMaterial).opacity = 0.08;
+        }
+      });
+    }
+  }, []);
+
+  const resetBrainView = useCallback(() => {
+    for (const r of BRAIN_REGIONS) {
+      const mats = regionMaterialsRef.current.get(r.id);
+      if (!mats) continue;
+      for (const mat of mats) {
+        mat.opacity = 0.85;
+        mat.emissiveIntensity = 0.05;
+      }
+    }
+    for (const [file, mesh] of meshByFileRef.current) {
+      if (meshToRegionRef.current.get(file)) continue;
+      mesh.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          (child.material as THREE.MeshStandardMaterial).opacity = 0.6;
+        }
+      });
+    }
+    flyTo(new THREE.Vector3(0, 20, 250));
+  }, []);
+
+  const flyTo = useCallback((target: THREE.Vector3) => {
+    const camera = cameraRef.current;
+    const controls = controlsRef.current;
+    if (!camera || !controls) return;
+    const startPos = camera.position.clone();
+    const startTime = Date.now();
+    function tick() {
+      const t = Math.min((Date.now() - startTime) / 600, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      camera!.position.lerpVectors(startPos, target, ease);
+      controls!.update();
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    tick();
+  }, []);
+
+  const flyToRegion = useCallback(
+    (region: BrainRegion) => {
+      const { azimuth, elevation } = region.camera;
+      const dist = 250;
+      const azRad = (azimuth * Math.PI) / 180;
+      const elRad = (elevation * Math.PI) / 180;
+      const c = controlsRef.current?.target || new THREE.Vector3(0, 20, 0);
+      flyTo(
+        new THREE.Vector3(
+          c.x + dist * Math.sin(azRad) * Math.cos(elRad),
+          c.y + dist * Math.sin(elRad),
+          c.z + dist * Math.cos(azRad) * Math.cos(elRad),
+        ),
+      );
+    },
+    [flyTo],
+  );
+
+  // ─── Quiz logic ───────────────────────────────────
+
+  const phaseRef = useRef(phase);
+  const modeRef = useRef(mode);
+  const answeredRef = useRef(answered);
+  const questionsRef = useRef(questions);
+  const currentIndexRef = useRef(currentIndex);
+
+  useEffect(() => {
+    appModeRef.current = appMode;
+  }, [appMode]);
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+  useEffect(() => {
+    answeredRef.current = answered;
+  }, [answered]);
+  useEffect(() => {
+    questionsRef.current = questions;
+  }, [questions]);
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
 
   const startQuiz = useCallback(() => {
-    const selected = shuffleArray(filteredQuestions).slice(0, questionCount);
-    setQuestions(selected);
-    setAnswers(Array(selected.length).fill(null));
+    const qs = generateQuestions(10);
+    setQuestions(qs);
     setCurrentIndex(0);
-    setShowResult(false);
-    setTimeRemaining(mode === 'quick' ? 120 : null); // 2 min for quick
-    setPhase('quiz');
-  }, [filteredQuestions, questionCount, mode]);
+    setScore(0);
+    setAnswered(false);
+    setSelectedAnswer(null);
+    setClickedRegionId(null);
+    setPhase("playing");
 
-  const handleAnswer = useCallback(
-    (answer: string) => {
-      if (showResult) return;
-      setAnswers((prev) => {
-        const updated = [...prev];
-        updated[currentIndex] = answer;
-        return updated;
-      });
-    },
-    [currentIndex, showResult]
-  );
-
-  const handleCheck = useCallback(() => {
-    setShowResult(true);
-  }, []);
-
-  const handleNext = useCallback(() => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-      setShowResult(false);
+    if (mode === "identify") {
+      highlightRegion(qs[0].correctRegion);
+      flyToRegion(qs[0].correctRegion);
     } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-      setPhase('results');
+      resetBrainView();
     }
-  }, [currentIndex, questions.length]);
+  }, [mode, highlightRegion, flyToRegion, resetBrainView]);
 
-  const handleRetry = useCallback(() => {
-    startQuiz();
-  }, [startQuiz]);
-
-  const handleBackToMenu = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    setPhase('menu');
-  }, []);
-
-  // ─── MENU ───────────────────────────────────────────
-  if (phase === 'menu') {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <header className="border-b border-border bg-surface/80 backdrop-blur-sm">
-          <div className="mx-auto max-w-2xl px-4 py-5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-navy to-navy-light shadow-lg">
-                <Brain className="h-6 w-6 text-gold" />
-              </div>
-              <div>
-                <h1 className="text-xl font-black text-foreground tracking-tight">
-                  Brain Quiz
-                </h1>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  Test Your Cognitive Neuroscience Knowledge
-                </p>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1 mx-auto w-full max-w-2xl px-4 py-8 space-y-8">
-          {/* Hero */}
-          <div className="text-center space-y-3 animate-fade-in">
-            <h2 className="text-3xl font-black text-foreground sm:text-4xl">
-              How Well Do You Know
-              <span className="block text-navy dark:text-gold">the Brain?</span>
-            </h2>
-            <p className="text-zinc-500 dark:text-zinc-400 max-w-md mx-auto">
-              From basic anatomy to cutting-edge research. Pick your level and test yourself.
-            </p>
-          </div>
-
-          {/* Difficulty */}
-          <section className="space-y-3 animate-slide-up">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Difficulty
-            </h3>
-            <DifficultySelector selected={difficulty} onChange={setDifficulty} />
-            <p className="text-center text-xs text-zinc-400">
-              {filteredQuestions.length} questions available
-            </p>
-          </section>
-
-          {/* Mode Selection */}
-          <section className="space-y-3 animate-slide-up" style={{ animationDelay: '100ms' }}>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Mode
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => setMode('quick')}
-                className={`flex flex-col items-center gap-2 rounded-xl border-2 px-4 py-5 transition-all ${
-                  mode === 'quick'
-                    ? 'border-navy bg-navy/5 dark:border-gold dark:bg-gold/5 ring-2 ring-navy/20 dark:ring-gold/20'
-                    : 'border-border bg-surface hover:border-zinc-300 dark:hover:border-zinc-600'
-                }`}
-              >
-                <Zap
-                  className={`h-6 w-6 ${
-                    mode === 'quick' ? 'text-navy dark:text-gold' : 'text-zinc-400'
-                  }`}
-                />
-                <span className="text-sm font-bold">Quick 10</span>
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                  10 random · 2 min timer
-                </span>
-              </button>
-              <button
-                onClick={() => setMode('full')}
-                className={`flex flex-col items-center gap-2 rounded-xl border-2 px-4 py-5 transition-all ${
-                  mode === 'full'
-                    ? 'border-navy bg-navy/5 dark:border-gold dark:bg-gold/5 ring-2 ring-navy/20 dark:ring-gold/20'
-                    : 'border-border bg-surface hover:border-zinc-300 dark:hover:border-zinc-600'
-                }`}
-              >
-                <BookOpen
-                  className={`h-6 w-6 ${
-                    mode === 'full' ? 'text-navy dark:text-gold' : 'text-zinc-400'
-                  }`}
-                />
-                <span className="text-sm font-bold">Full Drill</span>
-                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                  All {filteredQuestions.length} · No timer
-                </span>
-              </button>
-            </div>
-          </section>
-
-          {/* Start Button */}
-          <button
-            onClick={startQuiz}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-navy px-6 py-4 text-base font-bold text-white shadow-lg shadow-navy/30 transition-all hover:bg-navy-light hover:shadow-xl hover:shadow-navy/40 active:scale-[0.98] animate-slide-up dark:bg-gold dark:text-navy-dark dark:shadow-gold/20 dark:hover:bg-gold-light"
-            style={{ animationDelay: '200ms' }}
-          >
-            Start Quiz
-            <ChevronRight className="h-5 w-5" />
-          </button>
-
-          {/* Past Scores */}
-          <PastScores />
-        </main>
-
-        <Footer />
-      </div>
-    );
-  }
-
-  // ─── QUIZ ───────────────────────────────────────────
-  if (phase === 'quiz') {
-    const currentQuestion = questions[currentIndex];
-    const currentAnswer = answers[currentIndex];
-    const progressPercent = ((currentIndex + 1) / questions.length) * 100;
-    const isCorrect = currentAnswer === currentQuestion.correctAnswer;
-
-    return (
-      <div className="min-h-screen flex flex-col">
-        {/* Quiz Header */}
-        <header className="border-b border-border bg-surface/80 backdrop-blur-sm sticky top-0 z-10">
-          <div className="mx-auto max-w-2xl px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-navy/10 dark:bg-gold/10">
-                  <Brain className="h-4 w-4 text-navy dark:text-gold" />
-                </div>
-                <span className="text-sm font-bold text-foreground">
-                  Q{currentIndex + 1}
-                  <span className="text-zinc-400 font-normal"> / {questions.length}</span>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-4">
-                {/* Timer */}
-                {timeRemaining !== null && (
-                  <div
-                    className={`flex items-center gap-1.5 text-sm font-bold tabular-nums ${
-                      timeRemaining <= 30
-                        ? 'text-red-500 animate-timer-pulse'
-                        : 'text-zinc-500 dark:text-zinc-400'
-                    }`}
-                  >
-                    <Timer className="h-4 w-4" />
-                    {formatTime(timeRemaining)}
-                  </div>
-                )}
-
-                {/* Score */}
-                <div className="flex items-center gap-1.5 text-sm">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">{score}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Progress */}
-            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-navy to-navy-light dark:from-gold dark:to-gold-light transition-all duration-500 ease-out"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1 mx-auto w-full max-w-2xl px-4 py-6 space-y-6">
-          {/* Question Card */}
-          <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm animate-scale-in">
-            <QuizCard
-              question={currentQuestion}
-              selectedAnswer={currentAnswer}
-              showResult={showResult}
-              onAnswer={handleAnswer}
-            />
-          </div>
-
-          {/* Action Button */}
-          <div className="flex justify-end">
-            {!showResult ? (
-              <button
-                onClick={handleCheck}
-                disabled={currentAnswer === null}
-                className="flex items-center gap-2 rounded-xl bg-navy px-6 py-3 text-sm font-bold text-white shadow-lg shadow-navy/20 transition-all hover:bg-navy-light disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed dark:bg-gold dark:text-navy-dark dark:shadow-gold/20 dark:hover:bg-gold-light"
-              >
-                <CheckCircle2 className="h-4 w-4" />
-                Check Answer
-              </button>
-            ) : (
-              <button
-                onClick={handleNext}
-                className="flex items-center gap-2 rounded-xl bg-navy px-6 py-3 text-sm font-bold text-white shadow-lg shadow-navy/20 transition-all hover:bg-navy-light animate-slide-up dark:bg-gold dark:text-navy-dark dark:shadow-gold/20 dark:hover:bg-gold-light"
-              >
-                {currentIndex < questions.length - 1 ? (
-                  <>
-                    Next
-                    <ChevronRight className="h-4 w-4" />
-                  </>
-                ) : (
-                  <>
-                    <Trophy className="h-4 w-4" />
-                    See Results
-                  </>
-                )}
-              </button>
-            )}
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  // ─── RESULTS ────────────────────────────────────────
-  return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b border-border bg-surface/80 backdrop-blur-sm">
-        <div className="mx-auto max-w-2xl px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-navy/10 dark:bg-gold/10">
-              <Brain className="h-4 w-4 text-navy dark:text-gold" />
-            </div>
-            <span className="text-sm font-bold text-foreground">Results</span>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 mx-auto w-full max-w-2xl px-4 py-6">
-        <ShareCard
-          score={score}
-          total={questions.length}
-          difficulty={difficulty}
-          mode={mode}
-          questions={questions}
-          answers={answers}
-          onRetry={handleRetry}
-          onBackToMenu={handleBackToMenu}
-        />
-      </main>
-
-      <Footer />
-    </div>
+  const selectOption = useCallback(
+    (regionId: string) => {
+      if (answered) return;
+      setAnswered(true);
+      setSelectedAnswer(regionId);
+      if (!currentQuestion) return;
+      if (regionId === currentQuestion.correctRegion.id) {
+        setScore((prev) => prev + 1);
+      }
+      if (mode === "locate") {
+        highlightRegion(currentQuestion.correctRegion);
+        flyToRegion(currentQuestion.correctRegion);
+      }
+    },
+    [answered, currentQuestion, mode, highlightRegion, flyToRegion],
   );
-}
 
-// ─── Sub-components ────────────────────────────────────
+  const onBrainClick = useCallback(
+    (regionId: string) => {
+      if (modeRef.current !== "locate" || answeredRef.current) return;
+      setClickedRegionId(regionId);
+      setAnswered(true);
+      const q = questionsRef.current[currentIndexRef.current];
+      if (!q) return;
+      if (regionId === q.correctRegion.id) {
+        setScore((prev) => prev + 1);
+      }
+      highlightRegion(q.correctRegion);
+      flyToRegion(q.correctRegion);
+    },
+    [highlightRegion, flyToRegion],
+  );
 
-function PastScores() {
-  const [scores, setScores] = useState<
-    { score: number; total: number; percentage: number; difficulty: string; date: string }[]
-  >([]);
+  const nextQuestion = useCallback(() => {
+    if (currentIndex + 1 >= questions.length) {
+      setPhase("result");
+      resetBrainView();
+      return;
+    }
+    const nextIdx = currentIndex + 1;
+    setCurrentIndex(nextIdx);
+    setAnswered(false);
+    setSelectedAnswer(null);
+    setClickedRegionId(null);
+    const q = questions[nextIdx];
+    if (mode === "identify") {
+      highlightRegion(q.correctRegion);
+      flyToRegion(q.correctRegion);
+    } else {
+      resetBrainView();
+    }
+  }, [
+    currentIndex,
+    questions,
+    mode,
+    highlightRegion,
+    flyToRegion,
+    resetBrainView,
+  ]);
+
+  const backToSetup = useCallback(() => {
+    setPhase("setup");
+    resetBrainView();
+  }, [resetBrainView]);
+
+  // ─── Three.js init ────────────────────────────────
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('brain-quiz-scores') || '[]');
-    setScores(stored.slice(0, 5));
-  }, []);
+    const container = containerRef.current;
+    const gizmoCanvas = gizmoCanvasRef.current;
+    if (!container || !gizmoCanvas) return;
 
-  if (scores.length === 0) return null;
+    const scene = new THREE.Scene();
+    const isDark =
+      document.documentElement.getAttribute("data-theme") === "dark";
+    scene.background = new THREE.Color(isDark ? SCENE_BG_DARK : SCENE_BG_LIGHT);
+    sceneRef.current = scene;
 
-  return (
-    <section className="space-y-3 animate-fade-in">
-      <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-        Recent Scores
-      </h3>
-      <div className="space-y-2">
-        {scores.map((entry, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-2.5 text-sm"
-          >
-            <div className="flex items-center gap-3">
-              <span className="font-bold text-foreground">{entry.percentage}%</span>
-              <span className="text-zinc-400">
-                {entry.score}/{entry.total}
-              </span>
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+    camera.position.set(0, 20, 250);
+    cameraRef.current = camera;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(50, 80, 100);
+    scene.add(dirLight);
+    const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    backLight.position.set(-50, -30, -80);
+    scene.add(backLight);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.target.set(0, 20, 0);
+    controls.minDistance = 80;
+    controls.maxDistance = 500;
+    controlsRef.current = controls;
+
+    meshToRegionRef.current = buildMeshToRegionMap();
+
+    const allFiles = getAllMeshFiles();
+    const loader = new OBJLoader();
+    let loaded = 0;
+
+    const loadPromises = allFiles.map(async (file) => {
+      try {
+        const obj = await loader.loadAsync(`/brain-meshes/${file}`);
+        const regionId = meshToRegionRef.current.get(file);
+        const region = regionId
+          ? BRAIN_REGIONS.find((r) => r.id === regionId)
+          : null;
+
+        obj.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            const color = region
+              ? new THREE.Color(
+                  region.color[0] / 255,
+                  region.color[1] / 255,
+                  region.color[2] / 255,
+                )
+              : UNASSIGNED_COLOR;
+            const mat = new THREE.MeshStandardMaterial({
+              color,
+              transparent: true,
+              opacity: region ? 0.85 : 0.6,
+              emissive: color,
+              emissiveIntensity: region ? 0.05 : 0.0,
+              side: THREE.DoubleSide,
+              depthWrite: true,
+            });
+            child.material = mat;
+            if (region) {
+              const existing = regionMaterialsRef.current.get(region.id) || [];
+              existing.push(mat);
+              regionMaterialsRef.current.set(region.id, existing);
+            }
+            child.userData = { file, regionId: regionId || null };
+            allMeshObjectsRef.current.push(child);
+          }
+        });
+
+        scene.add(obj);
+        meshByFileRef.current.set(file, obj);
+      } catch {
+        // skip missing mesh
+      }
+      loaded++;
+      setLoadProgress(Math.round((loaded / allFiles.length) * 100));
+    });
+
+    Promise.all(loadPromises).then(() => {
+      gizmoRef.current = new OrientationGizmo(gizmoCanvas);
+      setViewerReady(true);
+    });
+
+    const handleCanvasClick = (e: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouseRef.current.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseRef.current.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycasterRef.current.setFromCamera(mouseRef.current, camera);
+      const intersects = raycasterRef.current.intersectObjects(
+        allMeshObjectsRef.current,
+      );
+      if (intersects.length > 0) {
+        const regionId = intersects[0].object.userData.regionId;
+        if (regionId) {
+          if (appModeRef.current === "explore") {
+            window.dispatchEvent(
+              new CustomEvent("brain-explore-click", { detail: regionId }),
+            );
+            return;
+          }
+          if (modeRef.current !== "locate" || answeredRef.current) return;
+          if (phaseRef.current !== "playing") return;
+          window.dispatchEvent(
+            new CustomEvent("brain-click", { detail: regionId }),
+          );
+        }
+      }
+    };
+
+    renderer.domElement.addEventListener("click", handleCanvasClick);
+
+    const handleResize = () => {
+      if (!container) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener("resize", handleResize);
+
+    const animate = () => {
+      animFrameRef.current = requestAnimationFrame(animate);
+      controls.update();
+      if (phaseRef.current === "playing") {
+        const q = questionsRef.current[currentIndexRef.current];
+        if (q) {
+          const mats = regionMaterialsRef.current.get(q.correctRegion.id);
+          if (mats && (modeRef.current === "identify" || answeredRef.current)) {
+            const pulse = 0.35 + Math.sin(Date.now() * 0.004) * 0.15;
+            for (const mat of mats) {
+              mat.emissiveIntensity = pulse;
+            }
+          }
+        }
+      }
+      renderer.render(scene, camera);
+      gizmoRef.current?.update(camera);
+    };
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animFrameRef.current);
+      renderer.domElement.removeEventListener("click", handleCanvasClick);
+      window.removeEventListener("resize", handleResize);
+      renderer.dispose();
+      gizmoRef.current?.dispose();
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const handler = (e: Event) => onBrainClick((e as CustomEvent).detail);
+    window.addEventListener("brain-click", handler);
+    return () => window.removeEventListener("brain-click", handler);
+  }, [onBrainClick]);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const regionId = (e as CustomEvent).detail;
+      const region = BRAIN_REGIONS.find((r) => r.id === regionId);
+      if (region) {
+        setSelectedRegion(region);
+        highlightRegion(region);
+        flyToRegion(region);
+      }
+    };
+    window.addEventListener("brain-explore-click", handler);
+    return () => window.removeEventListener("brain-explore-click", handler);
+  }, [highlightRegion, flyToRegion]);
+
+  useEffect(() => {
+    const timer = setTimeout(
+      () => window.dispatchEvent(new Event("resize")),
+      50,
+    );
+    return () => clearTimeout(timer);
+  }, [fullscreen, answered, selectedRegion]);
+
+  // ─── Share ────────────────────────────────────────
+
+  const handleCopyLink = useCallback(() => {
+    const pct = Math.round((score / questions.length) * 100);
+    const text = `I scored ${pct}% on the CogNeuro Brain Quiz — Test yourself: ${typeof window !== "undefined" ? window.location.href : ""}`;
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  }, [score, questions.length]);
+
+  // ─── Render helpers ───────────────────────────────
+
+  const quizProgress =
+    questions.length > 0
+      ? ((currentIndex + (answered ? 1 : 0)) / questions.length) * 100
+      : 0;
+
+  const selectExploreRegion = useCallback(
+    (region: BrainRegion) => {
+      setSelectedRegion(region);
+      highlightRegion(region);
+      flyToRegion(region);
+    },
+    [highlightRegion, flyToRegion],
+  );
+
+  const renderRegionList = () => (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        overflow: "hidden",
+      }}
+    >
+      {/* Search */}
+      <div
+        style={{
+          padding: "var(--ma-3) var(--ma-4)",
+          borderBottom: "var(--border-subtle)",
+          flexShrink: 0,
+        }}
+      >
+        <div className="search-input-wrap">
+          <Search
+            size={13}
+            style={{ color: "var(--sumi-light)", flexShrink: 0 }}
+          />
+          <input
+            type="text"
+            placeholder="Search regions..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                display: "flex",
+                color: "var(--sumi-light)",
+              }}
+            >
+              <X size={13} />
+            </button>
+          )}
+        </div>
+      </div>
+      {/* Region list */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "var(--ma-2) var(--ma-4)",
+        }}
+      >
+        {filteredRegions.map((group) => (
+          <div key={group.category} style={{ marginBottom: 6 }}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.8px",
+                color: "var(--sumi-light)",
+                padding: "4px 0 2px",
+                position: "sticky",
+                top: 0,
+                background: "var(--washi-cream)",
+                zIndex: 1,
+              }}
+            >
+              {group.category}
             </div>
-            <div className="flex items-center gap-3 text-xs text-zinc-400">
-              <span className="capitalize">{entry.difficulty}</span>
-              <span>{new Date(entry.date).toLocaleDateString()}</span>
-            </div>
+            {group.regions.map((region) => (
+              <button
+                key={region.id}
+                className={`region-list-item ${selectedRegion?.id === region.id ? "active" : ""}`}
+                onClick={() => selectExploreRegion(region)}
+              >
+                <span
+                  className="region-dot"
+                  style={{
+                    background: `rgb(${region.color[0]}, ${region.color[1]}, ${region.color[2]})`,
+                  }}
+                />
+                <span style={{ flex: 1 }}>{region.name}</span>
+              </button>
+            ))}
           </div>
         ))}
+        {filteredRegions.length === 0 && (
+          <p
+            style={{
+              fontSize: 12,
+              color: "var(--sumi-light)",
+              textAlign: "center",
+              padding: "var(--ma-4) 0",
+            }}
+          >
+            No regions match &ldquo;{searchQuery}&rdquo;
+          </p>
+        )}
       </div>
-    </section>
+    </div>
   );
-}
 
-function Footer() {
-  return (
-    <footer className="border-t border-border py-6 text-center">
-      <p className="text-xs text-zinc-400 dark:text-zinc-500">
-        Made by{' '}
-        <span className="font-semibold text-zinc-500 dark:text-zinc-400">CogNeuro Study</span>
-        {' · '}
-        <span className="text-zinc-400 dark:text-zinc-500">Tilburg University</span>
+  const renderExploreDetail = () => {
+    if (!selectedRegion) return null;
+    const details = BRAIN_DETAILS[selectedRegion.id];
+    const sections: { title: string; color: string; items: string[] }[] = [];
+    if (details?.functions)
+      sections.push({
+        title: "Functions",
+        color: "var(--ai)",
+        items: details.functions,
+      });
+    if (details?.pathways)
+      sections.push({
+        title: "Pathways",
+        color: "var(--ai)",
+        items: details.pathways,
+      });
+    if (details?.clinical)
+      sections.push({
+        title: "Clinical",
+        color: "var(--beni)",
+        items: details.clinical,
+      });
+    if (details?.keyFacts)
+      sections.push({
+        title: "Key Facts",
+        color: "var(--murasaki)",
+        items: details.keyFacts,
+      });
+
+    return (
+      <>
+        {/* Header bar */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "6px var(--ma-4)",
+            borderBottom: "var(--border-subtle)",
+            flexShrink: 0,
+          }}
+        >
+          <button
+            onClick={() => {
+              setSelectedRegion(null);
+              resetBrainView();
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: 12,
+              color: "var(--sumi-light)",
+              padding: "2px 4px",
+              fontFamily: "var(--font-body)",
+            }}
+          >
+            &larr; Close
+          </button>
+          <h2
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 15,
+              fontWeight: 500,
+              margin: 0,
+              flex: 1,
+            }}
+          >
+            {selectedRegion.name}
+          </h2>
+          <span className="badge">{selectedRegion.category}</span>
+          <div
+            style={{
+              display: "flex",
+              gap: "var(--ma-3)",
+              fontSize: 11,
+              color: "var(--sumi-light)",
+            }}
+          >
+            {details?.brodmann && <span>BA {details.brodmann}</span>}
+            {selectedRegion.aliases.length > 0 && (
+              <span>aka {selectedRegion.aliases.join(", ")}</span>
+            )}
+          </div>
+        </div>
+        {/* Horizontal scrollable content */}
+        <div
+          style={{
+            flex: 1,
+            overflowX: "auto",
+            overflowY: "auto",
+            padding: "var(--ma-3) var(--ma-4)",
+            display: "flex",
+            gap: "var(--ma-5)",
+          }}
+        >
+          {sections.map((section) => (
+            <div
+              key={section.title}
+              style={{ minWidth: 220, flex: "0 0 auto" }}
+            >
+              <div
+                className="explore-section-title"
+                style={{ color: section.color }}
+              >
+                {section.title}
+              </div>
+              <ul
+                style={{
+                  margin: 0,
+                  paddingLeft: 14,
+                  fontSize: 12,
+                  color: "var(--sumi-medium)",
+                  lineHeight: 1.6,
+                }}
+              >
+                {section.items.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          {details?.examTip && (
+            <div style={{ minWidth: 240, flex: "0 0 auto" }}>
+              <div className="exam-tip">
+                <strong style={{ color: "var(--kitsune)", fontSize: 11 }}>
+                  Exam Tip:{" "}
+                </strong>
+                <span style={{ color: "var(--sumi-deep)", fontSize: 12 }}>
+                  {details.examTip}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  };
+
+  const renderExploreSidebar = () => renderRegionList();
+
+  const renderSetup = () => (
+    <div className="sidebar-content" style={{ justifyContent: "center" }}>
+      <div style={{ textAlign: "center", marginBottom: 4 }}>
+        <h2
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: 18,
+            fontWeight: 400,
+            margin: 0,
+            letterSpacing: "0.3px",
+          }}
+        >
+          Choose your mode
+        </h2>
+      </div>
+
+      <button
+        className={`setup-card ${mode === "identify" ? "selected" : ""}`}
+        onClick={() => setMode("identify")}
+      >
+        <div className="setup-card-icon">?</div>
+        <div>
+          <strong style={{ display: "block", fontSize: 14, marginBottom: 2 }}>
+            Identify
+          </strong>
+          <p style={{ fontSize: 12, color: "var(--sumi-light)", margin: 0 }}>
+            Region is highlighted — name it.
+          </p>
+        </div>
+      </button>
+
+      <button
+        className={`setup-card ${mode === "locate" ? "selected" : ""}`}
+        onClick={() => setMode("locate")}
+      >
+        <div className="setup-card-icon">O</div>
+        <div>
+          <strong style={{ display: "block", fontSize: 14, marginBottom: 2 }}>
+            Locate
+          </strong>
+          <p style={{ fontSize: 12, color: "var(--sumi-light)", margin: 0 }}>
+            Name given — click it on the brain.
+          </p>
+        </div>
+      </button>
+
+      <button
+        className="btn btn-primary"
+        onClick={startQuiz}
+        style={{
+          width: "100%",
+          padding: "12px 20px",
+          fontSize: 14,
+          borderRadius: "var(--radius-md)",
+        }}
+      >
+        Start Quiz (10 Questions)
+      </button>
+    </div>
+  );
+
+  const renderPlaying = () => {
+    if (!currentQuestion) return null;
+
+    return (
+      <>
+        {/* Progress strip */}
+        <div className="progress-strip">
+          <div
+            className="progress-strip-fill"
+            style={{ width: `${quizProgress}%` }}
+          />
+        </div>
+
+        <div className="sidebar-content">
+          {/* Question header */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span className="badge" style={{ fontFamily: "var(--font-mono)" }}>
+              {currentIndex + 1} / {questions.length}
+            </span>
+            <span
+              className="badge"
+              style={{
+                background: "var(--moegi-light)",
+                color: "var(--moegi)",
+              }}
+            >
+              Score: {score}
+            </span>
+          </div>
+
+          {mode === "identify" ? (
+            <>
+              <h3
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: 16,
+                  fontWeight: 400,
+                  lineHeight: 1.4,
+                  margin: 0,
+                }}
+              >
+                Which brain region is highlighted?
+              </h3>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {currentQuestion.options.map((option, i) => {
+                  const isCorrect =
+                    option.id === currentQuestion.correctRegion.id;
+                  const isSelected = selectedAnswer === option.id;
+                  const cls = ["quiz-option"];
+                  if (answered && isCorrect) cls.push("correct");
+                  else if (answered && isSelected && !isCorrect)
+                    cls.push("wrong");
+                  else if (answered && !isSelected && !isCorrect)
+                    cls.push("dimmed");
+                  return (
+                    <button
+                      key={option.id}
+                      className={cls.join(" ")}
+                      onClick={() => selectOption(option.id)}
+                      disabled={answered}
+                    >
+                      <span className="option-letter">{OPTION_LETTERS[i]}</span>
+                      <span style={{ flex: 1 }}>{option.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {answered && (
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 6 }}
+                >
+                  <div
+                    className={
+                      selectedAnswer === currentQuestion.correctRegion.id
+                        ? "feedback-correct"
+                        : "feedback-wrong"
+                    }
+                  >
+                    {selectedAnswer === currentQuestion.correctRegion.id
+                      ? "Correct!"
+                      : `It's ${currentQuestion.correctRegion.name}`}
+                  </div>
+                  {/* Mini explanation cards */}
+                  <div
+                    style={{ display: "flex", flexDirection: "column", gap: 3 }}
+                  >
+                    {currentQuestion.options.map((option) => {
+                      const isCorrectOption =
+                        option.id === currentQuestion.correctRegion.id;
+                      return (
+                        <div
+                          key={option.id}
+                          className={`explanation-card ${isCorrectOption ? "is-correct" : ""}`}
+                        >
+                          <strong style={{ fontSize: 11, marginRight: 4 }}>
+                            {option.name}:
+                          </strong>
+                          <span style={{ color: "var(--sumi-medium)" }}>
+                            {option.description}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <h3
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: 16,
+                  fontWeight: 400,
+                  lineHeight: 1.4,
+                  margin: 0,
+                }}
+              >
+                Click on the{" "}
+                <strong>{currentQuestion.correctRegion.name}</strong>
+              </h3>
+              <p
+                style={{
+                  fontSize: 12,
+                  color: "var(--sumi-medium)",
+                  lineHeight: 1.5,
+                  margin: 0,
+                }}
+              >
+                {currentQuestion.correctRegion.description}
+              </p>
+
+              {answered ? (
+                <div
+                  className={
+                    clickedRegionId === currentQuestion.correctRegion.id
+                      ? "feedback-correct"
+                      : "feedback-wrong"
+                  }
+                >
+                  {clickedRegionId === currentQuestion.correctRegion.id
+                    ? "Correct!"
+                    : `Wrong — you clicked ${BRAIN_REGIONS.find((r) => r.id === clickedRegionId)?.name || "unknown"}.`}
+                </div>
+              ) : (
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: "var(--ai)",
+                    fontWeight: 500,
+                    textAlign: "center",
+                    padding: "var(--ma-4) 0",
+                  }}
+                >
+                  Click on the 3D brain
+                </p>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Next button pinned to bottom */}
+        {answered && (
+          <div
+            style={{
+              padding: "var(--ma-3) var(--ma-4)",
+              borderTop: "var(--border-subtle)",
+              flexShrink: 0,
+            }}
+          >
+            <button
+              className="btn btn-primary"
+              onClick={nextQuestion}
+              style={{
+                width: "100%",
+                padding: "10px 20px",
+                fontSize: 14,
+                gap: 6,
+              }}
+            >
+              {currentIndex + 1 >= questions.length
+                ? "See Results"
+                : "Next Question  \u25B6"}
+            </button>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const renderResult = () => (
+    <div
+      className="sidebar-content"
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+      }}
+    >
+      <div style={{ marginBottom: 4 }}>
+        <div className="score-display">{score}</div>
+        <span
+          style={{ fontSize: 18, color: "var(--sumi-light)", fontWeight: 300 }}
+        >
+          / {questions.length}
+        </span>
+      </div>
+
+      <p style={{ fontSize: 15, color: "var(--sumi-medium)", fontWeight: 300 }}>
+        {score === questions.length
+          ? "Perfect score!"
+          : score >= questions.length * 0.7
+            ? "Great job!"
+            : score >= questions.length * 0.5
+              ? "Not bad — keep studying!"
+              : "Keep practicing!"}
       </p>
-    </footer>
+
+      <div style={{ display: "flex", gap: 6, width: "100%" }}>
+        <button className="btn" onClick={startQuiz} style={{ flex: 1 }}>
+          Play Again
+        </button>
+        <button className="btn" onClick={backToSetup} style={{ flex: 1 }}>
+          Change Mode
+        </button>
+      </div>
+
+      <button
+        className="btn btn-primary"
+        onClick={handleCopyLink}
+        style={{ width: "100%", gap: 6 }}
+      >
+        {copied ? (
+          <>
+            <Check size={14} /> Copied!
+          </>
+        ) : (
+          <>
+            <Copy size={14} /> Challenge a Friend
+          </>
+        )}
+      </button>
+    </div>
+  );
+
+  // ─── Main Render ──────────────────────────────────
+
+  return (
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+      {/* ── Topbar ── */}
+      {!fullscreen && (
+        <div
+          className="topbar"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 16px",
+            flexShrink: 0,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--ma-4)",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontSize: 16,
+                fontWeight: 400,
+                letterSpacing: "0.5px",
+                color: "var(--sumi-deep)",
+              }}
+            >
+              脳 Brain Quiz
+            </span>
+            <div className="mode-switcher">
+              <button
+                className={appMode === "explore" ? "active" : ""}
+                onClick={() => {
+                  setAppMode("explore");
+                  setPhase("setup");
+                  resetBrainView();
+                  setSelectedRegion(null);
+                }}
+              >
+                Explore
+              </button>
+              <button
+                className={appMode === "quiz" ? "active" : ""}
+                onClick={() => {
+                  setAppMode("quiz");
+                  resetBrainView();
+                  setSelectedRegion(null);
+                }}
+              >
+                Quiz
+              </button>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--ma-2)",
+            }}
+          >
+            {appMode === "quiz" && phase === "playing" && (
+              <span className="badge">
+                {mode === "identify" ? "Identify" : "Locate"}
+              </span>
+            )}
+            <button
+              className="theme-toggle"
+              onClick={toggleTheme}
+              title={theme === "light" ? "Dark mode" : "Light mode"}
+            >
+              {theme === "light" ? "月" : "日"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Main area ── */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0,
+        }}
+      >
+        {/* Top row: Brain + Sidebar */}
+        <div
+          style={{
+            flex: selectedRegion && appMode === "explore" ? "1 1 0%" : 1,
+            display: "flex",
+            minHeight: 0,
+            transition: "flex 0.3s ease",
+          }}
+        >
+          {/* 3D Brain Viewer */}
+          <div style={{ flex: 1, position: "relative", minWidth: 0 }}>
+            {/* Gizmo */}
+            <canvas
+              ref={gizmoCanvasRef}
+              width={120}
+              height={120}
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                width: 120,
+                height: 120,
+                zIndex: 20,
+                pointerEvents: "none",
+                borderRadius: "var(--radius-md)",
+                border: "var(--border-subtle)",
+                background:
+                  theme === "light"
+                    ? "rgba(245,242,235,0.6)"
+                    : "rgba(17,17,17,0.6)",
+                backdropFilter: "blur(8px)",
+              }}
+            />
+
+            {/* Fullscreen toggle */}
+            <button
+              className="viewer-overlay-btn"
+              onClick={() => setFullscreen((f) => !f)}
+              style={{ position: "absolute", top: 10, right: 140, zIndex: 20 }}
+            >
+              {fullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+            </button>
+
+            {/* Three.js container */}
+            <div
+              ref={containerRef}
+              style={{
+                width: "100%",
+                height: "100%",
+                position: "relative",
+                overflow: "hidden",
+                background: theme === "light" ? "#F5F2EB" : "#111111",
+              }}
+            >
+              {!viewerReady && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    zIndex: 10,
+                    background: "var(--washi-cream)",
+                    pointerEvents: "none",
+                  }}
+                >
+                  <div className="loading-spinner" />
+                  <p
+                    style={{
+                      fontSize: 12,
+                      color: "var(--sumi-light)",
+                      fontFamily: "var(--font-mono)",
+                    }}
+                  >
+                    {loadProgress}%
+                  </p>
+                  <div
+                    style={{
+                      width: 160,
+                      height: 3,
+                      background: "var(--washi-warm)",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        width: `${loadProgress}%`,
+                        background: "var(--ai)",
+                        borderRadius: 2,
+                        transition: "width 0.3s ease",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── Sidebar ── */}
+          {!fullscreen && (
+            <div className="sidebar">
+              {appMode === "explore" && renderExploreSidebar()}
+              {appMode === "quiz" && phase === "setup" && renderSetup()}
+              {appMode === "quiz" && phase === "playing" && renderPlaying()}
+              {appMode === "quiz" && phase === "result" && renderResult()}
+            </div>
+          )}
+        </div>
+
+        {/* ── Bottom Drawer — explore detail ── */}
+        {!fullscreen && appMode === "explore" && selectedRegion && (
+          <div className="bottom-drawer">{renderExploreDetail()}</div>
+        )}
+      </div>
+    </div>
   );
 }
