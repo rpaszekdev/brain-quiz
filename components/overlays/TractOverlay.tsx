@@ -205,36 +205,68 @@ export default function TractOverlayPanel() {
     [regionMaterialsRef, setCortexTransparency],
   );
 
-  const handleToggleTract = useCallback((tractId: string) => {
-    const engine = engineRef.current;
-    if (!engine) return;
-
-    setVisibleTracts((prev) => {
-      const next = new Set(prev);
-      if (next.has(tractId)) {
-        next.delete(tractId);
-        engine.hideTract(tractId);
-      } else {
-        next.add(tractId);
-        engine.showTract(tractId);
+  const highlightAllVisibleRegions = useCallback(
+    (pathwayIds: string[]) => {
+      // Collect all connected regions from all visible pathways
+      const allConnected = new Set<string>();
+      for (const pid of pathwayIds) {
+        const pw = NEURAL_PATHWAYS.find((p) => p.id === pid);
+        if (pw) {
+          pw.sourceRegions.forEach((r) => allConnected.add(r));
+          pw.targetRegions.forEach((r) => allConnected.add(r));
+        }
       }
-      return next;
-    });
-  }, []);
+
+      for (const [regionId, mats] of regionMaterialsRef.current) {
+        const isConnected = allConnected.has(regionId);
+        for (const mat of mats) {
+          mat.opacity = isConnected ? 0.85 : 0.08;
+          mat.emissiveIntensity = isConnected ? 0.5 : 0.0;
+          mat.depthWrite = false;
+          mat.needsUpdate = true;
+        }
+      }
+    },
+    [regionMaterialsRef],
+  );
+
+  const handleToggleTract = useCallback(
+    (tractId: string) => {
+      const engine = engineRef.current;
+      if (!engine) return;
+
+      setVisibleTracts((prev) => {
+        const next = new Set(prev);
+        if (next.has(tractId)) {
+          next.delete(tractId);
+          engine.hideTract(tractId);
+        } else {
+          next.add(tractId);
+          engine.showTract(tractId);
+        }
+        highlightAllVisibleRegions(Array.from(next));
+        return next;
+      });
+    },
+    [highlightAllVisibleRegions],
+  );
 
   const handleShowAll = useCallback(() => {
     const engine = engineRef.current;
     if (!engine) return;
     engine.showAll();
-    setVisibleTracts(new Set(NEURAL_PATHWAYS.map((p) => p.id)));
-  }, []);
+    const allIds = NEURAL_PATHWAYS.map((p) => p.id);
+    setVisibleTracts(new Set(allIds));
+    highlightAllVisibleRegions(allIds);
+  }, [highlightAllVisibleRegions]);
 
   const handleHideAll = useCallback(() => {
     const engine = engineRef.current;
     if (!engine) return;
     engine.hideAll();
     setVisibleTracts(new Set());
-  }, []);
+    setCortexTransparency(true); // Reset to X-ray baseline
+  }, [setCortexTransparency]);
 
   const handleToggleGroup = useCallback((type: TractType) => {
     setExpandedGroups((prev) => {
@@ -381,7 +413,33 @@ export default function TractOverlayPanel() {
                           style={styles.tractName}
                           onClick={() => handleSelectTract(pathway.id)}
                         >
-                          {pathway.name}
+                          <span>{pathway.name}</span>
+                          <span
+                            style={{
+                              display: "block",
+                              fontSize: 9,
+                              fontWeight: 400,
+                              color: "var(--sumi-light)",
+                              marginTop: 1,
+                              lineHeight: 1.3,
+                            }}
+                          >
+                            {pathway.sourceRegions
+                              .map(
+                                (id) =>
+                                  BRAIN_REGIONS.find((r) => r.id === id)
+                                    ?.name || id.replace(/-/g, " "),
+                              )
+                              .join(", ")}
+                            {" \u2192 "}
+                            {pathway.targetRegions
+                              .map(
+                                (id) =>
+                                  BRAIN_REGIONS.find((r) => r.id === id)
+                                    ?.name || id.replace(/-/g, " "),
+                              )
+                              .join(", ")}
+                          </span>
                         </button>
                       </div>
                     );

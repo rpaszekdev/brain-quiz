@@ -270,6 +270,9 @@ function PathwaysContent({
   pathways: NeuralPathway[];
   regionId: string;
 }) {
+  // Also show the original BRAIN_DETAILS pathway connections
+  const detailPathways = BRAIN_DETAILS[regionId]?.pathways;
+
   const grouped = useMemo(() => {
     const groups: Record<string, NeuralPathway[]> = {};
     for (const p of pathways) {
@@ -282,6 +285,29 @@ function PathwaysContent({
 
   return (
     <>
+      {/* Original pathway connections from brain details */}
+      {detailPathways && detailPathways.length > 0 && (
+        <div style={{ marginBottom: 8 }}>
+          <div className="explore-section-title" style={{ color: "var(--ai)" }}>
+            Key Connections
+          </div>
+          <ul
+            style={{
+              margin: 0,
+              paddingLeft: 14,
+              fontSize: 12,
+              color: "var(--sumi-medium)",
+              lineHeight: 1.6,
+            }}
+          >
+            {detailPathways.map((p, i) => (
+              <li key={i}>{p}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* White matter tracts */}
       {Object.entries(grouped).map(([type, tracts]) => (
         <div key={type}>
           <div
