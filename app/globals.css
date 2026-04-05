@@ -39,9 +39,11 @@
   --ma-5: 24px;
   --ma-6: 32px;
 
-  /* Typography */
-  --font-serif: "Noto Serif JP", "Hiragino Mincho ProN", Georgia, serif;
-  --font-body: "Noto Serif JP", "Hiragino Mincho ProN", Georgia, serif;
+  /* Typography — var(--font-serif) is set by next/font on <html> */
+  --font-serif: var(--font-serif, "Noto Serif JP"), "Hiragino Mincho ProN",
+    Georgia, serif;
+  --font-body: var(--font-serif, "Noto Serif JP"), "Hiragino Mincho ProN",
+    Georgia, serif;
   --font-mono: "JetBrains Mono", "SF Mono", monospace;
 
   /* Borders & Shadows */
@@ -751,11 +753,192 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════
-   RESPONSIVE — stack on narrow screens
+   BOTTOM SHEET — mobile/tablet overlay panel
    ═══════════════════════════════════════════════ */
 
-@media (max-width: 768px) {
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-normal) var(--ease);
+}
+
+.sheet-backdrop-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 70vh;
+  background: var(--washi-cream);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform var(--dur-slow) var(--ease);
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-bottom-sheet-open {
+  transform: translateY(0);
+}
+
+.sheet-handle {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.sheet-handle-bar {
+  width: 36px;
+  height: 4px;
+  background: var(--sumi-light);
+  border-radius: 2px;
+  opacity: 0.5;
+}
+
+.sheet-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* FAB — floating action button for mobile */
+.mobile-panel-fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--ai);
+  color: #F5F2EB;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  z-index: 80;
+  transition: all var(--dur-normal) var(--ease);
+}
+
+.mobile-panel-fab:active {
+  transform: scale(0.92);
+}
+
+[data-theme="dark"] .mobile-panel-fab {
+  color: #111;
+}
+
+[data-theme="dark"] .mobile-bottom-sheet {
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE — Mobile (0-767px)
+   ═══════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
   :root {
     --sidebar-width: 100%;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .topbar {
+    padding: 0 10px;
+  }
+
+  .app-title {
+    font-size: 14px !important;
+  }
+
+  /* Touch targets — 44px min per Apple HIG */
+  .quiz-option {
+    min-height: 44px;
+  }
+
+  .mode-switcher button {
+    min-height: 36px;
+    padding: 6px 14px;
+  }
+
+  .region-list-item {
+    min-height: 44px;
+    padding: 8px 10px;
+  }
+
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  .viewer-overlay-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .setup-card {
+    padding: var(--ma-3);
+  }
+
+  .score-display {
+    font-size: 36px;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE — Tablet (768-1023px)
+   ═══════════════════════════════════════════════ */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --sidebar-width: 320px;
+  }
+
+  .sidebar.left-panel {
+    display: none;
+  }
+
+  .quiz-option {
+    min-height: 40px;
+  }
+
+  .region-list-item {
+    min-height: 40px;
+    padding: 6px 10px;
+  }
+
+  .btn {
+    min-height: 40px;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE — Desktop (1024px+)
+   ═══════════════════════════════════════════════ */
+
+@media (min-width: 1024px) {
+  .mobile-panel-fab,
+  .sheet-backdrop,
+  .mobile-bottom-sheet {
+    display: none !important;
   }
 }

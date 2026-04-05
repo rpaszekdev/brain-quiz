@@ -34,6 +34,7 @@ export function Topbar({
         style={{ display: "flex", alignItems: "center", gap: "var(--ma-4)" }}
       >
         <span
+          className="app-title"
           style={{
             fontFamily: "var(--font-serif)",
             fontSize: 16,

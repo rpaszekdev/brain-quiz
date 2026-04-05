@@ -1,6 +1,6 @@
 # Brain Atlas — Interactive 3D Brain Quiz
 
-> Interactive 3D brain anatomy quiz with 28 regions. Identify and locate brain structures in a free, no-login web app.
+> Interactive 3D brain anatomy quiz with 50+ regions across 8 learning dimensions. Identify and locate brain structures in a free, no-login web app.
 
 ## About
 
@@ -15,7 +15,9 @@ The app covers 28 brain regions and is designed for students, educators, and any
 
 - Real-time 3D brain visualization (Three.js)
 - Two quiz modes: Identify and Locate
-- 28 anatomical brain regions
+- 50+ anatomical brain regions
+- 8 learning dimensions (anatomy, pathways, networks, neurotransmitters, clinical, developmental, neuroimaging, cellular)
+- 25+ quiz types across difficulty levels
 - No login or account required
 - Mobile-friendly
 - Japanese-inspired minimal UI
