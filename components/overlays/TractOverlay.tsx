@@ -14,10 +14,12 @@ import {
   useCallback,
   type CSSProperties,
 } from "react";
+import { Download } from "lucide-react";
 import { useBrainViewer } from "@/components/brain-viewer/BrainViewerContext";
 import { NEURAL_PATHWAYS } from "@/lib/data/pathways";
 import { BRAIN_REGIONS } from "@/lib/brain-regions";
 import { TractOverlay as TractOverlayEngine } from "@/lib/three/tract-geometry";
+import { exportSceneAsGlb, slugify } from "@/lib/three/glb-export";
 import type { NeuralPathway } from "@/lib/types";
 
 // ── Grouped pathways (computed once) ────────────
@@ -69,6 +71,8 @@ export default function TractOverlayPanel() {
   const [expandedGroups, setExpandedGroups] = useState<Set<TractType>>(
     () => new Set(TYPE_ORDER),
   );
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   const selectedTract = selectedTractId
     ? (NEURAL_PATHWAYS.find((p) => p.id === selectedTractId) ?? null)
@@ -280,35 +284,49 @@ export default function TractOverlayPanel() {
     });
   }, []);
 
-  const handleSelectTract = useCallback(
-    (tractId: string) => {
-      const engine = engineRef.current;
-      if (!engine) return;
+  const handleSelectTract = useCallback((tractId: string) => {
+    setSelectedTractId((prev) => (prev === tractId ? null : tractId));
+  }, []);
 
-      setSelectedTractId((prev) => {
-        if (prev === tractId) {
-          // Deselect — hide all, reset regions to X-ray
-          engine.hideAll();
-          setVisibleTracts(new Set());
-          highlightConnectedRegions(null);
-          // Clear left panel
-          window.dispatchEvent(new CustomEvent("clear-pathway"));
-          return null;
-        }
-        // Select — isolate this tract + highlight connected regions
-        engine.hideAll();
-        engine.showTract(tractId);
-        setVisibleTracts(new Set([tractId]));
-        highlightConnectedRegions(tractId);
-        // Show description on left panel
-        window.dispatchEvent(
-          new CustomEvent("show-tract", { detail: tractId }),
-        );
-        return tractId;
+  const handleExportGlb = useCallback(async () => {
+    const scene = sceneRef.current;
+    if (!scene || !selectedTract) {
+      setExportError("Select a tract first");
+      return;
+    }
+    try {
+      setExportError(null);
+      setExporting(true);
+      await exportSceneAsGlb(scene, {
+        filename: `brain-${slugify(selectedTract.name)}`,
       });
-    },
-    [highlightConnectedRegions],
-  );
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : "Export failed");
+    } finally {
+      setExporting(false);
+    }
+  }, [sceneRef, selectedTract]);
+
+  // Drive engine state from selectedTractId. We do NOT dispatch
+  // "show-tract" here — that event is only for cross-panel navigation
+  // from elsewhere (TractCard in ExploreDrawer). Dispatching from this
+  // panel would switch the right panel to PathwayDrawer and unmount
+  // this component, disposing the tract tube the user just selected.
+  useEffect(() => {
+    const engine = engineRef.current;
+    if (!engine) return;
+
+    if (selectedTractId === null) {
+      engine.hideAll();
+      setVisibleTracts(new Set());
+      highlightConnectedRegions(null);
+    } else {
+      engine.hideAll();
+      engine.showTract(selectedTractId);
+      setVisibleTracts(new Set([selectedTractId]));
+      highlightConnectedRegions(selectedTractId);
+    }
+  }, [selectedTractId, highlightConnectedRegions]);
 
   // ── Listen for "show-tract" events from ExploreDrawer ───
   useEffect(() => {
@@ -565,6 +583,25 @@ export default function TractOverlayPanel() {
               </div>
               <div className="exam-tip">{selectedTract.clinical}</div>
             </div>
+
+            <div style={styles.exportSection}>
+              <button
+                onClick={handleExportGlb}
+                disabled={exporting}
+                style={{
+                  ...styles.exportBtn,
+                  ...(exporting ? styles.exportBtnDisabled : {}),
+                }}
+                title="Download a .glb file you can drop into a PowerPoint slide via Insert → 3D Models"
+              >
+                <Download size={13} />
+                {exporting ? "Exporting…" : "Export for PowerPoint (.glb)"}
+              </button>
+              <p style={styles.exportHint}>
+                In PowerPoint: Insert → 3D Models → From this Device
+              </p>
+              {exportError && <p style={styles.exportError}>{exportError}</p>}
+            </div>
           </div>
         )}
       </>
@@ -775,5 +812,48 @@ const styles: Record<string, CSSProperties> = {
     lineHeight: 1.5,
     color: "var(--sumi-medium)",
     margin: 0,
+  },
+  exportSection: {
+    marginTop: "var(--ma-2)",
+    paddingTop: "var(--ma-3)",
+    borderTop: "var(--border-subtle)",
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+  },
+  exportBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "8px",
+    padding: "8px 12px",
+    fontSize: "12px",
+    fontWeight: 500,
+    fontFamily: "var(--font-body)",
+    color: "#F5F2EB",
+    background: "var(--ai)",
+    border: "none",
+    borderRadius: "var(--radius-sm)",
+    cursor: "pointer",
+    transition: "all var(--dur-fast) var(--ease)",
+    letterSpacing: "0.2px",
+  },
+  exportBtnDisabled: {
+    color: "var(--sumi-light)",
+    background: "var(--washi-warm)",
+    cursor: "wait",
+  },
+  exportHint: {
+    margin: 0,
+    fontSize: "10px",
+    color: "var(--sumi-light)",
+    lineHeight: 1.4,
+    textAlign: "center" as const,
+  },
+  exportError: {
+    margin: 0,
+    fontSize: "11px",
+    color: "var(--beni)",
+    textAlign: "center" as const,
   },
 };

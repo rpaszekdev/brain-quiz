@@ -1,7 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { Download } from "lucide-react";
 import { NEURAL_PATHWAYS } from "@/lib/data/pathways";
 import { BRAIN_REGIONS } from "@/lib/brain-regions";
+import { useBrainViewer } from "@/components/brain-viewer/BrainViewerContext";
+import { exportSceneAsGlb, slugify } from "@/lib/three/glb-export";
 import type { NeuralPathway } from "@/lib/types";
 
 interface PathwayDrawerProps {
@@ -11,7 +15,31 @@ interface PathwayDrawerProps {
 
 export function PathwayDrawer({ pathwayId, onClose }: PathwayDrawerProps) {
   const pathway = NEURAL_PATHWAYS.find((p) => p.id === pathwayId);
+  const { sceneRef } = useBrainViewer();
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+
   if (!pathway) return null;
+
+  const handleExportGlb = async () => {
+    const scene = sceneRef.current;
+    if (!scene) {
+      setExportError("3D viewer not ready yet");
+      return;
+    }
+    try {
+      setExportError(null);
+      setExporting(true);
+      await exportSceneAsGlb(scene, {
+        filename: `brain-${slugify(pathway.name)}`,
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Export failed";
+      setExportError(msg);
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const sourceRegions = pathway.sourceRegions
     .map((id) => BRAIN_REGIONS.find((r) => r.id === id))
@@ -19,7 +47,10 @@ export function PathwayDrawer({ pathwayId, onClose }: PathwayDrawerProps) {
   const targetRegions = pathway.targetRegions
     .map((id) => BRAIN_REGIONS.find((r) => r.id === id))
     .filter(Boolean);
-  const totalRegions = new Set([...pathway.sourceRegions, ...pathway.targetRegions]).size;
+  const totalRegions = new Set([
+    ...pathway.sourceRegions,
+    ...pathway.targetRegions,
+  ]).size;
 
   const typeLabel =
     pathway.type === "association"
@@ -38,7 +69,14 @@ export function PathwayDrawer({ pathwayId, onClose }: PathwayDrawerProps) {
           flexShrink: 0,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 4,
+          }}
+        >
           <button
             onClick={onClose}
             style={{
@@ -82,10 +120,16 @@ export function PathwayDrawer({ pathwayId, onClose }: PathwayDrawerProps) {
             fontSize: 11,
           }}
         >
-          <span className="badge" style={{ background: "var(--ai-light)", color: "var(--ai)" }}>
+          <span
+            className="badge"
+            style={{ background: "var(--ai-light)", color: "var(--ai)" }}
+          >
             {typeLabel}
           </span>
-          <span className="badge" style={{ background: "var(--moegi-light)", color: "var(--moegi)" }}>
+          <span
+            className="badge"
+            style={{ background: "var(--moegi-light)", color: "var(--moegi)" }}
+          >
             {totalRegions} regions
           </span>
         </div>
@@ -121,7 +165,10 @@ export function PathwayDrawer({ pathwayId, onClose }: PathwayDrawerProps) {
 
         {/* Connected Regions */}
         <div>
-          <div className="explore-section-title" style={{ color: "var(--dim-pathways)" }}>
+          <div
+            className="explore-section-title"
+            style={{ color: "var(--dim-pathways)" }}
+          >
             Source Regions
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
@@ -172,7 +219,10 @@ export function PathwayDrawer({ pathwayId, onClose }: PathwayDrawerProps) {
         </div>
 
         <div>
-          <div className="explore-section-title" style={{ color: "var(--dim-pathways)" }}>
+          <div
+            className="explore-section-title"
+            style={{ color: "var(--dim-pathways)" }}
+          >
             Target Regions
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
@@ -224,8 +274,73 @@ export function PathwayDrawer({ pathwayId, onClose }: PathwayDrawerProps) {
 
         {/* Clinical Significance */}
         <div className="exam-tip">
-          <strong style={{ color: "var(--beni)", fontSize: 11 }}>Clinical: </strong>
-          <span style={{ color: "var(--sumi-deep)", fontSize: 12 }}>{pathway.clinical}</span>
+          <strong style={{ color: "var(--beni)", fontSize: 11 }}>
+            Clinical:{" "}
+          </strong>
+          <span style={{ color: "var(--sumi-deep)", fontSize: 12 }}>
+            {pathway.clinical}
+          </span>
+        </div>
+
+        {/* Export to PowerPoint */}
+        <div
+          style={{
+            marginTop: "var(--ma-2)",
+            paddingTop: "var(--ma-3)",
+            borderTop: "var(--border-subtle)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 6,
+          }}
+        >
+          <button
+            onClick={handleExportGlb}
+            disabled={exporting}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              padding: "8px 12px",
+              fontSize: 12,
+              fontWeight: 500,
+              fontFamily: "var(--font-body)",
+              color: exporting ? "var(--sumi-light)" : "#F5F2EB",
+              background: exporting ? "var(--washi-warm)" : "var(--ai)",
+              border: "none",
+              borderRadius: "var(--radius-sm)",
+              cursor: exporting ? "wait" : "pointer",
+              transition: "all var(--dur-fast) var(--ease)",
+              letterSpacing: "0.2px",
+            }}
+            title="Download a .glb file you can drop into a PowerPoint slide via Insert → 3D Models"
+          >
+            <Download size={13} />
+            {exporting ? "Exporting…" : "Export for PowerPoint (.glb)"}
+          </button>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 10,
+              color: "var(--sumi-light)",
+              lineHeight: 1.4,
+              textAlign: "center",
+            }}
+          >
+            In PowerPoint: Insert → 3D Models → From this Device
+          </p>
+          {exportError && (
+            <p
+              style={{
+                margin: 0,
+                fontSize: 11,
+                color: "var(--beni)",
+                textAlign: "center",
+              }}
+            >
+              {exportError}
+            </p>
+          )}
         </div>
       </div>
     </>

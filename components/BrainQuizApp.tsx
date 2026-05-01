@@ -39,23 +39,26 @@ function BrainQuizAppInner() {
   const { highlightRegion, resetBrainView, flyToRegion } = useBrainViewer();
   const { isMobile, isTablet, isDesktop } = useBreakpoint();
 
-  // Theme init
+  // Hydrate theme from localStorage once, before first paint of the brain viewer.
+  const [themeHydrated, setThemeHydrated] = useState(false);
   useEffect(() => {
     const saved = localStorage.getItem("md-reader-theme");
-    if (saved === "dark") {
-      setTheme("dark");
-      document.documentElement.setAttribute("data-theme", "dark");
+    if (saved === "dark" || saved === "light") {
+      setTheme(saved);
     }
+    setThemeHydrated(true);
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setTheme((prev) => {
-      const next = prev === "light" ? "dark" : "light";
-      document.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem("md-reader-theme", next);
-      return next;
-    });
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   }, []);
+
+  // Persist + apply theme only after hydration so we never clobber the saved value.
+  useEffect(() => {
+    if (!themeHydrated) return;
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("md-reader-theme", theme);
+  }, [theme, themeHydrated]);
 
   // Listen for tract selection to show pathway drawer on the right
   useEffect(() => {

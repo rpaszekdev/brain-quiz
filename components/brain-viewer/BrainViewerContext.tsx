@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useRef, useState, useCallback, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useRef,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
 import * as THREE from "three";
 import { BRAIN_REGIONS, type BrainRegion } from "@/lib/brain-regions";
 
@@ -8,9 +15,14 @@ interface BrainViewerContextValue {
   // Refs for direct Three.js access
   sceneRef: React.MutableRefObject<THREE.Scene | null>;
   cameraRef: React.MutableRefObject<THREE.PerspectiveCamera | null>;
-  controlsRef: React.MutableRefObject<import("three/addons/controls/OrbitControls.js").OrbitControls | null>;
+  controlsRef: React.MutableRefObject<
+    | import("three/addons/controls/TrackballControls.js").TrackballControls
+    | null
+  >;
   rendererRef: React.MutableRefObject<THREE.WebGLRenderer | null>;
-  regionMaterialsRef: React.MutableRefObject<Map<string, THREE.MeshStandardMaterial[]>>;
+  regionMaterialsRef: React.MutableRefObject<
+    Map<string, THREE.MeshStandardMaterial[]>
+  >;
   meshByFileRef: React.MutableRefObject<Map<string, THREE.Object3D>>;
   meshToRegionRef: React.MutableRefObject<Map<string, string>>;
   allMeshObjectsRef: React.MutableRefObject<THREE.Object3D[]>;
@@ -32,16 +44,22 @@ const BrainViewerContext = createContext<BrainViewerContextValue | null>(null);
 
 export function useBrainViewer() {
   const ctx = useContext(BrainViewerContext);
-  if (!ctx) throw new Error("useBrainViewer must be used within BrainViewerProvider");
+  if (!ctx)
+    throw new Error("useBrainViewer must be used within BrainViewerProvider");
   return ctx;
 }
 
 export function BrainViewerProvider({ children }: { children: ReactNode }) {
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const controlsRef = useRef<import("three/addons/controls/OrbitControls.js").OrbitControls | null>(null);
+  const controlsRef = useRef<
+    | import("three/addons/controls/TrackballControls.js").TrackballControls
+    | null
+  >(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const regionMaterialsRef = useRef<Map<string, THREE.MeshStandardMaterial[]>>(new Map());
+  const regionMaterialsRef = useRef<Map<string, THREE.MeshStandardMaterial[]>>(
+    new Map(),
+  );
   const meshByFileRef = useRef<Map<string, THREE.Object3D>>(new Map());
   const meshToRegionRef = useRef<Map<string, string>>(new Map());
   const allMeshObjectsRef = useRef<THREE.Object3D[]>([]);

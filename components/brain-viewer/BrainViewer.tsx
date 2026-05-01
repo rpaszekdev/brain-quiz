@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { TrackballControls } from "three/addons/controls/TrackballControls.js";
 import {
   BRAIN_REGIONS,
   getAllMeshFiles,
@@ -58,9 +58,15 @@ export function BrainViewer({
   const enablePulseRef = useRef(enablePulse);
 
   // Keep refs current
-  useEffect(() => { onRegionClickRef.current = onRegionClick; }, [onRegionClick]);
-  useEffect(() => { pulseRegionIdRef.current = pulseRegionId; }, [pulseRegionId]);
-  useEffect(() => { enablePulseRef.current = enablePulse; }, [enablePulse]);
+  useEffect(() => {
+    onRegionClickRef.current = onRegionClick;
+  }, [onRegionClick]);
+  useEffect(() => {
+    pulseRegionIdRef.current = pulseRegionId;
+  }, [pulseRegionId]);
+  useEffect(() => {
+    enablePulseRef.current = enablePulse;
+  }, [enablePulse]);
 
   // Update scene background when theme changes
   useEffect(() => {
@@ -78,8 +84,9 @@ export function BrainViewer({
     if (!container || !gizmoCanvas) return;
 
     const scene = new THREE.Scene();
-    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-    scene.background = new THREE.Color(isDark ? SCENE_BG_DARK : SCENE_BG_LIGHT);
+    scene.background = new THREE.Color(
+      theme === "dark" ? SCENE_BG_DARK : SCENE_BG_LIGHT,
+    );
     sceneRef.current = scene;
 
     const width = container.clientWidth;
@@ -102,12 +109,17 @@ export function BrainViewer({
     backLight.position.set(-50, -30, -80);
     scene.add(backLight);
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
+    const controls = new TrackballControls(camera, renderer.domElement);
+    controls.rotateSpeed = 3.0;
+    controls.zoomSpeed = 1.2;
+    controls.panSpeed = 0.8;
+    controls.noPan = false;
+    controls.staticMoving = false;
+    controls.dynamicDampingFactor = 0.15;
     controls.target.set(0, 20, 0);
     controls.minDistance = 80;
     controls.maxDistance = 500;
+    controls.handleResize();
     controlsRef.current = controls;
 
     meshToRegionRef.current = buildMeshToRegionMap();
@@ -155,8 +167,11 @@ export function BrainViewer({
 
         scene.add(obj);
         meshByFileRef.current.set(file, obj);
-      } catch {
-        // skip missing mesh
+      } catch (err) {
+        console.error(
+          `[BrainViewer] failed to load /brain-meshes/${file}`,
+          err,
+        );
       }
       loaded++;
       setLoadProgress(Math.round((loaded / allFiles.length) * 100));
@@ -189,6 +204,7 @@ export function BrainViewer({
       if (!container) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
+      controls.handleResize();
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
@@ -225,7 +241,14 @@ export function BrainViewer({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative", overflow: "hidden" }}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       {/* Gizmo */}
       <canvas
         ref={gizmoCanvasRef}
@@ -241,7 +264,8 @@ export function BrainViewer({
           pointerEvents: "none",
           borderRadius: "var(--radius-md)",
           border: "var(--border-subtle)",
-          background: theme === "light" ? "rgba(245,242,235,0.6)" : "rgba(17,17,17,0.6)",
+          background:
+            theme === "light" ? "rgba(245,242,235,0.6)" : "rgba(17,17,17,0.6)",
           backdropFilter: "blur(8px)",
         }}
       />
@@ -254,7 +278,7 @@ export function BrainViewer({
           height: "100%",
           position: "relative",
           overflow: "hidden",
-          background: theme === "light" ? "#F5F2EB" : "#111111",
+          background: "var(--washi-white)",
         }}
       >
         {!viewerReady && (
