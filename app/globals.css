@@ -960,6 +960,19 @@ html, body {
   padding: 3rem 1.5rem 5rem;
 }
 
+.seo-article-wrap {
+  max-width: 70rem;
+}
+
+.seo-article-wrap > h1,
+.seo-article-wrap > p,
+.seo-article-wrap > section:not(.seo-table-section),
+.seo-article-wrap > nav {
+  max-width: 44rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .seo-hero {
   min-height: 60vh;
   display: flex;
@@ -999,6 +1012,65 @@ html, body {
 .seo-page a {
   color: var(--ai);
   text-underline-offset: 3px;
+}
+
+.seo-table-wrap {
+  overflow-x: auto;
+  margin: 0 -0.25rem;
+  border: var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--washi-white);
+}
+
+.seo-table {
+  width: 100%;
+  min-width: 62rem;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.seo-table caption {
+  padding: 1rem;
+  text-align: left;
+  color: var(--sumi-light);
+  background: var(--washi-cream);
+  border-bottom: var(--border-medium);
+}
+
+.seo-table th,
+.seo-table td {
+  padding: 0.8rem 0.9rem;
+  text-align: left;
+  vertical-align: top;
+  border-right: var(--border-subtle);
+  border-bottom: var(--border-subtle);
+}
+
+.seo-table th:last-child,
+.seo-table td:last-child {
+  border-right: 0;
+}
+
+.seo-table tbody tr:last-child th,
+.seo-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.seo-table thead th {
+  font-weight: 650;
+  color: var(--sumi-deep);
+  background: var(--washi-warm);
+}
+
+.seo-table tbody th {
+  font-weight: 650;
+  color: var(--sumi-deep);
+  background: var(--ai-light);
+}
+
+.seo-subsection h3 {
+  scroll-margin-top: 1.5rem;
 }
 
 .seo-start {
@@ -1048,4 +1120,210 @@ html, body {
   height: 100vh;
   border-top: var(--border-medium);
   border-bottom: var(--border-medium);
+}
+
+/* ─── Browse hub + footer nav ───────────────────────────────────────
+   Japanese-minimal: washi ground, sumi ink, hairline rules, generous
+   negative space, one-word labels. Matches the app shell. */
+
+.hub {
+  background: var(--washi-white);
+  color: var(--sumi-deep);
+  min-height: 100vh;
+}
+
+.hub-inner {
+  max-width: 58rem;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 6rem;
+}
+
+.hub-mark {
+  font-family: var(--font-serif);
+  font-size: 2.75rem;
+  line-height: 1;
+  color: var(--sumi-deep);
+  margin: 0 0 0.75rem;
+}
+
+.hub h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.75rem;
+}
+
+.hub-lede {
+  color: var(--sumi-light);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 42rem;
+  margin: 0 0 4rem;
+}
+
+.hub-section {
+  margin-top: 3.5rem;
+}
+
+.hub-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+}
+
+.hub-section-head h2 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.hub-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--sumi-light);
+  letter-spacing: 0.08em;
+}
+
+.hub-group-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sumi-light);
+  margin: 1.75rem 0 0.75rem;
+}
+
+.hub-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.15rem 2rem;
+}
+
+.hub-list a {
+  display: block;
+  padding: 0.4rem 0;
+  color: var(--sumi-medium);
+  text-decoration: none;
+  font-size: 0.95rem;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.hub-list a:hover {
+  color: var(--sumi-deep);
+  border-bottom-color: rgba(0, 0, 0, 0.15);
+}
+
+.hub-featured a {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--sumi-deep);
+}
+
+/* Footer nav on content pages */
+.site-footer {
+  background: var(--washi-cream);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 3rem 1.5rem;
+}
+
+.site-footer-inner {
+  max-width: 44rem;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  align-items: baseline;
+}
+
+.site-footer-mark {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--sumi-deep);
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.site-footer a {
+  color: var(--sumi-light);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.site-footer a:hover { color: var(--sumi-deep); }
+
+/* ─── Article contents rail ─────────────────────────────────────────
+   Sticky beside the prose on wide screens, inline above it on narrow.
+   Plain anchors — no scroll observer, no JS. */
+
+.article-toc {
+  margin: 2.5rem 0 3rem;
+  padding: 1.25rem 0 1.25rem 1.25rem;
+  border-left: 2px solid var(--washi-warm);
+}
+
+.article-toc-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sumi-light);
+  margin: 0 0 0.75rem;
+}
+
+.article-toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: toc;
+}
+
+.article-toc li {
+  counter-increment: toc;
+  margin: 0 0 0.4rem;
+  line-height: 1.45;
+}
+
+.article-toc li::before {
+  content: counter(toc);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--sumi-light);
+  margin-right: 0.6rem;
+}
+
+.article-toc a {
+  color: var(--sumi-medium);
+  text-decoration: none;
+  font-size: 0.92rem;
+  border-bottom: 1px solid transparent;
+}
+
+.article-toc a:hover {
+  color: var(--sumi-deep);
+  border-bottom-color: rgba(0, 0, 0, 0.18);
+}
+
+/* Anchored headings need offset so they don't sit flush against the top. */
+.seo-page h2[id] { scroll-margin-top: 2rem; }
+
+/* The contents rail stays inline. A floated sticky version collided with the
+   12-nerve table, and that table is the asset people screenshot — it wins. */
+
+/* Wide reference tables outgrow the 44rem prose measure. Let them use the
+   gutters rather than hiding a column behind a horizontal scrollbar. */
+@media (min-width: 1180px) {
+  .seo-table-section {
+    width: min(64rem, calc(100vw - 3rem));
+    margin-left: calc((44rem - min(64rem, 100vw - 3rem)) / 2);
+  }
 }

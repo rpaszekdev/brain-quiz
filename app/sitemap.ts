@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { ARTICLE_PATHS } from "@/lib/seo/articles";
 import { ALL_SLUGS } from "@/lib/seo/pages";
 import { REGION_SLUGS } from "@/lib/seo/regions";
 
@@ -13,6 +14,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "weekly",
       priority: 1.0,
+    },
+    {
+      url: `${BASE_URL}/browse`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.9,
     },
     {
       url: `${BASE_URL}/3d-brain-model`,
@@ -31,6 +38,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...ARTICLE_PATHS.map((path) => ({
+      url: `${BASE_URL}${path}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
     })),
   ];
 }

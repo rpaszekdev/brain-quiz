@@ -1,0 +1,5371 @@
+[
+  {
+    "keyword": "hippocampus vs amygdala",
+    "database": "us",
+    "volume": 320,
+    "cpc_usd": 0,
+    "competition": 0.33,
+    "keyword_difficulty": 88,
+    "referring_domains_median": 425,
+    "organic_results_count": 130,
+    "intents": [
+      "informational"
+    ],
+    "keyword_ideas_total": 17,
+    "keyword_ideas_total_volume": 740,
+    "related_keywords_count": 17,
+    "questions_count": 0,
+    "serp_results_count": 100,
+    "serp_features_codes": [
+      5,
+      9,
+      20,
+      21,
+      28,
+      50
+    ],
+    "volume_trend_12mo": [
+      44,
+      35,
+      23,
+      35,
+      54,
+      100,
+      66,
+      66,
+      54,
+      54,
+      54,
+      66
+    ],
+    "volume_by_country": [
+      {
+        "country": "us",
+        "volume": 320
+      },
+      {
+        "country": "ca",
+        "volume": 50
+      },
+      {
+        "country": "au",
+        "volume": 20
+      },
+      {
+        "country": "uk",
+        "volume": 20
+      },
+      {
+        "country": "de",
+        "volume": 10
+      },
+      {
+        "country": "tw",
+        "volume": 10
+      }
+    ],
+    "related_keywords": [
+      {
+        "keyword": "amygdala vs hippocampus",
+        "volume": 320,
+        "keyword_difficulty": 75
+      },
+      {
+        "keyword": "hippocampus vs amygdala",
+        "volume": 320,
+        "keyword_difficulty": 88
+      },
+      {
+        "keyword": "amygdala vs hippocampus coronal section",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "amygdala vs hippocampus function",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "amygdala vs hippocampus location",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "amygdala vs hippocampus mri",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "hippocampus vs amygdala coronal section",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "amygdala vs hippocampus frontal mri",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "amygdala vs hippocampus video",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "hippocampus memory loss vs amygdala",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "hippocampus vs amygdala axial",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "hippocampus vs amygdala brain section",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "hippocampus vs amygdala cross section",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "hippocampus vs amygdala imaging",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "hippocampus vs amygdala memory",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "hippocampus vs amygdala mri",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "hippocampus vs amygdala neurons",
+        "volume": 0,
+        "keyword_difficulty": null
+      }
+    ],
+    "questions": [],
+    "clusters": [
+      {
+        "name": "what part of the brain controls memory",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "limbic",
+        "intents": {
+          "commercial": 0.04938271641731262,
+          "informational": 0.9506173133850098,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "limbic brain",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "what does the hippocampus do",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "where is the hippocampus located",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      }
+    ],
+    "ads": [],
+    "serp": [
+      {
+        "position": 1,
+        "domain": "uq.edu.au",
+        "url": "https://qbi.uq.edu.au/brain/brain-anatomy/limbic-system",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/hippocampus",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5671506/",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "uq.edu.au",
+        "url": "https://qbi.uq.edu.au/brain/brain-anatomy/limbic-system",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/hippocampus",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/24894-amygdala",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "uq.edu.au",
+        "url": "https://qbi.uq.edu.au/brain/brain-anatomy/limbic-system",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "tmc.edu",
+        "url": "https://nba.uth.tmc.edu/neuroscience/m/s4/chapter06.html",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "uq.edu.au",
+        "url": "https://qbi.uq.edu.au/brain/brain-anatomy/limbic-system",
+        "result_kind": 21,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11217056/",
+        "result_kind": 21,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "uq.edu.au",
+        "url": "https://qbi.uq.edu.au/brain/brain-anatomy/limbic-system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5671506/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 3,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0753332223004353",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 4,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/hippocampus",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 5,
+        "domain": "nature.com",
+        "url": "https://www.nature.com/articles/npp2015171",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 6,
+        "domain": "tmc.edu",
+        "url": "https://nba.uth.tmc.edu/neuroscience/m/s4/chapter06.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 7,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/Mcat/comments/w537d7/does_the_hippocampus_regulate_emotion_this/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 7,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=V91KET8Y0Nw",
+        "result_kind": 20,
+        "serp_features_codes": []
+      },
+      {
+        "position": 7,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=LNs9ruzoTmI",
+        "result_kind": 20,
+        "serp_features_codes": []
+      },
+      {
+        "position": 7,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=ShyPzXrNt4c",
+        "result_kind": 20,
+        "serp_features_codes": []
+      },
+      {
+        "position": 8,
+        "domain": "wikipedia.org",
+        "url": "https://en.wikipedia.org/wiki/Amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 9,
+        "domain": "nature.com",
+        "url": "https://www.nature.com/articles/npp2015171",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 10,
+        "domain": "wikipedia.org",
+        "url": "https://en.wikipedia.org/wiki/Amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 11,
+        "domain": "webmd.com",
+        "url": "https://www.webmd.com/brain/amygdala-what-to-know",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 12,
+        "domain": "psychologytoday.com",
+        "url": "https://www.psychologytoday.com/us/blog/thinking-in-black-white-and-gray/202111/two-parts-the-brain-govern-much-mental-life",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 13,
+        "domain": "frontiersin.org",
+        "url": "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/neuro.09.068.2009/full",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 14,
+        "domain": "tutorialspoint.com",
+        "url": "https://www.tutorialspoint.com/article/difference-between-amygdala-and-hippocampus",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 15,
+        "domain": "khanacademy.org",
+        "url": "https://www.khanacademy.org/science/health-and-medicine/executive-systems-of-the-brain/emotion-lesson/v/emotions-limbic-system",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 16,
+        "domain": "oup.com",
+        "url": "https://academic.oup.com/book/30626/chapter/258988597",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 17,
+        "domain": "mentalwealthhub.com",
+        "url": "https://www.mentalwealthhub.com/police-wellbeing/policing-and-the-stress-response/amygdala-hippocampus-prefrontal-cortex/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 18,
+        "domain": "facebook.com",
+        "url": "https://www.facebook.com/groups/biomedman/posts/2858586524308140/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 19,
+        "domain": "researchgate.net",
+        "url": "https://www.researchgate.net/publication/7091884_The_Amygdala_the_Hippocampus_and_Emotional_Modulation_of_Memory",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 20,
+        "domain": "facebook.com",
+        "url": "https://www.facebook.com/groups/biomedman/posts/2858586524308140/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 21,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/How-does-the-hippocampus-and-amygdala-work-in-coordinating-human-behavior",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 22,
+        "domain": "uchc.edu",
+        "url": "https://neuroanatomy.uchc.edu/Content/Amygdala-Hippocampus.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 23,
+        "domain": "britannica.com",
+        "url": "https://www.britannica.com/science/amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 24,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=uRu3-3uMuIU",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 25,
+        "domain": "hinative.com",
+        "url": "https://hinative.com/questions/23700892",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 26,
+        "domain": "nicabm.com",
+        "url": "https://www.nicabm.com/ptsd-the-hippocampus-and-the-amygdala-how-trauma-changes-the-brain/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 27,
+        "domain": "lecerveau.ca",
+        "url": "https://thebrain.lecerveau.ca/flash/d/d_04/d_04_cr/d_04_cr_peu/d_04_cr_peu.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 28,
+        "domain": "tmc.edu",
+        "url": "https://nba.uth.tmc.edu/neuroscience/m/s4/chapter05.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 29,
+        "domain": "byjus.com",
+        "url": "https://byjus.com/biology/difference-between-amygdala-and-prefrontal-cortex/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 30,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/24894-amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 31,
+        "domain": "wyzant.com",
+        "url": "https://www.wyzant.com/resources/answers/726704/what-is-the-difference-between-the-hippocampus-and-the-amygdala-in-the-brai",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 32,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=yYUImmcq-bc",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 33,
+        "domain": "tmc.edu",
+        "url": "https://nba.uth.tmc.edu/neuroscience/m/s4/chapter05.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 34,
+        "domain": "thoughtco.com",
+        "url": "https://www.thoughtco.com/limbic-system-anatomy-373200",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 35,
+        "domain": "journals.sagepub.com",
+        "url": "https://journals.sagepub.com/doi/10.1177/1073858403259955",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 36,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S0959438804000479",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 37,
+        "domain": "medicaldaily.com",
+        "url": "https://www.medicaldaily.com/emotional-memory-manipulated-studying-hippocampus-and-amygdala-scientists-switch-emotions-299964",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 38,
+        "domain": "study.com",
+        "url": "https://study.com/academy/lesson/video/amygdala-role-in-emotion-function-lesson-quiz.html",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 39,
+        "domain": "bps.org.uk",
+        "url": "https://www.bps.org.uk/psychologist/amygdala-emotion-and-learning",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 40,
+        "domain": "simplypsychology.org",
+        "url": "https://www.simplypsychology.org/amygdala.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 41,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=N3hsFXH_n4M",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 42,
+        "domain": "stackexchange.com",
+        "url": "https://psychology.stackexchange.com/questions/12531/brain-anatomy-hippocampus-and-amygdala-positions",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 43,
+        "domain": "duke.edu",
+        "url": "https://histology.oit.duke.edu/MBS/Videos/Neuro/6-18%20Overview%20of%20the%20Limbic%20Forebrain%20(05_41)/_39048afe593454a16112b7401c909028_Overview-of-the-Limbic-Forebrain---Amygdala-and-Hippocampus-in-the-Human-Brain.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 44,
+        "domain": "linkedin.com",
+        "url": "https://www.linkedin.com/pulse/why-your-brain-remembers-reacts-guide-hippocampus-amygdala-ldsic",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 45,
+        "domain": "medicaldaily.com",
+        "url": "https://www.medicaldaily.com/emotional-memory-manipulated-studying-hippocampus-and-amygdala-scientists-switch-emotions-299964",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 46,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/Mcat/comments/w0qbpg/i_can_see_why_its_both_but_which_is_it/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 47,
+        "domain": "linkedin.com",
+        "url": "https://www.linkedin.com/pulse/why-your-brain-remembers-reacts-guide-hippocampus-amygdala-ldsic",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 48,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/How-is-the-hippocampus-connected-to-the-amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 49,
+        "domain": "wikipedia.org",
+        "url": "https://en.wikipedia.org/wiki/Hippocampus",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 50,
+        "domain": "mysocialedge.com",
+        "url": "https://mysocialedge.com/emotional-intelligence/why-your-brain-remembers-and-reacts-a-guide-to-the-hippocampus-and-amygdala/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 51,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/Mcat/comments/w0qbpg/i_can_see_why_its_both_but_which_is_it/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 52,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11243592/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 53,
+        "domain": "weebly.com",
+        "url": "https://partsofbrain.weebly.com/hippocampus-amygdala.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 54,
+        "domain": "vaia.com",
+        "url": "https://www.vaia.com/en-us/textbooks/biology/neuroimmune-pharmacology-1-edition/chapter-6/problem-1-where-is-the-hippocampus-located-in-the-human-brai/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 55,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=N3hsFXH_n4M",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 56,
+        "domain": "kenhub.com",
+        "url": "https://www.kenhub.com/en/library/anatomy/anatomy-of-amygdaloidal-complex",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 57,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0306453016308824",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 58,
+        "domain": "webmd.com",
+        "url": "https://www.webmd.com/brain/hippocampus-what-to-know",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 59,
+        "domain": "quizlet.com",
+        "url": "https://quizlet.com/explanations/questions/the-amygdala-and-hippocampus-make-up-the-______-systemmultiple-choice-questionnervouscerebral-cortexcirculatorylimbic-834703bd-18d2cdcf-54dc-4523-9771-93b0214b1343",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 60,
+        "domain": "pinterest.com",
+        "url": "https://www.pinterest.com/pin/300474606396984552/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 61,
+        "domain": "shaalaa.com",
+        "url": "https://www.shaalaa.com/question-bank-solutions/explain-the-functions-of-amygdala-and-hippocampus_183533",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 62,
+        "domain": "facebook.com",
+        "url": "https://www.facebook.com/groups/sellyourcanadianart/posts/674499890171842/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 63,
+        "domain": "nih.gov",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/14987446/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 64,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/What-is-the-hippocampus-What-is-the-amygdala-How-do-they-work-together-to-form-memories",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 65,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0959438804000479",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 66,
+        "domain": "hinative.com",
+        "url": "https://hinative.com/questions/23692663",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 67,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=SB_AvQBsh1I",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 68,
+        "domain": "pediaa.com",
+        "url": "https://pediaa.com/what-is-the-difference-between-amygdala-and-hippocampus/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 69,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=3xJ8yRMTrbI",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 70,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=yWLWlhh3Deo",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 71,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/What-are-the-functions-of-the-hippocampus-amygdala-and-cerebellum-How-are-they-related-to-memory",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 72,
+        "domain": "pinterest.com",
+        "url": "https://ar.pinterest.com/pin/761389880760077197/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 73,
+        "domain": "nih.gov",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK537102/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 74,
+        "domain": "facebook.com",
+        "url": "https://www.facebook.com/groups/LutonFaiths/posts/3606612859444309/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 75,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=5Zb8luc__FM",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 76,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=5EyaGR8GGhs&vl=en",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 77,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=u6m2YsLRnfk",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 78,
+        "domain": "pinterest.com",
+        "url": "https://id.pinterest.com/pin/726698089874821726/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 79,
+        "domain": "facebook.com",
+        "url": "https://www.facebook.com/rachid.elleattariy.9/posts/the-amygdala-and-hippocampus-are-both-important-structures-in-the-brain-involved/4321075998176513/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 80,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=BJrJSRHfW40",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 81,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3548359/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 82,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=0jb7jb2PjEM&vl=en-US",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 83,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=CRx3PAVEZZg",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 84,
+        "domain": "pinterest.com",
+        "url": "https://se.pinterest.com/pin/843791680226546374/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 85,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=BJrJSRHfW40",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 86,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S1053811911010706",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 87,
+        "domain": "facebook.com",
+        "url": "https://www.facebook.com/rachid.elleattariy.9/posts/the-amygdala-and-hippocampus-are-both-important-structures-in-the-brain-involved/4321075998176513/",
+        "result_kind": null,
+        "serp_features_codes": []
+      }
+    ]
+  },
+  {
+    "keyword": "circle of willis mnemonic",
+    "database": "us",
+    "volume": 210,
+    "cpc_usd": 0,
+    "competition": 0.33,
+    "keyword_difficulty": 22,
+    "referring_domains_median": null,
+    "organic_results_count": 105,
+    "intents": [
+      "informational"
+    ],
+    "keyword_ideas_total": 15,
+    "keyword_ideas_total_volume": 380,
+    "related_keywords_count": 15,
+    "questions_count": 0,
+    "serp_results_count": 100,
+    "serp_features_codes": [
+      5,
+      9,
+      20,
+      21,
+      28,
+      36,
+      50
+    ],
+    "volume_trend_12mo": [
+      65,
+      82,
+      100,
+      65,
+      100,
+      100,
+      53,
+      44,
+      65,
+      65,
+      65,
+      53
+    ],
+    "volume_by_country": [
+      {
+        "country": "in",
+        "volume": 590
+      },
+      {
+        "country": "us",
+        "volume": 210
+      },
+      {
+        "country": "ph",
+        "volume": 140
+      },
+      {
+        "country": "ae",
+        "volume": 40
+      },
+      {
+        "country": "lk",
+        "volume": 40
+      },
+      {
+        "country": "bd",
+        "volume": 30
+      },
+      {
+        "country": "cz",
+        "volume": 30
+      },
+      {
+        "country": "hk",
+        "volume": 30
+      },
+      {
+        "country": "jo",
+        "volume": 30
+      },
+      {
+        "country": "mx",
+        "volume": 30
+      },
+      {
+        "country": "np",
+        "volume": 30
+      },
+      {
+        "country": "nz",
+        "volume": 30
+      },
+      {
+        "country": "tr",
+        "volume": 30
+      },
+      {
+        "country": "uk",
+        "volume": 30
+      },
+      {
+        "country": "zm",
+        "volume": 30
+      },
+      {
+        "country": "zw",
+        "volume": 30
+      },
+      {
+        "country": "au",
+        "volume": 20
+      },
+      {
+        "country": "ca",
+        "volume": 20
+      },
+      {
+        "country": "de",
+        "volume": 20
+      },
+      {
+        "country": "eg",
+        "volume": 20
+      },
+      {
+        "country": "gh",
+        "volume": 20
+      },
+      {
+        "country": "hu",
+        "volume": 20
+      },
+      {
+        "country": "ie",
+        "volume": 20
+      },
+      {
+        "country": "il",
+        "volume": 20
+      },
+      {
+        "country": "it",
+        "volume": 20
+      },
+      {
+        "country": "lb",
+        "volume": 20
+      },
+      {
+        "country": "ly",
+        "volume": 20
+      },
+      {
+        "country": "my",
+        "volume": 20
+      },
+      {
+        "country": "ng",
+        "volume": 20
+      },
+      {
+        "country": "nl",
+        "volume": 20
+      },
+      {
+        "country": "pk",
+        "volume": 20
+      },
+      {
+        "country": "sa",
+        "volume": 20
+      },
+      {
+        "country": "sg",
+        "volume": 20
+      },
+      {
+        "country": "tw",
+        "volume": 20
+      },
+      {
+        "country": "za",
+        "volume": 20
+      },
+      {
+        "country": "bg",
+        "volume": 10
+      },
+      {
+        "country": "cy",
+        "volume": 10
+      },
+      {
+        "country": "fr",
+        "volume": 10
+      }
+    ],
+    "related_keywords": [
+      {
+        "keyword": "circle of willis mnemonic",
+        "volume": 210,
+        "keyword_difficulty": 22
+      },
+      {
+        "keyword": "mnemonic for circle of willis",
+        "volume": 110,
+        "keyword_difficulty": 28
+      },
+      {
+        "keyword": "easy circle of willis mnemonic",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "mnemonic circle of willis",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "remember circle of willis mnemonic",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "aneurysm in circle of willis in brain mnemonics",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "circle of willis arteries mnemonic",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "circle of willis cowboy mnemonic",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "circle of willis stroke mnemonic",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "circle of willis vessels mnemonic",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "medical mnemonics circle of willis",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "mnemonic device for circle of willis",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "mnemonic for remembering circle of willis infarcts",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "mnemonic to remember circle of willis",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "mnemonics for circle of willis",
+        "volume": 0,
+        "keyword_difficulty": null
+      }
+    ],
+    "questions": [],
+    "clusters": [
+      {
+        "name": "ring of willis",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "circle of willis arteries",
+        "intents": {
+          "commercial": 0.10000000149011612,
+          "informational": 0.8999999761581421,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "what is a circle of willis",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "circle of willis function",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "anatomy mnemonics",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      }
+    ],
+    "ads": [],
+    "serp": [
+      {
+        "position": 1,
+        "domain": "teachmeanatomy.info",
+        "url": "https://teachmeanatomy.info/encyclopaedia/c/circle-of-willis/",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "tiktok.com",
+        "url": "https://www.tiktok.com/@my.anatomy.teacher/video/7291396867848424746",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DBCwO5qSMMu/",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "teachmeanatomy.info",
+        "url": "https://teachmeanatomy.info/encyclopaedia/c/circle-of-willis/",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "tiktok.com",
+        "url": "https://www.tiktok.com/@my.anatomy.teacher/video/7291396867848424746",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=0GnCkwOJgoI",
+        "result_kind": 20,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "tiktok.com",
+        "url": "https://www.tiktok.com/@medschoolbro/video/7191637094341561605?lang=en",
+        "result_kind": 20,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=_U0U1c7i4xM",
+        "result_kind": 20,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/topics/medicine-and-dentistry/circle-of-willis",
+        "result_kind": 21,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=_U0U1c7i4xM",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=fpsu08Xc9YY",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "threads.com",
+        "url": "https://www.threads.com/@medinaz_academy/post/DPNnGcukmLg/circle-of-willis-mnemonic",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/p/Cyic7uHtuUO/",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/p/C-BpyJ2Ig-O/",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "integrisneuro.com",
+        "url": "https://www.integrisneuro.com/post/learning-the-circle-of-willis",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=SO5gvEYqeMY",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 2,
+        "domain": "teachmeanatomy.info",
+        "url": "https://teachmeanatomy.info/encyclopaedia/c/circle-of-willis/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "tiktok.com",
+        "url": "https://www.tiktok.com/@medschoolbro/video/7191637094341561605?lang=en",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DRCIT9CEgrF/",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "tiktok.com",
+        "url": "https://www.tiktok.com/@my.anatomy.teacher/video/7465112054689484062",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DFY2nbWvhzt/",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/6VWpkm694Uc",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DSw_NlKk7RU/",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "tiktok.com",
+        "url": "https://www.tiktok.com/@my.anatomy.teacher/video/7291396867848424746",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/aafeNLJYAF4",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DUbac7QE5Vx/",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DJuIY8HtI8o/",
+        "result_kind": 36,
+        "serp_features_codes": []
+      },
+      {
+        "position": 3,
+        "domain": "picmonic.com",
+        "url": "https://www.picmonic.com/pathways/medicine/courses/standard/anatomy-embryology-176/cardiovascular-anatomy-39231/circle-of-willis_1066",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 4,
+        "domain": "pinterest.com",
+        "url": "https://www.pinterest.com/ideas/circle-of-willis-mnemonic/894989849780/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 5,
+        "domain": "radiopaedia.org",
+        "url": "https://radiopaedia.org/articles/circle-of-willis?lang=us",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 6,
+        "domain": "kenhub.com",
+        "url": "https://www.kenhub.com/en/library/anatomy/circle-of-willis",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 7,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DRCIT9CEgrF/",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 8,
+        "domain": "scribd.com",
+        "url": "https://www.scribd.com/document/845110718/WATSON-TIGER-CIECLE-OF-WILLIS",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 9,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=v-a9q1MXNWs",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 10,
+        "domain": "slideshare.net",
+        "url": "https://www.slideshare.net/slideshow/circle-of-willis/235461966",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 11,
+        "domain": "medscape.com",
+        "url": "https://emedicine.medscape.com/article/1877617-overview",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 12,
+        "domain": "facebook.com",
+        "url": "https://www.facebook.com/groups/359606094946330/posts/1474061700167425/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 13,
+        "domain": "epomedicine.com",
+        "url": "https://epomedicine.com/medical-students/circle-willis-mnemonic-drawing/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 14,
+        "domain": "integrisneuro.com",
+        "url": "https://www.integrisneuro.com/post/learning-the-circle-of-willis",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 15,
+        "domain": "tiktok.com",
+        "url": "https://www.tiktok.com/@my.anatomy.teacher/video/7465112054689484062",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 16,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=fpsu08Xc9YY",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 17,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DFY2nbWvhzt/",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 18,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/circle-of-willis",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 19,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/medicalschool/comments/7j5nyy/remembering_areas_of_brain_that_circle_of_willis/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 20,
+        "domain": "medicalnewstoday.com",
+        "url": "https://www.medicalnewstoday.com/articles/circle-of-willis",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 21,
+        "domain": "tiktok.com",
+        "url": "https://www.tiktok.com/@my.anatomy.teacher/video/7291396867848424746",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 22,
+        "domain": "nih.gov",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK534861/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 23,
+        "domain": "wikipedia.org",
+        "url": "https://en.wikipedia.org/wiki/Circle_of_Willis",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 24,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=6VMiKeAvvTY",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 25,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DW64sPogUVY/",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 26,
+        "domain": "tiktok.com",
+        "url": "https://www.tiktok.com/discover/How-to-remember-the-circle-of-willis",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 27,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/popular/circle-of-willis-mnemonic/?hl=en",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 28,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DSw_NlKk7RU/",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 29,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=6VMiKeAvvTY",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 30,
+        "domain": "geekymedics.com",
+        "url": "https://geekymedics.com/arterial-supply-of-the-brain/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 31,
+        "domain": "medreport.foundation",
+        "url": "https://www.medreport.foundation/post/the-circle-of-willis-a-structural-shield-for-cerebral-circulation",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 32,
+        "domain": "facebook.com",
+        "url": "https://www.facebook.com/groups/789940815023580/posts/1629432167741103/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 33,
+        "domain": "imaios.com",
+        "url": "https://www.imaios.com/en/e-anatomy/anatomical-structures/cerebral-arterial-circle-1553666756",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 34,
+        "domain": "pinterest.com",
+        "url": "https://www.pinterest.com/pin/666321707340995422/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 35,
+        "domain": "pressbooks.pub",
+        "url": "https://uen.pressbooks.pub/neuroanatomy/chapter/the-circle-of-willis-cerebral-arterial-circle/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 36,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DJuIY8HtI8o/",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 37,
+        "domain": "ditki.com",
+        "url": "https://ditki.com/course/neuroanatomy/glossary/gross-anatomic-microscopic-structure/circle-of-willis",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 38,
+        "domain": "slideshare.net",
+        "url": "https://www.slideshare.net/slideshow/circle-of-willispptx/254160664",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 39,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/medicalschool/comments/6ccoqd/understanding_the_circle_of_willis/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 40,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DTr7X5UDOD7/?hl=en",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 41,
+        "domain": "easyanatomyapp.com",
+        "url": "https://easyanatomyapp.com/pns/blood-supply-to-the-braincircle-of-willis/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 42,
+        "domain": "weebly.com",
+        "url": "https://sweethumananatomy.weebly.com/uploads/2/6/1/1/26118814/circle_of_willis_lab_2017.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 43,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/6VWpkm694Uc",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 44,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/reel/DBCwO5qSMMu/?hl=en",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 45,
+        "domain": "pinterest.com",
+        "url": "https://www.pinterest.com/pin/764134261748094325/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 46,
+        "domain": "pinterest.com",
+        "url": "https://www.pinterest.com/pin/circle-of-willis-mnemonic--233765036884498898/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 47,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=dDT-kGRKpjM",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 48,
+        "domain": "ditki.com",
+        "url": "https://ditki.com/course/neuroanatomy/glossary/gross-anatomic-microscopic-structure/circle-of-willis",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 49,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/aafeNLJYAF4",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 50,
+        "domain": "wikiwand.com",
+        "url": "https://www.wikiwand.com/en/Circle_of_Willis",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 51,
+        "domain": "pinterest.com",
+        "url": "https://www.pinterest.com/pin/764134261748094325/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 52,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=PLnpPYuPT9c",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 53,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=mPtzFj6ti0I",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 54,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=xyDWMXCaTHo",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 55,
+        "domain": "pinterest.com",
+        "url": "https://in.pinterest.com/pin/circle-of-willis-mnemonic-and-drawing--132926626486182134/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 56,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=mPtzFj6ti0I",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 57,
+        "domain": "pinterest.com",
+        "url": "https://in.pinterest.com/pin/circle-of-willis-mnemonic-and-drawing--132926626486182134/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 58,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=xyDWMXCaTHo",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 59,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/NI_8jfiQ0F4",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 60,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=5EdbwgEyPqM",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 61,
+        "domain": "pinterest.com",
+        "url": "https://www.pinterest.com/pin/circle-of-willis--634585403715251322/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 62,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=2wk0WhSMViM",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 63,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/6E3mqePZyOw",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 64,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=2VMIbU3qQNs",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 65,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=p52QcpxczSQ",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 66,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=disFF8x2g6g",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 67,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=-M9cd8vaGAY",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 68,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=m-jcgtmghBw",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 69,
+        "domain": "pinterest.com",
+        "url": "https://kr.pinterest.com/pin/343399540321481929/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 70,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=utUZ2vDGfCg",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 71,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=1CijiLEHdHE",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 72,
+        "domain": "pinterest.com",
+        "url": "https://www.pinterest.com/pin/circle-of-willis-diagram--489485053268034472/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 73,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=Yn9t5YrVdQc",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 74,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=IKcAwlHRmX8",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 75,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=Q_LjBxlt2GU",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "keyword": "sympathetic vs parasympathetic nervous system",
+    "database": "us",
+    "volume": 3600,
+    "cpc_usd": 1,
+    "competition": 0.33,
+    "keyword_difficulty": 38,
+    "referring_domains_median": 5,
+    "organic_results_count": 111,
+    "intents": [
+      "commercial"
+    ],
+    "keyword_ideas_total": 111,
+    "keyword_ideas_total_volume": 17760,
+    "related_keywords_count": 30,
+    "questions_count": 1,
+    "serp_results_count": 100,
+    "serp_features_codes": [
+      5,
+      7,
+      9,
+      20,
+      21,
+      28,
+      50
+    ],
+    "volume_trend_12mo": [
+      24,
+      15,
+      28,
+      24,
+      100,
+      36,
+      36,
+      81,
+      81,
+      81,
+      66,
+      100
+    ],
+    "volume_by_country": [
+      {
+        "country": "us",
+        "volume": 3600
+      },
+      {
+        "country": "in",
+        "volume": 590
+      },
+      {
+        "country": "ca",
+        "volume": 480
+      },
+      {
+        "country": "au",
+        "volume": 390
+      },
+      {
+        "country": "ph",
+        "volume": 390
+      },
+      {
+        "country": "uk",
+        "volume": 390
+      },
+      {
+        "country": "de",
+        "volume": 50
+      },
+      {
+        "country": "ar",
+        "volume": 30
+      },
+      {
+        "country": "gy",
+        "volume": 30
+      },
+      {
+        "country": "it",
+        "volume": 30
+      },
+      {
+        "country": "mn",
+        "volume": 30
+      },
+      {
+        "country": "my",
+        "volume": 30
+      },
+      {
+        "country": "qa",
+        "volume": 30
+      },
+      {
+        "country": "ae",
+        "volume": 20
+      },
+      {
+        "country": "at",
+        "volume": 20
+      },
+      {
+        "country": "az",
+        "volume": 20
+      },
+      {
+        "country": "bd",
+        "volume": 20
+      },
+      {
+        "country": "be",
+        "volume": 20
+      },
+      {
+        "country": "br",
+        "volume": 20
+      },
+      {
+        "country": "cm",
+        "volume": 20
+      },
+      {
+        "country": "co",
+        "volume": 20
+      },
+      {
+        "country": "cy",
+        "volume": 20
+      },
+      {
+        "country": "cz",
+        "volume": 20
+      },
+      {
+        "country": "dk",
+        "volume": 20
+      },
+      {
+        "country": "do",
+        "volume": 20
+      },
+      {
+        "country": "dz",
+        "volume": 20
+      },
+      {
+        "country": "ec",
+        "volume": 20
+      },
+      {
+        "country": "ee",
+        "volume": 20
+      },
+      {
+        "country": "eg",
+        "volume": 20
+      },
+      {
+        "country": "es",
+        "volume": 20
+      },
+      {
+        "country": "et",
+        "volume": 20
+      },
+      {
+        "country": "fi",
+        "volume": 20
+      },
+      {
+        "country": "fr",
+        "volume": 20
+      },
+      {
+        "country": "gh",
+        "volume": 20
+      },
+      {
+        "country": "hk",
+        "volume": 20
+      },
+      {
+        "country": "hu",
+        "volume": 20
+      },
+      {
+        "country": "id",
+        "volume": 20
+      },
+      {
+        "country": "ie",
+        "volume": 20
+      },
+      {
+        "country": "il",
+        "volume": 20
+      },
+      {
+        "country": "is",
+        "volume": 20
+      }
+    ],
+    "related_keywords": [
+      {
+        "keyword": "parasympathetic nervous system vs sympathetic",
+        "volume": 5400,
+        "keyword_difficulty": 33
+      },
+      {
+        "keyword": "sympathetic vs parasympathetic nervous system",
+        "volume": 3600,
+        "keyword_difficulty": 38
+      },
+      {
+        "keyword": "sympathetic nervous system vs parasympathetic nervous system",
+        "volume": 2400,
+        "keyword_difficulty": 32
+      },
+      {
+        "keyword": "parasympathetic nervous system vs sympathetic nervous system",
+        "volume": 1900,
+        "keyword_difficulty": 31
+      },
+      {
+        "keyword": "parasympathetic vs sympathetic nervous system",
+        "volume": 1900,
+        "keyword_difficulty": 40
+      },
+      {
+        "keyword": "sympathetic vs parasympathetic nervous systems",
+        "volume": 1300,
+        "keyword_difficulty": 43
+      },
+      {
+        "keyword": "sympathetic nervous system vs parasympathetic",
+        "volume": 390,
+        "keyword_difficulty": 37
+      },
+      {
+        "keyword": "sympathetic vs parasympathetic nervous system chart",
+        "volume": 170,
+        "keyword_difficulty": 36
+      },
+      {
+        "keyword": "parasympathetic vs sympathetic nervous system chart",
+        "volume": 110,
+        "keyword_difficulty": 38
+      },
+      {
+        "keyword": "sympathetic vs. parasympathetic nervous system",
+        "volume": 110,
+        "keyword_difficulty": 50
+      },
+      {
+        "keyword": "parasympathetic vs. sympathetic nervous system",
+        "volume": 70,
+        "keyword_difficulty": 44
+      },
+      {
+        "keyword": "sympathetic vs. parasympathetic nervous systems",
+        "volume": 70,
+        "keyword_difficulty": 37
+      },
+      {
+        "keyword": "sympathetic vs parasympathetic nervous system diagram",
+        "volume": 50,
+        "keyword_difficulty": 37
+      },
+      {
+        "keyword": "autonomic nervous system parasympathetic vs sympathetic",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "autonomic nervous system sympathetic vs parasympathetic",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "autonomic nervous system sympathetic vs parasympathetic animation",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "nervous system parasympathetic vs sympathetic",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "nervous system sympathetic vs parasympathetic",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "parasympathetic nervous system vs sympathetic nervous system pdf",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "parasympathetic vs sympathetic nervous system examples",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "sympathetic vs parasympathetic autonomic nervous system",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "sympathetic vs parasympathetic nervous system examples",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "sympathetic vs parasympathetic nervous system mnemonic",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "sympathetic vs parasympathetic vs autonomic nervous system",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "sympathetic vs. parasympathetic nervous system neurotransmitters",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what is sympathetic vs parasympathetic nervous system",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "parasympathetic vs sympathetic nervous system neurotransmitters",
+        "volume": 10,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "sympathetic nervous system vs parasympathetic nervous system chart",
+        "volume": 10,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "sympathetic vs parasympathetic nervous system quizlet",
+        "volume": 10,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "actions of parasympathetic nervous system vs sympathetic",
+        "volume": 0,
+        "keyword_difficulty": null
+      }
+    ],
+    "questions": [
+      {
+        "keyword": "what is sympathetic vs parasympathetic nervous system",
+        "volume": 20,
+        "keyword_difficulty": null
+      }
+    ],
+    "clusters": [
+      {
+        "name": "autonomic nervous system",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "atomic nervous system",
+        "intents": {
+          "commercial": 0.02857142873108387,
+          "informational": 0.9714285731315613,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "pns consists of",
+        "intents": {
+          "commercial": 0.03448275849223137,
+          "informational": 0.9655172228813171,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "what is a sympathetic nervous system",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "sympathetic ns",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      }
+    ],
+    "ads": [],
+    "serp": [
+      {
+        "position": 1,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/23266-parasympathetic-nervous-system-psns",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=NRRBVMFTSWI",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/23266-parasympathetic-nervous-system-psns",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "whoop.com",
+        "url": "https://www.whoop.com/us/en/thelocker/sympathetic-vs-parasympathetic-nervous-systems-how-they-work/",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "jackwestin.com",
+        "url": "https://jackwestin.com/resources/mcat-content/nervous-system-structure-and-function/sympathetic-and-parasympathetic-nervous-systems-antagonistic-control",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/23266-parasympathetic-nervous-system-psns",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=NRRBVMFTSWI",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 3,
+        "domain": "simplypsychology.org",
+        "url": "https://www.simplypsychology.org/sympathetic-vs-parasympathetic-nervous-system.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 3,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/23266-parasympathetic-nervous-system-psns",
+        "result_kind": 21,
+        "serp_features_codes": []
+      },
+      {
+        "position": 4,
+        "domain": "efchealth.com",
+        "url": "https://www.efchealth.com/resources/blog/sympathetic-vs-parasympathetic-matter/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 5,
+        "domain": "jackwestin.com",
+        "url": "https://jackwestin.com/resources/mcat-content/nervous-system-structure-and-function/sympathetic-and-parasympathetic-nervous-systems-antagonistic-control",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 6,
+        "domain": "nih.gov",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK553141/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 6,
+        "domain": "simplypsychology.org",
+        "url": "https://www.simplypsychology.org/sympathetic-vs-parasympathetic-nervous-system.html",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 6,
+        "domain": "kingofthecurve.org",
+        "url": "https://kingofthecurve.org/blog/mcat-sympathetic-vs-parasympathetic",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 6,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=DPWEhl7gbu4",
+        "result_kind": 5,
+        "serp_features_codes": []
+      },
+      {
+        "position": 7,
+        "domain": "whoop.com",
+        "url": "https://www.whoop.com/us/en/thelocker/sympathetic-vs-parasympathetic-nervous-systems-how-they-work/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 8,
+        "domain": "lumenlearning.com",
+        "url": "https://courses.lumenlearning.com/waymaker-psychology/chapter/parts-of-the-nervous-system/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 9,
+        "domain": "mhcsandiego.com",
+        "url": "https://mhcsandiego.com/blog/sympathetic-vs-parasympathetic-balancing-nervous-system-insights/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 10,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=D96mSg2_h0c&vl=en",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 11,
+        "domain": "byjus.com",
+        "url": "https://byjus.com/biology/difference-between-sympathetic-and-parasympathetic/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 12,
+        "domain": "springer.com",
+        "url": "https://link.springer.com/chapter/10.1007/978-3-319-99124-5_2",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 13,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=he5bwJ0Lns0",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 14,
+        "domain": "study.com",
+        "url": "https://study.com/academy/lesson/video/the-sympathetic-and-parasympathetic-nervous-systems.html",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 15,
+        "domain": "pearson.com",
+        "url": "https://www.pearson.com/channels/anp/flashcards/users/sympathetic-and-parasympathetic-nervous-system-functions",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 16,
+        "domain": "scribd.com",
+        "url": "https://www.scribd.com/document/324679896/Parasympathetic-vs-Sympathetic-Nervous-System-Difference-and-Comparison",
+        "result_kind": null,
+        "serp_features_codes": [
+          7
+        ]
+      },
+      {
+        "position": 17,
+        "domain": "wikipedia.org",
+        "url": "https://en.wikipedia.org/wiki/Sympathetic_nervous_system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 18,
+        "domain": "slideshare.net",
+        "url": "https://www.slideshare.net/slideshow/nervous-system-sympathetic-and-parasympathetic/138435132",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 19,
+        "domain": "happyhealthyyou.com.au",
+        "url": "https://happyhealthyyou.com.au/blogs/articles/parasympathetic-sympathetic-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 20,
+        "domain": "healthline.com",
+        "url": "https://www.healthline.com/health/parasympathetic-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 21,
+        "domain": "study.com",
+        "url": "https://study.com/academy/lesson/the-sympathetic-and-parasympathetic-nervous-systems.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 22,
+        "domain": "kenhub.com",
+        "url": "https://www.kenhub.com/en/library/anatomy/the-parasympathetic-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 23,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/What-is-the-difference-between-sympathetic-and-parasympathetic-nervous-systems-Is-there-any-way-to-tell-which-one-is-dominant-without-getting-an-MRI",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 24,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/W_tRRpfQh9c",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 25,
+        "domain": "teachmeanatomy.info",
+        "url": "https://teachmeanatomy.info/the-basics/systems/parasympathetic-nervous-system/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 26,
+        "domain": "sc-chiro.com",
+        "url": "https://sc-chiro.com/sympathetic-vs-parasympathetic/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 27,
+        "domain": "bodymindbrain.co.uk",
+        "url": "https://www.bodymindbrain.co.uk/sympathetic-parasympathetic-nervous-system/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 28,
+        "domain": "axiomcharlotte.com",
+        "url": "https://axiomcharlotte.com/blog/sympathetic-vs-parasympathetic-why-its-important-to-understand-the-two-nervous-systems/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 29,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/explainlikeimfive/comments/5zo6l2/eli5_whats_the_difference_between_the_sympathetic/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 30,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=n9S_EkxbZSA",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 31,
+        "domain": "quizlet.com",
+        "url": "https://quizlet.com/explanations/questions/what-are-the-similarities-and-differences-between-the-sympathetic-and-parasympathetic-nervous-systems-8845a606-ae1b640d-0268-47ba-a418-fc54d2d9486a",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 32,
+        "domain": "pearson.com",
+        "url": "https://www.pearson.com/channels/anp/learn/bruce/the-autonomic-nervous-system/review-of-the-sympathetic-and-parasympathetic-divisions",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 33,
+        "domain": "diffen.com",
+        "url": "https://www.diffen.com/difference/Parasympathetic_nervous_system_vs_Sympathetic_nervous_system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 34,
+        "domain": "vcc.ca",
+        "url": "https://library.vcc.ca/media/vcc-library/content-assets/learning-centre/worksheets/by-coursex2fprogram/life-sciences/SympatheticVsParasympathetic.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 35,
+        "domain": "prefusionhealth.com",
+        "url": "https://www.prefusionhealth.com/sympathetic-vs-parasympathetic-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 36,
+        "domain": "mytutor.co.uk",
+        "url": "https://www.mytutor.co.uk/answers/28006/A-Level/Biology/What-is-the-difference-between-the-sympathetic-and-parasympathetic-nervous-systems/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 37,
+        "domain": "wikipedia.org",
+        "url": "https://en.wikipedia.org/wiki/Parasympathetic_nervous_system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 38,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/khUW18jWz1o",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 39,
+        "domain": "vedantu.com",
+        "url": "https://www.vedantu.com/biology/difference-between-sympathetic-and-parasympathetic-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": [
+          7
+        ]
+      },
+      {
+        "position": 40,
+        "domain": "ora.organic",
+        "url": "https://ora.organic/blogs/news/difference-between-sympathetic-parasympathetic-nervous-systems",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 41,
+        "domain": "livhospital.com",
+        "url": "https://int.livhospital.com/sympathetic-vs-parasympathetic-key-differences/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 42,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/What-is-the-difference-between-sympathetic-and-parasympathetic-nerves-What-are-their-functions-in-detail-somatic-vs-autonomic",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 43,
+        "domain": "hrecos.org",
+        "url": "https://www.dash.hrecos.org/brief/3AD/107/rmHw8t/SympatheticNervousSystemVsParasympatheticNervousSystem",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 44,
+        "domain": "facebook.com",
+        "url": "https://www.facebook.com/anurseinthemaking/videos/sympathetic-vs-parasympathetic-nervous-system-sympathetic-nervous-system-sns-thi/736357559459787/",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 45,
+        "domain": "return2health.com.au",
+        "url": "https://return2health.com.au/articles/parasympathetic-vs-sympathetic-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 46,
+        "domain": "pw.live",
+        "url": "https://www.pw.live/neet/exams/difference-between-sympathetic-and-parasympathetic",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 47,
+        "domain": "cashcowfarmer.com",
+        "url": "https://app-01-us-dallas-tx.cashcowfarmer.com/virtual-library/rmHw8t/3AD107/SympatheticNervousSystemVsParasympatheticNervousSystem.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 48,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=DPWEhl7gbu4",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 49,
+        "domain": "majordifferences.com",
+        "url": "https://www.majordifferences.com/2017/03/9-differences-between-sympathetic.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 50,
+        "domain": "study.com",
+        "url": "https://homework.study.com/explanation/what-is-the-difference-between-the-sympathetic-and-parasympathetic-nervous-systems-specifically-refer-to-their-effects-on-the-heart-and-on-digestion.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 51,
+        "domain": "easybiologyclass.com",
+        "url": "https://easybiologyclass.com/difference-between-sympathetic-and-parasympathetic-nervous-systems/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 52,
+        "domain": "ck12.org",
+        "url": "https://www.ck12.org/flexi/life-science/peripheral-nervous-system/differentiate-between-sympathetic-and-parasympathetic-nervous-system/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 53,
+        "domain": "hive76.org",
+        "url": "https://bee.hive76.org/sites/files/data/SympatheticVsParasympatheticNervousSystem_EWJ9Ru_CdT5dF.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 54,
+        "domain": "pearson.com",
+        "url": "https://www.pearson.com/channels/anp/asset/ebc6e0b8/sympathetic-versus-parasympathetic-nervous-system-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 55,
+        "domain": "differencebetween.com",
+        "url": "https://www.differencebetween.com/difference-between-sympathetic-and-vs-parasympathetic-nervous-system/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 56,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=hjuF_VbIj9I",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 57,
+        "domain": "psu.edu",
+        "url": "https://sites.psu.edu/intropsychf19grp8/2019/09/18/sympathetic-and-parasympathetic-systems/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 58,
+        "domain": "testbook.com",
+        "url": "https://testbook.com/key-differences/difference-between-sympathetic-and-parasympathetic",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 59,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=GFrHKUi0tnI",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 60,
+        "domain": "opendoserx.com",
+        "url": "https://www.opendoserx.com/learn/sympathetic-vs-parasympathetic-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 61,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/Rightytighty/comments/17i6jiq/sympathetic_vs_parasympathetic_nervous_system/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 62,
+        "domain": "chiropractormidtown.com",
+        "url": "https://www.chiropractormidtown.com/parasympathetic-vs-sympathetic-nervous-systems/",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 63,
+        "domain": "uml.edu.ni",
+        "url": "https://climber.uml.edu.ni/default.aspx/Resources/M2a706/DifferenceBetweenSympatheticAndParasympatheticNervousSystem.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 64,
+        "domain": "mytutor.co.uk",
+        "url": "https://www.mytutor.co.uk/answers/23928/A-Level/Biology/What-is-the-difference-between-the-Parasympathetic-Nervous-System-and-the-Sympathetic-Nervous-System/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 65,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=71pCilo8k4M",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 66,
+        "domain": "pinterest.com",
+        "url": "https://ar.pinterest.com/pin/231442868341847480/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 67,
+        "domain": "shaalaa.com",
+        "url": "https://www.shaalaa.com/question-bank-solutions/distinguish-between-sympathetic-and-parasympathetic-nervous-system_200976",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 68,
+        "domain": "pediaa.com",
+        "url": "https://pediaa.com/difference-between-sympathetic-and-parasympathetic-nervous-system/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 69,
+        "domain": "examples.com",
+        "url": "https://www.examples.com/biology/sympathetic-vs-parasympathetic.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 70,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/How-do-sympathetic-versus-parasympathetic-nervous-system-differ",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 71,
+        "domain": "return2health.nz",
+        "url": "https://return2health.nz/articles/parasympathetic-vs-sympathetic-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 72,
+        "domain": "diffzy.com",
+        "url": "https://www.diffzy.com/article/difference-between-sympathetic-and-parasympathetic-nervous-system",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 73,
+        "domain": "biodifferences.com",
+        "url": "https://biodifferences.com/difference-between-sympathetic-and-parasympathetic-nervous-system.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 74,
+        "domain": "madeformedical.com",
+        "url": "https://www.madeformedical.com/sympathetic-vs-parasympathetic-nervous-system-includes-pharmacology-and-anatomy/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 75,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=Lbf1YCoSW0A",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 76,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=Lbf1YCoSW0A",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 77,
+        "domain": "tutoroot.com",
+        "url": "https://www.tutoroot.com/blog/difference-between-sympathetic-and-parasympathetic-nervous-system/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 78,
+        "domain": "studyread.com",
+        "url": "https://www.studyread.com/sympathetic-vs-parasympathetic-system-difference/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 79,
+        "domain": "uml.edu.ni",
+        "url": "https://climber.uml.edu.ni/HomePages/virtual-library/M2a706/DifferenceBetweenSympatheticAndParasympatheticNervousSystem.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 80,
+        "domain": "study.com",
+        "url": "https://homework.study.com/explanation/what-are-the-similarities-and-differences-between-the-sympathetic-and-parasympathetic-nervous-systems-in-terms-of-structure-physiology-and-chemical-transmitters-released.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 81,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/Zm0XCetEc5s",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 82,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/What-is-the-difference-between-parasympathetic-and-sympathetic-nervous-systems-in-terms-of-their-functions-and-responses-to-stimuli-e-g-stress",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 83,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=bjh5zCucHNE",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 84,
+        "domain": "study.com",
+        "url": "https://homework.study.com/explanation/differentiate-between-parasympathetic-and-sympathetic-nervous-systems.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 85,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/ByK1uSXIH5E",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 86,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/55kPTykmC1s",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 87,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/shorts/MxI8BKULQPE",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 88,
+        "domain": "study.com",
+        "url": "https://homework.study.com/explanation/compare-and-contrast-the-sympathetic-and-parasympathetic-nervous-systems.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 89,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=3M6qJ62JDLA",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 90,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=H8ItFuDgYKw",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 91,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=a_zyAr7LnA8",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      }
+    ]
+  },
+  {
+    "keyword": "limbic system structures and functions",
+    "database": "us",
+    "volume": 30,
+    "cpc_usd": 0,
+    "competition": 0.33,
+    "keyword_difficulty": null,
+    "referring_domains_median": null,
+    "organic_results_count": null,
+    "intents": [],
+    "keyword_ideas_total": 27,
+    "keyword_ideas_total_volume": 200,
+    "related_keywords_count": 27,
+    "questions_count": 6,
+    "serp_results_count": 0,
+    "serp_features_codes": [],
+    "volume_trend_12mo": [
+      18,
+      18,
+      18,
+      18,
+      100,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18,
+      18
+    ],
+    "volume_by_country": [
+      {
+        "country": "pk",
+        "volume": 30
+      },
+      {
+        "country": "us",
+        "volume": 30
+      },
+      {
+        "country": "au",
+        "volume": 20
+      },
+      {
+        "country": "ca",
+        "volume": 20
+      },
+      {
+        "country": "nl",
+        "volume": 20
+      },
+      {
+        "country": "uk",
+        "volume": 20
+      },
+      {
+        "country": "ph",
+        "volume": 10
+      },
+      {
+        "country": "pl",
+        "volume": 10
+      }
+    ],
+    "related_keywords": [
+      {
+        "keyword": "what are the limbic system structures and functions",
+        "volume": 40,
+        "keyword_difficulty": 59
+      },
+      {
+        "keyword": "limbic system structure and function",
+        "volume": 30,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "limbic system structures and functions",
+        "volume": 30,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "structure and function of limbic system",
+        "volume": 30,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "describe the structures and functions of the limbic system",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "structures of the limbic system and their functions",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what are the structures and functions of the limbic system",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what are the limbic system's structures and functions",
+        "volume": 10,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "basic structures of limbic system and their functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "describe the limbic systems structures and functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "describe the structure and function of the limbic system",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "discuss the limbic system structures and functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "explain the structure and function of the limbic system",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "limbic system contains structure and function",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "limbic system function and structure",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "limbic system function and structure pdf",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "limbic system function and structure ppt",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "limbic system functions and structures",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "limbic system simple structures and functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "main structures of the limbic system and their functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "structure in limbic system and functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "structures and functions of limbic system",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "structures of limbic system and functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "the limbic system structures and functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what are the limbic system structures and function quizlet",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what are the limbic systems structures and functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what is the structure and function of the limbic system",
+        "volume": 0,
+        "keyword_difficulty": null
+      }
+    ],
+    "questions": [
+      {
+        "keyword": "what are the limbic system structures and functions",
+        "volume": 40,
+        "keyword_difficulty": 59
+      },
+      {
+        "keyword": "what are the structures and functions of the limbic system",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what are the limbic system's structures and functions",
+        "volume": 10,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what are the limbic system structures and function quizlet",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what are the limbic systems structures and functions",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what is the structure and function of the limbic system",
+        "volume": 0,
+        "keyword_difficulty": null
+      }
+    ],
+    "clusters": [],
+    "ads": [],
+    "serp": []
+  },
+  {
+    "keyword": "what happens if the amygdala is damaged",
+    "database": "us",
+    "volume": 260,
+    "cpc_usd": 0,
+    "competition": 0.33,
+    "keyword_difficulty": 25,
+    "referring_domains_median": 3,
+    "organic_results_count": 168,
+    "intents": [
+      "informational"
+    ],
+    "keyword_ideas_total": 5,
+    "keyword_ideas_total_volume": 280,
+    "related_keywords_count": 5,
+    "questions_count": 4,
+    "serp_results_count": 100,
+    "serp_features_codes": [
+      6,
+      9,
+      21,
+      28,
+      43,
+      50
+    ],
+    "volume_trend_12mo": [
+      36,
+      19,
+      19,
+      29,
+      100,
+      100,
+      66,
+      36,
+      29,
+      66,
+      24,
+      29
+    ],
+    "volume_by_country": [
+      {
+        "country": "us",
+        "volume": 260
+      },
+      {
+        "country": "au",
+        "volume": 20
+      },
+      {
+        "country": "ca",
+        "volume": 20
+      },
+      {
+        "country": "de",
+        "volume": 20
+      },
+      {
+        "country": "ie",
+        "volume": 20
+      },
+      {
+        "country": "in",
+        "volume": 20
+      },
+      {
+        "country": "nl",
+        "volume": 20
+      },
+      {
+        "country": "ph",
+        "volume": 20
+      },
+      {
+        "country": "uk",
+        "volume": 20
+      },
+      {
+        "country": "br",
+        "volume": 10
+      },
+      {
+        "country": "es",
+        "volume": 10
+      },
+      {
+        "country": "il",
+        "volume": 10
+      },
+      {
+        "country": "it",
+        "volume": 10
+      },
+      {
+        "country": "mu",
+        "volume": 10
+      },
+      {
+        "country": "sg",
+        "volume": 10
+      }
+    ],
+    "related_keywords": [
+      {
+        "keyword": "what happens if the amygdala is damaged",
+        "volume": 260,
+        "keyword_difficulty": 25
+      },
+      {
+        "keyword": "if the amygdala is damaged what happens",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what happens if damage is done to the amygdala",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what happens if there is damage to the amygdala",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what happens to startle reflex if the amygdala is damaged",
+        "volume": 0,
+        "keyword_difficulty": null
+      }
+    ],
+    "questions": [
+      {
+        "keyword": "what happens if the amygdala is damaged",
+        "volume": 260,
+        "keyword_difficulty": 25
+      },
+      {
+        "keyword": "what happens if damage is done to the amygdala",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what happens if there is damage to the amygdala",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what happens to startle reflex if the amygdala is damaged",
+        "volume": 0,
+        "keyword_difficulty": null
+      }
+    ],
+    "clusters": [
+      {
+        "name": "amygdala function",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "what is the part of the brain that controls emotions",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "amygdala amygdala",
+        "intents": {
+          "commercial": 0.03999999910593033,
+          "informational": 0.9599999785423279,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "amygdala definition",
+        "intents": {
+          "commercial": 0.05263157933950424,
+          "informational": 0.9473684430122375,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "emotional part of brain",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      }
+    ],
+    "ads": [],
+    "serp": [
+      {
+        "position": 1,
+        "domain": "flintrehab.com",
+        "url": "https://www.flintrehab.com/damage-to-the-amygdala/",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/24894-amygdala",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7893280/",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "flintrehab.com",
+        "url": "https://www.flintrehab.com/damage-to-the-amygdala/",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/24894-amygdala",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7893280/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "flintrehab.com",
+        "url": "https://www.flintrehab.com/damage-to-the-amygdala/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 3,
+        "domain": "brain-injury-law-center.com",
+        "url": "https://www.brain-injury-law-center.com/blog/what-happens-if-the-amygdala-is-damaged",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 4,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/24894-amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 4,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/neuro/comments/muva17/what_happens_if_amygdala_is_damaged/",
+        "result_kind": 43,
+        "serp_features_codes": []
+      },
+      {
+        "position": 4,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/neuro/comments/1hli063/what_happens_if_the_amygdala_is_removed/",
+        "result_kind": 43,
+        "serp_features_codes": []
+      },
+      {
+        "position": 4,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/What-are-the-effects-of-prolonged-overstimulation-of-the-Amygdala",
+        "result_kind": 43,
+        "serp_features_codes": []
+      },
+      {
+        "position": 5,
+        "domain": "defeatingepilepsy.org",
+        "url": "https://www.defeatingepilepsy.org/brain-anatomy-series/amygdala/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 6,
+        "domain": "simplyneuroscience.org",
+        "url": "https://www.simplyneuroscience.org/post/the-amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 7,
+        "domain": "neurolutions.com",
+        "url": "https://www.neurolutions.com/after-stroke/amygdala-damage-after-stroke/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 8,
+        "domain": "medicinenet.com",
+        "url": "https://www.medicinenet.com/damage_to_the_amygdala/article.htm",
+        "result_kind": null,
+        "serp_features_codes": [
+          6
+        ]
+      },
+      {
+        "position": 9,
+        "domain": "apa.org",
+        "url": "https://www.apa.org/pubs/highlights/spotlight/issue-45",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 10,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/neuro/comments/muva17/what_happens_if_amygdala_is_damaged/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 11,
+        "domain": "webmd.com",
+        "url": "https://www.webmd.com/brain/amygdala-what-to-know",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 12,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3030206/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 13,
+        "domain": "severnclinics.co.nz",
+        "url": "https://severnclinics.co.nz/the-amygdala-and-trauma-how-trauma-impacts-the-brain/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 14,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/How-can-amygdala-damage-be-shown-Test",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 15,
+        "domain": "study.com",
+        "url": "https://study.com/academy/lesson/amygdala-role-in-emotion-function-lesson-quiz.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 16,
+        "domain": "scientificamerican.com",
+        "url": "https://www.scientificamerican.com/article/amygdala-loss-aversion/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 17,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0896627323007535",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 18,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/neuro/comments/1hli063/what_happens_if_the_amygdala_is_removed/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 19,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=3MMNzwKOsMA",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 20,
+        "domain": "verywellmind.com",
+        "url": "https://www.verywellmind.com/the-role-of-the-amygdala-in-human-behavior-and-emotion-7499223",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 21,
+        "domain": "study.com",
+        "url": "https://study.com/academy/lesson/video/amygdala-role-in-emotion-function-lesson-quiz.html",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 22,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3060967/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 23,
+        "domain": "wikipedia.org",
+        "url": "https://en.wikipedia.org/wiki/Amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 24,
+        "domain": "jneurosci.org",
+        "url": "https://www.jneurosci.org/content/27/15/3994",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 25,
+        "domain": "wildhopetherapy.com",
+        "url": "https://www.wildhopetherapy.com/blog/when-the-alarm-wont-turn-off-the-amygdala-trauma-and-healing",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 26,
+        "domain": "highlandspringsclinic.org",
+        "url": "https://highlandspringsclinic.org/can-emotional-trauma-cause-brain-damage",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 27,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=2VJjhrIoPog",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 28,
+        "domain": "themindedinstitute.com",
+        "url": "https://themindedinstitute.com/amygdala-and-ptsd-how-trauma-changes-brain-structure/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 29,
+        "domain": "tmc.edu",
+        "url": "https://nba.uth.tmc.edu/neuroscience/m/s4/chapter06.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 30,
+        "domain": "neuroscientificallychallenged.com",
+        "url": "https://neuroscientificallychallenged.com/posts/know-your-brain-amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 31,
+        "domain": "oup.com",
+        "url": "https://academic.oup.com/brain/article/127/7/1535/266219",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 32,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/What-are-the-effects-of-prolonged-overstimulation-of-the-Amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 33,
+        "domain": "sciencedaily.com",
+        "url": "https://www.sciencedaily.com/releases/2010/08/100802165445.htm",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 34,
+        "domain": "healthline.com",
+        "url": "https://www.healthline.com/health/stress/amygdala-hijack",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 35,
+        "domain": "simplypsychology.org",
+        "url": "https://www.simplypsychology.org/amygdala.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 36,
+        "domain": "tandfonline.com",
+        "url": "https://www.tandfonline.com/doi/pdf/10.1080/13554790008402715",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 37,
+        "domain": "droracle.ai",
+        "url": "https://www.droracle.ai/articles/206470/what-happens-when-the-amygdala-is-damaged-and-what",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 38,
+        "domain": "braininjury-explanation.com",
+        "url": "https://www.braininjury-explanation.com/impact-of-brain-injury-per-brain-area/amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 39,
+        "domain": "researchgate.net",
+        "url": "https://www.researchgate.net/publication/233072564_The_Cognitive_and_Emotional_Effects_of_Amygdala_Damage",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 40,
+        "domain": "medicalnewstoday.com",
+        "url": "https://www.medicalnewstoday.com/articles/amygdala-hijack",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 41,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=s-upBekrEZA",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 42,
+        "domain": "bigthink.com",
+        "url": "https://bigthink.com/neuropsych/amygdala-damage-moral-judgment/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 43,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/Neuropsychology/comments/1ko6rpb/emotional_loss_after_frontal_lobe_and_amygdala/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 44,
+        "domain": "neuropraxisrehab.com",
+        "url": "https://neuropraxisrehab.com/neuropraxis-amygdala/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 45,
+        "domain": "edenfutures.org",
+        "url": "https://edenfutures.org/wp-content/uploads/2024/07/Amygdala-Hijack-How-It-Works-Signs-amp-How-To-Cope.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 46,
+        "domain": "ndnr.com",
+        "url": "https://ndnr.com/trauma-the-amygdala-and-post-traumatic-stress-disorder-part-1/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 47,
+        "domain": "emory.edu",
+        "url": "https://news.emory.edu/stories/2014/08/amygdala_stress_hormones_yerkes/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 48,
+        "domain": "neurosciencenews.com",
+        "url": "https://neurosciencenews.com/neuroscience-terms/amygdala-damage/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 49,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3032808/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 50,
+        "domain": "ndnr.com",
+        "url": "https://ndnr.com/trauma-the-amygdala-and-post-traumatic-stress-disorder-part-1/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 51,
+        "domain": "everydayhealth.com",
+        "url": "https://www.everydayhealth.com/emotional-health/experiencing-emotional-trauma-can-affect-the-brain/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 52,
+        "domain": "cbsnews.com",
+        "url": "https://www.cbsnews.com/news/amygdala-damage-can-eliminate-all-fear-study-suggests-whats-an-amygdala/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 53,
+        "domain": "verywellhealth.com",
+        "url": "https://www.verywellhealth.com/the-brains-frontal-lobe-3146196",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 54,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3032808/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 55,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/science/article/pii/S2950588724000326",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 56,
+        "domain": "neurosciencenews.com",
+        "url": "https://neurosciencenews.com/neuroscience-terms/amygdala-damage/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 57,
+        "domain": "hearingreview.com",
+        "url": "https://hearingreview.com/inside-hearing/research/amygdala-damage-may-underlie-concomitant-mental-illness-and-drug-addiction",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 58,
+        "domain": "physio-pedia.com",
+        "url": "https://www.physio-pedia.com/Amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 59,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=VEUimpXc0zc",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 60,
+        "domain": "study.com",
+        "url": "https://homework.study.com/explanation/what-happens-when-the-amygdala-is-damaged.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 61,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/How-can-Amygdala-be-damaged",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 62,
+        "domain": "raffaelefiorella.com",
+        "url": "https://www.raffaelefiorella.com/amygdala.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 63,
+        "domain": "medreport.foundation",
+        "url": "https://www.medreport.foundation/post/trauma-and-the-brain-how-it-changes-the-amygdala-hippocampus-and-prefrontal-cortex",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 64,
+        "domain": "psychcentral.com",
+        "url": "https://psychcentral.com/health/amygdala-hijack",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 65,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=kxCGAu4qp4s",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 66,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC311327/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 67,
+        "domain": "severnclinics.co.nz",
+        "url": "https://severnclinics.co.nz/amygdala-hijacks-after-traumatic-experiences/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 68,
+        "domain": "verywellmind.com",
+        "url": "https://www.verywellmind.com/what-exactly-does-ptsd-do-to-the-brain-2797210",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 69,
+        "domain": "simplypsychology.org",
+        "url": "https://www.simplypsychology.org/amygdala-hijack.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 70,
+        "domain": "verywellmind.com",
+        "url": "https://www.verywellmind.com/what-exactly-does-ptsd-do-to-the-brain-2797210",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 71,
+        "domain": "simplypsychology.org",
+        "url": "https://www.simplypsychology.org/amygdala-hijack.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 72,
+        "domain": "brainmatters.org",
+        "url": "https://brainmatters.org/brain-regions/amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 73,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0960982206001461",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 74,
+        "domain": "psychologicalhealingcenter.com",
+        "url": "https://psychologicalhealingcenter.com/the-emotional-brain-the-amygdala-and-processing-early-wounds/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 75,
+        "domain": "nature.com",
+        "url": "https://www.nature.com/articles/s41598-020-59195-w",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 76,
+        "domain": "neurosciencenews.com",
+        "url": "https://neurosciencenews.com/new-memories-formed-amygdala-damaged/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 77,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=KMQIuLQG09o",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 78,
+        "domain": "sciencedaily.com",
+        "url": "https://www.sciencedaily.com/terms/amygdala.htm",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 79,
+        "domain": "epainassist.com",
+        "url": "https://www.epainassist.com/brain/what-happens-if-amygdala-is-damaged",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 80,
+        "domain": "tandfonline.com",
+        "url": "https://www.tandfonline.com/doi/full/10.1080/13546800444000281",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 81,
+        "domain": "simplypsychology.org",
+        "url": "https://www.simplypsychology.org/amygdala-hijack.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 82,
+        "domain": "sciencedirect.com",
+        "url": "https://www.sciencedirect.com/science/article/pii/S2667174324000259",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 83,
+        "domain": "verywellmind.com",
+        "url": "https://www.verywellmind.com/what-exactly-does-ptsd-do-to-the-brain-2797210",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 84,
+        "domain": "brainmatters.org",
+        "url": "https://brainmatters.org/brain-regions/amygdala",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 85,
+        "domain": "frontiersin.org",
+        "url": "https://www.frontiersin.org/journals/behavioral-neuroscience/articles/10.3389/fnbeh.2021.601275/full",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 86,
+        "domain": "intechopen.com",
+        "url": "https://www.intechopen.com/chapters/41594",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 87,
+        "domain": "psychologicalhealingcenter.com",
+        "url": "https://psychologicalhealingcenter.com/the-emotional-brain-the-amygdala-and-processing-early-wounds/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 88,
+        "domain": "nature.com",
+        "url": "https://www.nature.com/articles/s41598-020-59195-w",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 89,
+        "domain": "nih.gov",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4321266/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 90,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=KMQIuLQG09o",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 91,
+        "domain": "epainassist.com",
+        "url": "https://www.epainassist.com/brain/what-happens-if-amygdala-is-damaged",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 92,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/What-happens-if-someones-amygdala-were-removed-What-would-happen-if-it-were-replaced",
+        "result_kind": null,
+        "serp_features_codes": []
+      }
+    ]
+  },
+  {
+    "keyword": "temporal lobe damage symptoms",
+    "database": "us",
+    "volume": 170,
+    "cpc_usd": 0,
+    "competition": 0.33,
+    "keyword_difficulty": 29,
+    "referring_domains_median": 5,
+    "organic_results_count": 130,
+    "intents": [
+      "informational"
+    ],
+    "keyword_ideas_total": 26,
+    "keyword_ideas_total_volume": 570,
+    "related_keywords_count": 26,
+    "questions_count": 1,
+    "serp_results_count": 100,
+    "serp_features_codes": [
+      6,
+      9,
+      13,
+      21,
+      28,
+      43,
+      50
+    ],
+    "volume_trend_12mo": [
+      52,
+      52,
+      52,
+      52,
+      100,
+      80,
+      64,
+      52,
+      64,
+      64,
+      52,
+      64
+    ],
+    "volume_by_country": [
+      {
+        "country": "us",
+        "volume": 170
+      },
+      {
+        "country": "ie",
+        "volume": 30
+      },
+      {
+        "country": "in",
+        "volume": 30
+      },
+      {
+        "country": "nz",
+        "volume": 30
+      },
+      {
+        "country": "pk",
+        "volume": 30
+      },
+      {
+        "country": "sg",
+        "volume": 30
+      },
+      {
+        "country": "au",
+        "volume": 20
+      },
+      {
+        "country": "ca",
+        "volume": 20
+      },
+      {
+        "country": "de",
+        "volume": 20
+      },
+      {
+        "country": "nl",
+        "volume": 20
+      },
+      {
+        "country": "uk",
+        "volume": 20
+      },
+      {
+        "country": "br",
+        "volume": 10
+      },
+      {
+        "country": "es",
+        "volume": 10
+      },
+      {
+        "country": "fr",
+        "volume": 10
+      },
+      {
+        "country": "it",
+        "volume": 10
+      },
+      {
+        "country": "no",
+        "volume": 10
+      }
+    ],
+    "related_keywords": [
+      {
+        "keyword": "temporal lobe damage symptoms",
+        "volume": 170,
+        "keyword_difficulty": 29
+      },
+      {
+        "keyword": "left temporal lobe damage symptoms",
+        "volume": 140,
+        "keyword_difficulty": 33
+      },
+      {
+        "keyword": "symptoms of left temporal lobe damage",
+        "volume": 110,
+        "keyword_difficulty": 30
+      },
+      {
+        "keyword": "symptoms of temporal lobe damage",
+        "volume": 30,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "damage to left temporal lobe symptoms",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "damage to temporal lobe symptoms",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "damage to the temporal lobe symptoms",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "medial temporal lobe damage symptoms",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "symptoms of damage to temporal lobe",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "what are the symptoms of temporal lobe damage",
+        "volume": 20,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "bilateral medial temporal lobe damage symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "damage of the temporal lobe symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "damaged left temporal lobe symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "damaged temporal lobe symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "frontal temporal lobe damage symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "left temporal lobe nerve damage symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "right temporal lobe damage symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "symptoms of a damaged temporal lobe",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "symptoms of damage to left temporal lobe",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "symptoms of damage to the temporal lobe",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "symptoms of damaged temporal lobe",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "symptoms seen in temporal lobe damage",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "temporal lobe brain damage symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "temporal lobe damage aneurysm symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "temporal lobe damage: symptoms",
+        "volume": 0,
+        "keyword_difficulty": null
+      },
+      {
+        "keyword": "temporal lobes symptoms of damage",
+        "volume": 0,
+        "keyword_difficulty": null
+      }
+    ],
+    "questions": [
+      {
+        "keyword": "what are the symptoms of temporal lobe damage",
+        "volume": 20,
+        "keyword_difficulty": null
+      }
+    ],
+    "clusters": [
+      {
+        "name": "temporal lobe function",
+        "intents": {
+          "commercial": 0.007751937955617905,
+          "informational": 0.9922480583190918,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "temporal lobe epilepsy",
+        "intents": {
+          "commercial": 0.1489361673593521,
+          "informational": 0.8510638475418091,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "temporal area",
+        "intents": {
+          "commercial": 0.07407407462596893,
+          "informational": 0.9259259104728699,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "temporal lobe damage",
+        "intents": {
+          "commercial": 0,
+          "informational": 1,
+          "navigational": 0,
+          "transactional": 0
+        }
+      },
+      {
+        "name": "aura seizure",
+        "intents": {
+          "commercial": 0.25,
+          "informational": 0.75,
+          "navigational": 0,
+          "transactional": 0
+        }
+      }
+    ],
+    "ads": [],
+    "serp": [
+      {
+        "position": 1,
+        "domain": "health.qld.gov.au",
+        "url": "https://www.health.qld.gov.au/abios/asp/btemporal_lobes",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "ebsco.com",
+        "url": "https://www.ebsco.com/research-starters/health-and-medicine/temporal-lobe",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "deshawlaw.com",
+        "url": "https://www.deshawlaw.com/brain-injuries/temporal-occipital-parietal-lobe-injuries",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "health.qld.gov.au",
+        "url": "https://www.health.qld.gov.au/abios/asp/btemporal_lobes",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=ulFQxyhjucU",
+        "result_kind": 50,
+        "serp_features_codes": []
+      },
+      {
+        "position": 1,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/16799-temporal-lobe",
+        "result_kind": null,
+        "serp_features_codes": [
+          13
+        ]
+      },
+      {
+        "position": 1,
+        "domain": "health.qld.gov.au",
+        "url": "https://www.health.qld.gov.au/abios/asp/btemporal_lobes",
+        "result_kind": 21,
+        "serp_features_codes": []
+      },
+      {
+        "position": 2,
+        "domain": "nih.gov",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/2068960/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 3,
+        "domain": "flintrehab.com",
+        "url": "https://www.flintrehab.com/temporal-lobe-damage/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 3,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/TBI/comments/1i31t4l/anyone_else_with_temporal_lobe_damage/",
+        "result_kind": 43,
+        "serp_features_codes": []
+      },
+      {
+        "position": 3,
+        "domain": "justanswer.com",
+        "url": "https://www.justanswer.com/neurology/g5min-know-temporal-lobe-lesions.html",
+        "result_kind": 43,
+        "serp_features_codes": []
+      },
+      {
+        "position": 3,
+        "domain": "justanswer.com",
+        "url": "https://www.justanswer.com/health/2crdh-temporal-lobe-damage-link-established.html",
+        "result_kind": 43,
+        "serp_features_codes": []
+      },
+      {
+        "position": 4,
+        "domain": "health.qld.gov.au",
+        "url": "https://www.health.qld.gov.au/abios/asp/btemporal_lobes",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 5,
+        "domain": "neuliferehab.com",
+        "url": "https://neuliferehab.com/temporal-lobe-damage-understanding-the-effects-treatments-recovery-process/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 6,
+        "domain": "ebsco.com",
+        "url": "https://www.ebsco.com/research-starters/health-and-medicine/temporal-lobe",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 7,
+        "domain": "deshawlaw.com",
+        "url": "https://www.deshawlaw.com/brain-injuries/temporal-occipital-parietal-lobe-injuries",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 8,
+        "domain": "royalbucks.co.uk",
+        "url": "https://www.royalbucks.co.uk/conditions-and-symptoms/temporal-lobe-injury/",
+        "result_kind": null,
+        "serp_features_codes": [
+          6
+        ]
+      },
+      {
+        "position": 9,
+        "domain": "mayoclinic.org",
+        "url": "https://www.mayoclinic.org/diseases-conditions/temporal-lobe-seizure/symptoms-causes/syc-20378214",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 10,
+        "domain": "harmonyhomehealth.com",
+        "url": "https://www.harmonyhomehealth.com/traumatic-brain-injury-symptoms-for-varying-parts-of-the-brain/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 11,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/TBI/comments/1i31t4l/anyone_else_with_temporal_lobe_damage/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 12,
+        "domain": "ccjm.org",
+        "url": "https://www.ccjm.org/content/ccjom/5/1/25.full.pdf",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 13,
+        "domain": "patient.info",
+        "url": "https://patient.info/brain-nerves/temporal-lobe-lesions-leaflet",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 14,
+        "domain": "tbimedslp.com",
+        "url": "https://www.tbimedslp.com/blog/temporal-lobe-traumatic-brain-injury",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 15,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=8Eaxco0A68A",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 16,
+        "domain": "aswllp.com",
+        "url": "https://www.aswllp.com/brain-injuries/temporal-lobe-injuries/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 17,
+        "domain": "verywellhealth.com",
+        "url": "https://www.verywellhealth.com/the-brains-frontal-lobe-3146196",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 18,
+        "domain": "uofmhealthsparrow.org",
+        "url": "https://www.uofmhealthsparrow.org/departments-conditions/conditions/temporal-lobe-seizure",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 19,
+        "domain": "brainandspinalcord.org",
+        "url": "https://brainandspinalcord.org/temporal-lobe-brain-injury/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 20,
+        "domain": "merckmanuals.com",
+        "url": "https://www.merckmanuals.com/home/brain-spinal-cord-and-nerve-disorders/brain-dysfunction/brain-dysfunction-by-location",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 21,
+        "domain": "physio-pedia.com",
+        "url": "https://www.physio-pedia.com/Temporal_Lobe",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 22,
+        "domain": "braininjury-explanation.com",
+        "url": "https://www.braininjury-explanation.com/impact-of-brain-injury-per-brain-area/temporal-lobes",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 23,
+        "domain": "medlink.com",
+        "url": "https://www.medlink.com/news/temporal-lobe-epilepsy-and-neurobehavioral-phenomena-insights-for-neurologists",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 24,
+        "domain": "braintumor.org",
+        "url": "https://braintumor.org/brain-tumors/diagnosis-treatment/signs-symptoms/",
+        "result_kind": null,
+        "serp_features_codes": [
+          13
+        ]
+      },
+      {
+        "position": 25,
+        "domain": "nbia.ca",
+        "url": "https://www.nbia.ca/symptoms-brain-injury/",
+        "result_kind": null,
+        "serp_features_codes": [
+          13
+        ]
+      },
+      {
+        "position": 26,
+        "domain": "mottleylawfirm.com",
+        "url": "https://www.mottleylawfirm.com/faqs/understanding-temporal-lobe-injuries.cfm",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 27,
+        "domain": "patient.info",
+        "url": "https://patient.info/doctor/neurology/temporal-lobe-lesions-pro",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 28,
+        "domain": "spinalcord.com",
+        "url": "https://www.spinalcord.com/blog/frontal-lobe-damage-recovery",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 29,
+        "domain": "nih.gov",
+        "url": "https://www.nia.nih.gov/health/frontotemporal-disorders/what-are-frontotemporal-disorders-causes-symptoms-and-treatment",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 30,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/symptoms/17839-brain-lesions",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 31,
+        "domain": "acibademinternational.com",
+        "url": "https://acibademinternational.com/health-library/brain-lobes-and-symptoms-of-injury-what-changes-with-damage/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 32,
+        "domain": "wikipedia.org",
+        "url": "https://en.wikipedia.org/wiki/Temporal_lobe",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 33,
+        "domain": "lonestarneurology.net",
+        "url": "https://lonestarneurology.net/blog/frontal-lobe-damage/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 34,
+        "domain": "physio-pedia.com",
+        "url": "https://www.physio-pedia.com/Frontal_Lobe_Brain_Injury",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 35,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=2tLdZ74Or3U",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 36,
+        "domain": "flintrehab.com",
+        "url": "https://www.flintrehab.com/temporal-lobe-stroke/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 37,
+        "domain": "neuroskills.com",
+        "url": "https://www.neuroskills.com/services/treatment/traumatic-brain-injury/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 38,
+        "domain": "mayoclinic.org",
+        "url": "https://www.mayoclinic.org/diseases-conditions/frontal-lobe-seizures/symptoms-causes/syc-20353958",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 39,
+        "domain": "neuroskills.com",
+        "url": "https://www.neuroskills.com/services/treatment/traumatic-brain-injury/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 40,
+        "domain": "medicalnewstoday.com",
+        "url": "https://www.medicalnewstoday.com/articles/temporal-lobe",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 41,
+        "domain": "brain-injury-law-center.com",
+        "url": "https://www.brain-injury-law-center.com/blog/frontal-lobe-damage-long-term-effects",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 42,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=2tLdZ74Or3U",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 43,
+        "domain": "thejns.org",
+        "url": "https://thejns.org/view/journals/j-neurosurg/24/1/article-p91.xml",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 44,
+        "domain": "simplypsychology.org",
+        "url": "https://www.simplypsychology.org/temporal-lobe.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 45,
+        "domain": "reachpersonalinjury.com",
+        "url": "https://reachpersonalinjury.com/1-the-temporal-lobes-a-brain-anatomy-series/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 46,
+        "domain": "mayoclinic.org",
+        "url": "https://www.mayoclinic.org/diseases-conditions/frontal-lobe-seizures/symptoms-causes/syc-20353958",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 47,
+        "domain": "healthgrades.com",
+        "url": "https://resources.healthgrades.com/right-care/brain-and-nerves/what-does-the-temporal-lobe-do",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 48,
+        "domain": "deshawlaw.com",
+        "url": "https://www.deshawlaw.com/blog/left-frontal-lobe-injury-symptoms-cognitive-effects-and-recovery",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 49,
+        "domain": "gipshospital.com",
+        "url": "https://gipshospital.com/when-the-temporal-lobe-goes-awry-psychological-conditions-part-1",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 50,
+        "domain": "reachpersonalinjury.com",
+        "url": "https://reachpersonalinjury.com/1-the-temporal-lobes-a-brain-anatomy-series/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 51,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=_517q6n-Re0",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 52,
+        "domain": "bartleby.com",
+        "url": "https://www.bartleby.com/essay/Damage-To-The-Temporal-Lobe-Effect-FJFXRNB749T",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 53,
+        "domain": "headway.org.uk",
+        "url": "https://www.headway.org.uk/about-brain-injury/further-information/common-brain-injury-terms/temporal-lobes/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 54,
+        "domain": "biomedicus.gr",
+        "url": "https://biomedicus.gr/contusion-of-temporal-lobe-symptoms/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 55,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/body/24501-frontal-lobe",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 56,
+        "domain": "instagram.com",
+        "url": "https://www.instagram.com/popular/temporal-lobe-damage/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 57,
+        "domain": "biorxiv.org",
+        "url": "https://www.biorxiv.org/content/10.1101/2020.12.01.407064v1.full-text",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 58,
+        "domain": "biorxiv.org",
+        "url": "https://www.biorxiv.org/content/10.1101/2020.12.01.407064v1.full-text",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 59,
+        "domain": "healthline.com",
+        "url": "https://www.healthline.com/health/temporal-lobe-epilepsy",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 60,
+        "domain": "justanswer.com",
+        "url": "https://www.justanswer.com/health/2crdh-temporal-lobe-damage-link-established.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 61,
+        "domain": "mayoclinic.org",
+        "url": "https://www.mayoclinic.org/diseases-conditions/frontotemporal-dementia/symptoms-causes/syc-20354737",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 62,
+        "domain": "spinalcord.com",
+        "url": "https://www.spinalcord.com/temporal-lobe",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 63,
+        "domain": "nih.gov",
+        "url": "https://www.ncbi.nlm.nih.gov/books/NBK11131/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 64,
+        "domain": "goodtherapy.org",
+        "url": "https://www.goodtherapy.org/blog/psychpedia/temporal-lobe",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 65,
+        "domain": "flintrehab.com",
+        "url": "https://www.flintrehab.com/parietal-lobe-damage/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 66,
+        "domain": "vanderbilthealth.com",
+        "url": "https://discoveries.vanderbilthealth.com/2020/04/far-reaching-consequences-of-temporal-lobe-seizures/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 67,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=ulFQxyhjucU",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 68,
+        "domain": "wikipedia.org",
+        "url": "https://en.wikipedia.org/wiki/Temporal_lobe_epilepsy",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 69,
+        "domain": "clevelandclinic.org",
+        "url": "https://my.clevelandclinic.org/health/diseases/17778-temporal-lobe-seizures",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 70,
+        "domain": "gpnotebook.com",
+        "url": "https://gpnotebook.com/en-GB/pages/neurology/temporal-lobe-signs",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 71,
+        "domain": "alzevita.com",
+        "url": "https://www.alzevita.com/neuronal-loss-temporal-lobe-epilepsy-brain-diseases",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 72,
+        "domain": "droracle.ai",
+        "url": "https://www.droracle.ai/articles/534267/what-are-the-signs-of-brain-injury-in-a",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 73,
+        "domain": "royalbucks.co.uk",
+        "url": "https://www.royalbucks.co.uk/conditions-and-symptoms/frontal-lobe-brain-injury/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 74,
+        "domain": "webmd.com",
+        "url": "https://www.webmd.com/brain/brain-damage-symptoms-causes-treatments",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 75,
+        "domain": "quora.com",
+        "url": "https://www.quora.com/What-happens-if-you-damage-your-temporal-lobe",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 76,
+        "domain": "gpnotebook.com",
+        "url": "https://gpnotebook.com/pages/neurology/temporal-lobe-signs",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 77,
+        "domain": "biomedicus.gr",
+        "url": "https://biomedicus.gr/temporal-lobe-disorders-symptoms/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 78,
+        "domain": "gipshospital.com",
+        "url": "https://gipshospital.com/when-the-temporal-lobe-goes-awry-psychological-conditions-part-1",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 79,
+        "domain": "medicalnewstoday.com",
+        "url": "https://www.medicalnewstoday.com/articles/temporal-lobe-epilepsy",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 80,
+        "domain": "royalbucks.co.uk",
+        "url": "https://www.royalbucks.co.uk/conditions-and-symptoms/frontal-lobe-brain-injury/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 81,
+        "domain": "deshawlaw.com",
+        "url": "https://www.deshawlaw.com/brain-injuries/frontal-lobe-brain-injuries",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 82,
+        "domain": "flintrehab.com",
+        "url": "https://www.flintrehab.com/frontal-lobe-brain-injury-recovery/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 83,
+        "domain": "nih.gov",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19938677/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 84,
+        "domain": "kidshealth.org",
+        "url": "https://www.kidshealth.org/ws/DaytonChildrens/en/parents/temporal-lobe-epilepsy.html/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 85,
+        "domain": "nih.gov",
+        "url": "https://www.ninds.nih.gov/health-information/disorders/traumatic-brain-injury-tbi",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 86,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=RM6MBtyYOXA",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      },
+      {
+        "position": 87,
+        "domain": "flintrehab.com",
+        "url": "https://www.flintrehab.com/frontal-lobe-brain-injury-recovery/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 88,
+        "domain": "healthlinkbc.ca",
+        "url": "https://www.healthlinkbc.ca/health-topics/abl3000",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 89,
+        "domain": "study.com",
+        "url": "https://homework.study.com/explanation/can-temporal-lobe-damage-be-reversed.html",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 90,
+        "domain": "reddit.com",
+        "url": "https://www.reddit.com/r/TBI/comments/1ikz96w/temporal_lobe_damage/",
+        "result_kind": null,
+        "serp_features_codes": []
+      },
+      {
+        "position": 91,
+        "domain": "youtube.com",
+        "url": "https://www.youtube.com/watch?v=WVtzr-NSPx4",
+        "result_kind": null,
+        "serp_features_codes": [
+          9
+        ]
+      }
+    ]
+  }
+]
