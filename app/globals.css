@@ -1592,3 +1592,290 @@ html, body {
   padding: 0.7rem 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
+
+/* ─── Quiz navigation row ───────────────────────────────────────────
+   Sits above the question. Before this the quiz was a dead end: once
+   started, the only way out was the browser back button. */
+
+.quiz-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-bottom: var(--border-subtle);
+  background: var(--washi-cream);
+  flex-shrink: 0;
+}
+
+.quiz-nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: none;
+  border: none;
+  padding: 0.25rem 0.35rem 0.25rem 0;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--sumi-light);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease;
+  max-width: 11rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.quiz-nav-back:hover { color: var(--sumi-deep); }
+
+.quiz-nav-title {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  color: var(--sumi-deep);
+  margin-left: auto;
+  margin-right: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quiz-nav-actions {
+  display: flex;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.quiz-nav-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: none;
+  border: none;
+  color: var(--sumi-light);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.quiz-nav-actions button:hover {
+  color: var(--sumi-deep);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Resume prompt on the setup screen */
+.quiz-resume {
+  margin: 0 1rem 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--ai-medium);
+  border-radius: var(--radius-md);
+  background: var(--ai-light);
+}
+
+.quiz-resume p {
+  font-size: 0.82rem;
+  color: var(--sumi-medium);
+  margin: 0 0 0.6rem;
+  line-height: 1.5;
+}
+
+.quiz-resume-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.quiz-resume-actions button {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.quiz-resume-actions .is-primary {
+  background: var(--ai);
+  color: var(--washi-white);
+}
+
+.quiz-resume-actions .is-ghost {
+  background: transparent;
+  color: var(--sumi-light);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* ─── Quiz grid ─────────────────────────────────────────────────────
+   All 32 quizzes on one screen. Was dimension -> type -> Start; three
+   steps meant most quizzes were never seen. One click starts now. */
+
+.quiz-grid-wrap {
+  padding: 1rem 0.9rem 2rem;
+  overflow-y: auto;
+}
+
+.quiz-grid-group { margin-bottom: 1.5rem; }
+
+.quiz-grid-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sumi-light);
+  margin: 0 0 0.5rem 0.15rem;
+}
+
+.quiz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.4rem;
+}
+
+.quiz-grid-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  padding: 0.6rem 0.7rem;
+  text-align: left;
+  background: var(--washi-white);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition:
+    border-color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
+}
+
+.quiz-grid-card:hover {
+  border-color: var(--ai);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.quiz-grid-name {
+  font-size: 0.82rem;
+  color: var(--sumi-deep);
+  line-height: 1.3;
+}
+
+.quiz-grid-desc {
+  font-size: 0.68rem;
+  color: var(--sumi-light);
+  line-height: 1.35;
+}
+
+.quiz-grid-diff {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.15rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.quiz-grid-diff.is-beginner {
+  background: var(--moegi-light);
+  color: var(--moegi);
+}
+.quiz-grid-diff.is-intermediate {
+  background: var(--ai-light);
+  color: var(--ai);
+}
+.quiz-grid-diff.is-advanced {
+  background: var(--beni-light);
+  color: var(--beni);
+}
+
+/* ─── Progress under the question ───────────────────────────────── */
+
+.quiz-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  border-top: var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.quiz-dots {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.quiz-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.quiz-dot.is-correct { background: var(--moegi); }
+.quiz-dot.is-wrong { background: var(--beni); }
+.quiz-dot.is-current {
+  background: var(--ai);
+  box-shadow: 0 0 0 2px var(--ai-light);
+}
+
+.quiz-progress-meta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--sumi-light);
+  white-space: nowrap;
+}
+
+/* ─── History ───────────────────────────────────────────────────── */
+
+.quiz-history {
+  border-top: var(--border-subtle);
+  padding: 0.9rem 1rem 1.2rem;
+  flex-shrink: 0;
+}
+
+.quiz-history-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sumi-light);
+  margin: 0 0 0.5rem;
+}
+
+.quiz-history-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  font-size: 0.76rem;
+  color: var(--sumi-medium);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.quiz-history-row:hover { color: var(--sumi-deep); }
+
+.quiz-history-when {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--sumi-light);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.quiz-history-score {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--sumi-deep);
+}

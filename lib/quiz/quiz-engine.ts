@@ -33,6 +33,21 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
         quizType: action.quizTypeId,
       };
 
+    // Restore an unfinished quiz from localStorage. Questions come from the
+    // saved session rather than being regenerated: generators shuffle, so a
+    // regenerated set would not match the answers already given.
+    case "RESUME_QUIZ":
+      return {
+        ...state,
+        phase: "playing",
+        questions: action.questions,
+        answers: action.answers,
+        currentIndex: action.currentIndex,
+        score: action.score,
+        startedAt: Date.now(),
+        completedAt: null,
+      };
+
     case "START_QUIZ":
       return {
         ...state,

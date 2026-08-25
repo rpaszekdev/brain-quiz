@@ -248,7 +248,14 @@ export type QuizAction =
   | { type: "FINISH_QUIZ" }
   | { type: "RESET" }
   | { type: "BACK_TO_DIMENSIONS" }
-  | { type: "BACK_TO_TYPES" };
+  | { type: "BACK_TO_TYPES" }
+  | {
+      type: "RESUME_QUIZ";
+      questions: QuizQuestion[];
+      answers: UserAnswer[];
+      currentIndex: number;
+      score: number;
+    };
 
 // ─── Visualization Overlay ────────────────────────────
 

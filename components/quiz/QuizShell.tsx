@@ -6,9 +6,23 @@ import { quizReducer, INITIAL_QUIZ_STATE } from "@/lib/quiz/quiz-engine";
 import { generateQuestions as generateFromRegistry } from "@/lib/quiz/generators";
 import { DIMENSIONS, getDimension, getQuizType } from "@/lib/dimensions";
 import { useBrainViewer } from "../brain-viewer/BrainViewerContext";
-import { QuizSetup } from "./QuizSetup";
 import { QuizPlaying } from "./QuizPlaying";
 import { QuizResult } from "./QuizResult";
+import { QuizNav } from "./QuizNav";
+import { QuizGrid } from "./QuizGrid";
+import { QuizDots } from "./QuizDots";
+import { QuizHistory } from "./QuizHistory";
+import {
+  loadHistory,
+  recordResult,
+  type QuizResultRecord,
+} from "@/lib/quiz/history";
+import {
+  clearSession,
+  loadSession,
+  saveSession,
+  type QuizSession,
+} from "@/lib/quiz/session";
 import { track } from "@/lib/analytics";
 import type { DimensionId, QuizQuestion, UserAnswer } from "@/lib/types";
 
@@ -100,6 +114,70 @@ export function QuizShell({ onPulseRegionChange, autoStart }: QuizShellProps) {
     },
     [highlightRegion, flyToRegion, resetBrainView, onPulseRegionChange],
   );
+
+  // Persist an in-progress quiz so a reload or a wander off to a region page
+  // does not discard it. Questions are stored, not regenerated — generators
+  // shuffle, so regenerating would silently swap the quiz under the user.
+  const [resumable, setResumable] = useState<QuizSession | null>(null);
+  useEffect(() => {
+    setResumable(loadSession());
+  }, []);
+
+  useEffect(() => {
+    if (state.phase !== "playing" || state.questions.length === 0) return;
+    if (!state.dimension || !state.quizType) return;
+    saveSession({
+      dimensionId: state.dimension,
+      quizTypeId: state.quizType,
+      questions: state.questions,
+      answers: state.answers,
+      currentIndex: state.currentIndex,
+      score: state.score,
+    });
+  }, [
+    state.phase,
+    state.dimension,
+    state.quizType,
+    state.questions,
+    state.answers,
+    state.currentIndex,
+    state.score,
+  ]);
+
+  const [history, setHistory] = useState<readonly QuizResultRecord[]>([]);
+  useEffect(() => {
+    setHistory(loadHistory());
+  }, []);
+
+  // Record the result once, when the quiz ends.
+  const recordedFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (state.phase !== "result") return;
+    const key = `${state.quizType}-${state.startedAt}`;
+    if (recordedFor.current === key) return;
+    recordedFor.current = key;
+
+    clearSession();
+    if (state.dimension && state.quizType) {
+      setHistory(
+        recordResult({
+          dimensionId: state.dimension,
+          quizTypeId: state.quizType,
+          quizTypeName:
+            getQuizType(state.dimension, state.quizType)?.name ?? state.quizType,
+          score: state.score,
+          total: state.questions.length,
+        }),
+      );
+    }
+  }, [
+    state.phase,
+    state.dimension,
+    state.quizType,
+    state.score,
+    state.questions.length,
+    state.startedAt,
+  ]);
 
   // Landing routes boot straight into their quiz.
   //
@@ -328,26 +406,76 @@ export function QuizShell({ onPulseRegionChange, autoStart }: QuizShellProps) {
 
   // Render based on phase
   if (state.phase === "dimension-select" || state.phase === "type-select") {
+    const resumeQuiz = () => {
+      if (!resumable) return;
+      dispatch({ type: "SELECT_DIMENSION", dimensionId: resumable.dimensionId });
+      dispatch({ type: "SELECT_QUIZ_TYPE", quizTypeId: resumable.quizTypeId });
+      dispatch({
+        type: "RESUME_QUIZ",
+        questions: [...resumable.questions],
+        answers: [...resumable.answers],
+        currentIndex: resumable.currentIndex,
+        score: resumable.score,
+      });
+      setResumable(null);
+    };
+
     return (
-      <QuizSetup
-        dimensions={DIMENSIONS}
-        selectedDimension={state.dimension}
-        selectedQuizType={state.quizType}
-        onSelectDimension={(id) =>
-          dispatch({ type: "SELECT_DIMENSION", dimensionId: id })
-        }
-        onSelectQuizType={(id) =>
-          dispatch({ type: "SELECT_QUIZ_TYPE", quizTypeId: id })
-        }
-        onStart={handleStartQuiz}
-        onBack={() => dispatch({ type: "BACK_TO_DIMENSIONS" })}
-        phase={state.phase}
-      />
+      <>
+        {resumable && (
+          <div className="quiz-resume">
+            <p>
+              You left{" "}
+              {getQuizType(resumable.dimensionId, resumable.quizTypeId)?.name ??
+                "a quiz"}{" "}
+              unfinished — question {resumable.currentIndex + 1} of{" "}
+              {resumable.questions.length}, score {resumable.score}.
+            </p>
+            <div className="quiz-resume-actions">
+              <button className="is-primary" onClick={resumeQuiz} type="button">
+                Resume
+              </button>
+              <button
+                className="is-ghost"
+                onClick={() => {
+                  clearSession();
+                  setResumable(null);
+                }}
+                type="button"
+              >
+                Discard
+              </button>
+            </div>
+          </div>
+        )}
+
+        <QuizGrid onStart={handleStartQuiz} />
+        <QuizHistory history={history} onRetake={handleStartQuiz} />
+      </>
     );
   }
 
   if (state.phase === "playing" && currentQuestion) {
+    const dimension = getDimension(state.dimension!);
+    const quizType = getQuizType(state.dimension!, state.quizType!);
     return (
+      <>
+        <QuizNav
+          dimensionName={dimension?.name ?? "Quizzes"}
+          quizTypeName={quizType?.name ?? "Quiz"}
+          onBack={() => {
+            clearSession();
+            dispatch({ type: "BACK_TO_TYPES" });
+          }}
+          onChangeQuiz={() => {
+            clearSession();
+            dispatch({ type: "BACK_TO_DIMENSIONS" });
+          }}
+          onRestart={() => {
+            clearSession();
+            handleStartQuiz(state.dimension!, state.quizType!);
+          }}
+        />
       <QuizPlaying
         question={currentQuestion}
         questionIndex={state.currentIndex}
@@ -363,6 +491,13 @@ export function QuizShell({ onPulseRegionChange, autoStart }: QuizShellProps) {
         dimensionId={state.dimension!}
         quizTypeId={state.quizType!}
       />
+        <QuizDots
+          total={state.questions.length}
+          currentIndex={state.currentIndex}
+          answers={state.answers}
+          score={state.score}
+        />
+      </>
     );
   }
 
