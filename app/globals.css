@@ -115,14 +115,15 @@
 }
 
 html, body {
-  height: 100%;
+  /* min-height, not height, and no overflow lock: pages now carry prose below
+     the app. The viewer sizes itself with 100vh so it still fills the screen. */
+  min-height: 100%;
   font-family: var(--font-body);
   background: var(--washi-white);
   color: var(--sumi-deep);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
 }
 
 /* ═══════════════════════════════════════════════
@@ -941,4 +942,110 @@ html, body {
   .mobile-bottom-sheet {
     display: none !important;
   }
+}
+
+/* ─── SEO landing pages ─────────────────────────────────────────────
+   Visible, crawlable prose that sits below the 3D app. Replaces the old
+   sr-only block — hidden text is de-weighted by search engines. */
+
+.seo-page {
+  background: var(--washi-white);
+  color: var(--sumi-deep);
+}
+
+/* rem, not ch — body font-size is 14px here, so ch collapsed this to ~530px. */
+.seo-wrap {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+.seo-hero {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.seo-page h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 5vw, 3rem);
+  line-height: 1.15;
+  margin: 0 0 1.5rem;
+  font-weight: 500;
+}
+
+.seo-page h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 3vw, 1.75rem);
+  line-height: 1.25;
+  margin: 3rem 0 1rem;
+  font-weight: 500;
+}
+
+.seo-page h3 {
+  font-size: 1.05rem;
+  margin: 2rem 0 0.5rem;
+  font-weight: 600;
+}
+
+.seo-page p {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin: 0 0 1.25rem;
+  color: var(--sumi-medium);
+}
+
+.seo-page a {
+  color: var(--ai);
+  text-underline-offset: 3px;
+}
+
+.seo-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  padding: 0.85rem 1.75rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--washi-white);
+  background: var(--ai);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.seo-start:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.seo-faq {
+  border-top: var(--border-subtle);
+  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.seo-related {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: var(--border-medium);
+}
+
+.seo-related ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.seo-app-slot {
+  height: 100vh;
+  border-top: var(--border-medium);
+  border-bottom: var(--border-medium);
 }

@@ -1,14 +1,36 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from "next";
+import { ALL_SLUGS } from "@/lib/seo/pages";
+import { REGION_SLUGS } from "@/lib/seo/regions";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://brainquiz.app';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://brainquiz.study";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const lastModified = new Date();
+
   return [
     {
       url: BASE_URL,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
+      lastModified,
+      changeFrequency: "weekly",
       priority: 1.0,
     },
+    {
+      url: `${BASE_URL}/3d-brain-model`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    ...ALL_SLUGS.map((slug) => ({
+      url: `${BASE_URL}/quiz/${slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    ...REGION_SLUGS.map((slug) => ({
+      url: `${BASE_URL}/brain/${slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
   ];
 }

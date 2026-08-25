@@ -24,11 +24,14 @@ import "@/lib/quiz/generators/cellular-generator";
 
 interface QuizShellProps {
   onPulseRegionChange: (regionId: string | null, enablePulse: boolean) => void;
+  /** Set by /quiz/[slug] routes — skips setup and starts this quiz on mount. */
+  autoStart?: { dimensionId: DimensionId; quizTypeId: string };
 }
 
-export function QuizShell({ onPulseRegionChange }: QuizShellProps) {
+export function QuizShell({ onPulseRegionChange, autoStart }: QuizShellProps) {
   const [state, dispatch] = useReducer(quizReducer, INITIAL_QUIZ_STATE);
-  const { highlightRegion, resetBrainView, flyToRegion } = useBrainViewer();
+  const { highlightRegion, resetBrainView, flyToRegion, viewerReady } =
+    useBrainViewer();
 
   // Legacy mode for anatomy identify/locate
   const [legacyMode, setLegacyMode] = useState<"identify" | "locate">(
@@ -104,6 +107,21 @@ export function QuizShell({ onPulseRegionChange }: QuizShellProps) {
     },
     [highlightRegion, flyToRegion, resetBrainView, onPulseRegionChange],
   );
+
+  // Landing routes boot straight into their quiz.
+  //
+  // Waits for viewerReady: region materials are registered as the meshes load,
+  // so starting earlier would highlight against an empty material map and the
+  // answer would sit invisible among every other region at full opacity.
+  // resetBrainView() first because entering quiz mode via the Topbar normally
+  // does it (handleSetAppMode), and autostart skips that path.
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (!autoStart || autoStarted.current || !viewerReady) return;
+    autoStarted.current = true;
+    resetBrainView();
+    handleStartQuiz(autoStart.dimensionId, autoStart.quizTypeId);
+  }, [autoStart, viewerReady, resetBrainView, handleStartQuiz]);
 
   // Handle answer selection (multiple choice)
   const handleSelectOption = useCallback(

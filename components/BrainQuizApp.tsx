@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Maximize2, Minimize2, Menu } from "lucide-react";
 import { BRAIN_REGIONS, type BrainRegion } from "@/lib/brain-regions";
+import type { DimensionId } from "@/lib/types";
 import {
   BrainViewerProvider,
   useBrainViewer,
@@ -18,8 +19,19 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 type AppMode = "explore" | "quiz";
 
-function BrainQuizAppInner() {
-  const [appMode, setAppMode] = useState<AppMode>("explore");
+export interface AutoStart {
+  dimensionId: DimensionId;
+  quizTypeId: string;
+}
+
+interface BrainQuizAppProps {
+  autoStart?: AutoStart;
+}
+
+function BrainQuizAppInner({ autoStart }: BrainQuizAppProps) {
+  const [appMode, setAppMode] = useState<AppMode>(
+    autoStart ? "quiz" : "explore",
+  );
   const [selectedRegion, setSelectedRegion] = useState<BrainRegion | null>(
     null,
   );
@@ -154,7 +166,10 @@ function BrainQuizAppInner() {
         />
       )}
       {appMode === "quiz" && (
-        <QuizShell onPulseRegionChange={handlePulseChange} />
+        <QuizShell
+          onPulseRegionChange={handlePulseChange}
+          autoStart={autoStart}
+        />
       )}
     </>
   );
@@ -249,10 +264,10 @@ function BrainQuizAppInner() {
   );
 }
 
-export default function BrainQuizApp() {
+export default function BrainQuizApp({ autoStart }: BrainQuizAppProps) {
   return (
     <BrainViewerProvider>
-      <BrainQuizAppInner />
+      <BrainQuizAppInner autoStart={autoStart} />
     </BrainViewerProvider>
   );
 }

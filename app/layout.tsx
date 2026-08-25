@@ -16,35 +16,29 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://brainquiz.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://brainquiz.study";
+
+/*
+ * Title targets the terms that actually have volume (Keyword Planner, 2026-08:
+ * "brain anatomy quiz", "label the brain quiz", "brain parts quiz" all 1K-10K/mo
+ * at low competition). The 脳 mark stays in the UI as branding — it was spending
+ * the most valuable ranking signal on a character nobody searches for.
+ */
+const TITLE = "Brain Anatomy Quiz — Label the Brain in 3D";
+const DESCRIPTION =
+  "Free interactive brain anatomy quiz. Label brain parts and name regions on a rotatable 3D model. No login, no account, unlimited questions.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
-  title: "脳 — Brain Atlas",
-  description:
-    "Interactive 3D brain quiz: identify and locate brain regions. Free, no login required. Challenge your friends!",
-  keywords: [
-    "cognitive neuroscience quiz",
-    "brain anatomy quiz",
-    "neuroscience practice test",
-    "brain region quiz",
-    "3D brain",
-    "interactive brain",
-    "neuroanatomy",
-    "brain atlas",
-    "brain structure",
-    "hippocampus",
-    "amygdala",
-    "prefrontal cortex",
-    "cerebellum",
-  ],
+  title: TITLE,
+  description: DESCRIPTION,
+  applicationName: "Brain Atlas",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "脳 — Brain Atlas",
-    description:
-      "Interactive 3D brain quiz with 50+ regions. Explore, Identify & Locate modes. Free, no login.",
+    title: TITLE,
+    description: DESCRIPTION,
     type: "website",
     locale: "en_US",
     siteName: "Brain Atlas",
@@ -52,9 +46,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "脳 — Brain Atlas",
-    description:
-      "Interactive 3D brain quiz with 50+ regions. Explore, Identify & Locate modes. Free, no login.",
+    title: TITLE,
+    description: DESCRIPTION,
   },
   robots: { index: true, follow: true },
 };

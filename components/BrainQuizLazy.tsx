@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { AutoStart } from "@/components/BrainQuizApp";
 
 const BrainQuizApp = dynamic(() => import("@/components/BrainQuizApp"), {
   ssr: false,
@@ -19,6 +20,10 @@ const BrainQuizApp = dynamic(() => import("@/components/BrainQuizApp"), {
   ),
 });
 
-export default function BrainQuizLazy() {
-  return <BrainQuizApp />;
+export default function BrainQuizLazy({
+  autoStart,
+}: {
+  autoStart?: AutoStart;
+}) {
+  return <BrainQuizApp autoStart={autoStart} />;
 }

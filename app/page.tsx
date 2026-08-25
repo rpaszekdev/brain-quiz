@@ -1,8 +1,10 @@
+import Link from "next/link";
 import BrainQuizLazy from "@/components/BrainQuizLazy";
 import { BRAIN_REGIONS } from "@/lib/brain-regions";
 import { DIMENSIONS } from "@/lib/dimensions";
+import { HOME_FAQS } from "@/lib/seo/home";
+import { QUIZ_PAGES } from "@/lib/seo/pages";
 
-/* Group regions by category for the crawlable section */
 const categories = {
   cortical: "Cortical Regions",
   subcortical: "Subcortical Structures",
@@ -16,81 +18,86 @@ const regionsByCategory = Object.entries(categories).map(([key, label]) => ({
 }));
 
 export default function BrainQuizPage() {
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: HOME_FAQS.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: { "@type": "Answer", text: faq.answer },
+    })),
+  };
+
   return (
     <>
-      {/* Interactive app — loaded client-side only (Three.js needs WebGL) */}
-      <BrainQuizLazy />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      {/* The app is the point of this page, so it mounts immediately here.
+          Landing pages under /quiz/* defer it behind a button instead, where
+          the prose is what the visitor arrived for. */}
+      <div className="seo-app-slot">
+        <BrainQuizLazy />
+      </div>
 
-      {/*
-        Server-rendered crawlable content.
-        Visually hidden but fully accessible to search engines and screen readers.
-        Uses sr-only pattern: positioned off-screen, still in DOM.
-      */}
-      <div
-        aria-hidden="false"
-        style={{
-          position: "absolute",
-          width: "1px",
-          height: "1px",
-          padding: 0,
-          margin: "-1px",
-          overflow: "hidden",
-          clip: "rect(0, 0, 0, 0)",
-          whiteSpace: "nowrap",
-          borderWidth: 0,
-        }}
-      >
-        <main>
-          <h1>Brain Atlas — Interactive 3D Brain Quiz</h1>
+      {/* Visible, crawlable content. Previously this block was clipped to a
+          1px sr-only box — search engines de-weight hidden text, so all of it
+          was being written and none of it counted. */}
+      <main className="seo-page">
+        <div className="seo-wrap">
+          <h1>Brain Anatomy Quiz</h1>
           <p>
-            Explore and learn brain anatomy with an interactive 3D model. Brain
-            Atlas features {BRAIN_REGIONS.length} brain regions across{" "}
-            {DIMENSIONS.length} learning dimensions, from basic neuroanatomy to
-            clinical neuroscience.
+            Learn the parts of the brain on a 3D model you can rotate, rather
+            than a flat diagram with arrows. Brain Atlas covers{" "}
+            {BRAIN_REGIONS.length} regions across {DIMENSIONS.length} dimensions,
+            from naming lobes to localising a stroke. It is free, needs no
+            account, and runs in the browser.
           </p>
 
           <section>
-            <h2>Quiz Modes</h2>
-            <ul>
-              <li>
-                <strong>Explore Mode</strong> — Browse the 3D brain model
-                freely. Click any region to see its name, function, and related
-                neural pathways.
-              </li>
-              <li>
-                <strong>Identify Mode</strong> — A brain region is highlighted
-                on the 3D model. Name the correct structure from multiple
-                choices.
-              </li>
-              <li>
-                <strong>Locate Mode</strong> — Given a region name, click the
-                correct area on the 3D brain model.
-              </li>
-            </ul>
+            <h2>Three ways to use it</h2>
+            <p>
+              <strong>Explore</strong> — rotate the brain and click any region to
+              read its name, function and connections. No scoring, no pressure.
+            </p>
+            <p>
+              <strong>Identify</strong> — a region is highlighted on the model
+              and you name it from multiple choices. This is recall, and it is
+              the direction exams test.
+            </p>
+            <p>
+              <strong>Locate</strong> — you are given a name and you click the
+              region. Harder than it sounds, and the fastest way to find out
+              which structures you only think you know.
+            </p>
           </section>
 
           <section>
-            <h2>Learning Dimensions</h2>
+            <h2>Quizzes by topic</h2>
             <ul>
-              {DIMENSIONS.map((dim) => (
-                <li key={dim.id}>
-                  <strong>{dim.name}</strong> — {dim.description}
-                  {dim.quizTypes.length > 0 && (
-                    <ul>
-                      {dim.quizTypes.map((qt) => (
-                        <li key={qt.id}>
-                          {qt.name} ({qt.difficulty})
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+              {QUIZ_PAGES.map((page) => (
+                <li key={page.slug}>
+                  <Link href={`/quiz/${page.slug}`}>{page.h1}</Link> —{" "}
+                  {page.description}
                 </li>
               ))}
             </ul>
           </section>
 
           <section>
-            <h2>Brain Regions</h2>
+            <h2>Learning dimensions</h2>
+            <ul>
+              {DIMENSIONS.map((dim) => (
+                <li key={dim.id}>
+                  <strong>{dim.name}</strong> — {dim.description}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <h2>Brain regions covered</h2>
             {regionsByCategory.map(({ label, regions }) =>
               regions.length > 0 ? (
                 <div key={label}>
@@ -115,19 +122,28 @@ export default function BrainQuizPage() {
           <section>
             <h2>About Brain Atlas</h2>
             <p>
-              Brain Atlas is a free, open-source educational tool for learning
-              neuroanatomy. Built with Three.js for real-time 3D visualization,
-              it uses mesh data from the Desikan-Killiany cortical atlas. No
-              account or login required.
+              Brain Atlas is a free educational tool for learning neuroanatomy,
+              built with Three.js for real-time 3D rendering using mesh data from
+              the Desikan-Killiany cortical atlas. There is no account, no login
+              and nothing to install.
             </p>
             <p>
-              Designed for medical students, psychology students, neuroscience
-              researchers, and anyone curious about the structure of the human
-              brain.
+              It is built for medical and psychology students, educators, and
+              anyone who wants to know what is actually inside a head.
             </p>
           </section>
-        </main>
-      </div>
+
+          <section>
+            <h2>Common questions</h2>
+            {HOME_FAQS.map((faq) => (
+              <div className="seo-faq" key={faq.question}>
+                <h3>{faq.question}</h3>
+                <p>{faq.answer}</p>
+              </div>
+            ))}
+          </section>
+        </div>
+      </main>
     </>
   );
 }
