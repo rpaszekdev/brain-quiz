@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Clinical quiz generators — lesion-deficit, deficit-from-region, which-artery,
  * name-syndrome, case-vignette, visual-field
@@ -6,6 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
 import type { QuizQuestion, MultipleChoiceAnswer, ClickOnBrainAnswer } from "../../types";
+import { BRAIN_REGIONS, getRegion } from "../../brain-regions";
 import { registerGenerator } from "./index";
 
 function shuffle(arr: any[]): any[] {
@@ -215,17 +215,44 @@ function generateCaseVignetteQuestions(count: number): QuizQuestion[] {
       };
     }
 
-    // Default: localization question
-    const answer: MultipleChoiceAnswer = {
-      type: "multiple-choice",
-      options: [
-        { id: "frontal", label: "Frontal Lobe" },
-        { id: "temporal", label: "Temporal Lobe" },
-        { id: "parietal", label: "Parietal Lobe" },
-        { id: "occipital", label: "Occipital Lobe" },
-      ],
-      correctId: cv.correctRegionId || "frontal",
-    };
+    // Default: localization question.
+    // The four lobe options below are only valid when the vignette has no
+    // specific region. Where it does (hippocampus, corpus-callosum, ...), the
+    // correct id was never among the lobes, so the question was unanswerable.
+    const correctRegion = cv.correctRegionId
+      ? getRegion(cv.correctRegionId)
+      : undefined;
+
+    const answer: MultipleChoiceAnswer = correctRegion
+      ? {
+          type: "multiple-choice",
+          options: shuffle([
+            { id: correctRegion.id, label: correctRegion.name },
+            ...shuffle(
+              BRAIN_REGIONS.filter(
+                (r: { id: string; category: string }) =>
+                  r.id !== correctRegion.id &&
+                  r.category === correctRegion.category,
+              ),
+            )
+              .slice(0, 3)
+              .map((r: { id: string; name: string }) => ({
+                id: r.id,
+                label: r.name,
+              })),
+          ]),
+          correctId: correctRegion.id,
+        }
+      : {
+          type: "multiple-choice",
+          options: [
+            { id: "frontal", label: "Frontal Lobe" },
+            { id: "temporal", label: "Temporal Lobe" },
+            { id: "parietal", label: "Parietal Lobe" },
+            { id: "occipital", label: "Occipital Lobe" },
+          ],
+          correctId: "frontal",
+        };
 
     return {
       id: `case-vignette-${i}`,

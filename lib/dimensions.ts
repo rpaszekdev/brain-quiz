@@ -1,5 +1,5 @@
 /**
- * Dimension definitions — the 8 neuroscience dimensions available in the quiz.
+ * Dimension definitions — the 9 neuroscience dimensions available in the quiz.
  */
 
 import type { Dimension } from "./types";
@@ -337,6 +337,53 @@ export const DIMENSIONS: Dimension[] = [
         answerFormat: "multiple-choice",
         difficulty: "advanced",
         questionCount: 8,
+      },
+    ],
+  },
+  {
+    id: "cranial-nerves",
+    name: "Cranial Nerves",
+    shortName: "Nerves",
+    icon: "",
+    description:
+      "Name, number, function and lesion for all twelve cranial nerves.",
+    color: "--murasaki",
+    quizTypes: [
+      {
+        id: "nerve-number",
+        dimensionId: "cranial-nerves",
+        name: "Name and Number",
+        description: "Match each cranial nerve name to its numeral.",
+        answerFormat: "multiple-choice",
+        difficulty: "beginner",
+        questionCount: 10,
+      },
+      {
+        id: "nerve-function",
+        dimensionId: "cranial-nerves",
+        name: "Nerve Function",
+        description: "Function given — identify the cranial nerve.",
+        answerFormat: "multiple-choice",
+        difficulty: "intermediate",
+        questionCount: 10,
+      },
+      {
+        id: "nerve-lesion",
+        dimensionId: "cranial-nerves",
+        name: "Lesion Effects",
+        description: "Lesion described — identify the cranial nerve.",
+        answerFormat: "multiple-choice",
+        difficulty: "advanced",
+        questionCount: 10,
+      },
+      {
+        id: "nerve-type",
+        dimensionId: "cranial-nerves",
+        name: "Sensory, Motor or Both",
+        description: "Classify each nerve as sensory, motor or both.",
+        answerFormat: "multiple-choice",
+        difficulty: "beginner",
+        questionCount: 10,
       },
     ],
   },

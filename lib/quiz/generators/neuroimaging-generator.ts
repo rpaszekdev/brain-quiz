@@ -1,10 +1,10 @@
-// @ts-nocheck
 /**
  * Neuroimaging quiz generators — modality-selection, brodmann-match, resolution-ranking
  */
 
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
 import type { QuizQuestion, MultipleChoiceAnswer, OrderingAnswer } from "../../types";
+import { brodmannLabel, withQualifier } from "../labels";
 import { registerGenerator } from "./index";
 
 function shuffle(arr: any[]): any[] {
@@ -24,7 +24,7 @@ const RESEARCH_SCENARIOS = [
   { question: "You need to precisely localize BOLD signal changes during a working memory fMRI paradigm", correctModality: "fmri", explanation: "fMRI detects blood-oxygen-level-dependent (BOLD) signal changes with ~2-3mm spatial resolution." },
   { question: "You need to non-invasively stimulate the dorsolateral prefrontal cortex to treat depression", correctModality: "tms", explanation: "TMS delivers focused magnetic pulses to modulate cortical excitability. rTMS is FDA-approved for treatment-resistant depression." },
   { question: "You want to detect cortical sources of epileptic activity with both spatial and temporal precision", correctModality: "meg", explanation: "MEG detects magnetic fields from neural currents with millisecond timing and better source localization than EEG." },
-  { question: "You need to measure cortical thickness and hippocampal volume in an Alzheimer's study", correctModality: "mri", explanation: "Structural MRI provides submillimeter resolution for morphometric analysis of brain structure." },
+  { question: "You need to measure cortical thickness and hippocampal volume in an Alzheimer's study", correctModality: "structural-mri", explanation: "Structural MRI provides submillimeter resolution for morphometric analysis of brain structure." },
   { question: "You want to identify language lateralization before epilepsy surgery", correctModality: "fmri", explanation: "fMRI language mapping (verb generation, semantic decision tasks) is the standard non-invasive method for determining hemispheric dominance." },
   { question: "You're studying the spatial distribution of amyloid plaques in a clinical trial", correctModality: "pet", explanation: "Amyloid PET (using Pittsburgh Compound B or florbetapir) visualizes amyloid plaque distribution in vivo." },
   { question: "You need to assess whether there's a causal relationship between right TPJ activity and moral judgment", correctModality: "tms", explanation: "TMS can establish causality by transiently disrupting function in a targeted cortical region, unlike correlational methods." },
@@ -36,17 +36,18 @@ function generateModalitySelectionQuestions(count: number): QuizQuestion[] {
 
   const selected = shuffle(RESEARCH_SCENARIOS).slice(0, Math.min(count, RESEARCH_SCENARIOS.length));
 
-  return selected.map((scenario, i) => {
+  return selected.flatMap((scenario, i) => {
     const correctMod = IMAGING_MODALITIES.find((m: { id: string }) => m.id === scenario.correctModality);
+    if (!correctMod) return [];
     const wrongMods = shuffle(
       IMAGING_MODALITIES.filter((m: { id: string }) => m.id !== scenario.correctModality),
     ).slice(0, 3);
 
     const allOptions = shuffle([
-      { id: correctMod.id, label: `${correctMod.name} (${correctMod.abbreviation})` },
+      { id: correctMod.id, label: withQualifier(correctMod.name, correctMod.abbreviation) },
       ...wrongMods.map((m: { id: string; name: string; abbreviation: string }) => ({
         id: m.id,
-        label: `${m.name} (${m.abbreviation})`,
+        label: withQualifier(m.name, m.abbreviation),
       })),
     ]);
 
@@ -100,10 +101,10 @@ function generateBrodmannMatchQuestions(count: number): QuizQuestion[] {
       dimensionId: "neuroimaging" as const,
       quizTypeId: "brodmann-match",
       difficulty: "intermediate" as const,
-      prompt: `Brodmann Area ${ba.number} (${ba.name}) is associated with which function(s)?`,
+      prompt: `${brodmannLabel(ba)} is associated with which function(s)?`,
       answer,
       sceneDirective: "highlight-region" as const,
-      explanation: `BA ${ba.number} (${ba.name}): ${ba.functions.join(", ")}`,
+      explanation: `${brodmannLabel(ba)}: ${ba.functions.join(", ")}`,
       tags: ["neuroimaging", "brodmann"],
     };
   });
@@ -146,7 +147,7 @@ function generateResolutionRankingQuestions(count: number): QuizQuestion[] {
       prompt: "Rank these modalities from BEST to WORST spatial resolution:",
       answer,
       sceneDirective: "neutral" as const,
-      explanation: `Best to worst spatial resolution: ${spatialOrder.map((m: { abbreviation: string; spatialResolution: string }) => `${m.abbreviation} (${m.spatialResolution})`).join(" > ")}`,
+      explanation: `Best to worst spatial resolution: ${spatialOrder.map((m: { abbreviation: string; spatialResolution: string }) => withQualifier(m.abbreviation, m.spatialResolution)).join(" > ")}`,
       tags: ["neuroimaging", "resolution"],
     });
   }
@@ -183,7 +184,7 @@ function generateResolutionRankingQuestions(count: number): QuizQuestion[] {
       prompt: "Rank these modalities from BEST to WORST temporal resolution:",
       answer,
       sceneDirective: "neutral" as const,
-      explanation: `Best to worst temporal resolution: ${temporalOrder.map((m: { abbreviation: string; temporalResolution: string }) => `${m.abbreviation} (${m.temporalResolution})`).join(" > ")}`,
+      explanation: `Best to worst temporal resolution: ${temporalOrder.map((m: { abbreviation: string; temporalResolution: string }) => withQualifier(m.abbreviation, m.temporalResolution)).join(" > ")}`,
       tags: ["neuroimaging", "resolution"],
     });
   }

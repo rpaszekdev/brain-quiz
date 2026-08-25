@@ -1,10 +1,10 @@
-// @ts-nocheck
 /**
  * Pathway quiz generators — name-tract, tract-endpoints, build-circuit
  */
 
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
 import type { QuizQuestion, MultipleChoiceAnswer, OrderingAnswer } from "../../types";
+import { regionLabel, regionListLabel } from "../../brain-regions";
 import { registerGenerator } from "./index";
 
 function shuffle(arr: any[]): any[] {
@@ -45,7 +45,7 @@ function generateNameTractQuestions(count: number): QuizQuestion[] {
       dimensionId: "pathways" as const,
       quizTypeId: "name-tract",
       difficulty: "intermediate" as const,
-      prompt: `Which white matter tract connects ${tract.sourceRegions[0] || "these"} to ${tract.targetRegions[0] || "those"} regions?`,
+      prompt: `Which white matter tract connects ${regionLabel(tract.sourceRegions[0] ?? "")} to ${regionLabel(tract.targetRegions[0] ?? "")}?`,
       answer,
       sceneDirective: "highlight-tract" as const,
       explanation: tract.description,
@@ -60,7 +60,7 @@ function generateTractEndpointsQuestions(count: number): QuizQuestion[] {
   const pathways = shuffle(NEURAL_PATHWAYS).slice(0, Math.min(count, NEURAL_PATHWAYS.length));
 
   return pathways.map((tract: { id: string; name: string; sourceRegions: string[]; targetRegions: string[]; description: string }, i: number) => {
-    const correctLabel = `${tract.sourceRegions.join(", ")} \u2194 ${tract.targetRegions.join(", ")}`;
+    const correctLabel = `${regionListLabel(tract.sourceRegions)} \u2194 ${regionListLabel(tract.targetRegions)}`;
 
     // Generate wrong endpoint combinations from other tracts
     const wrongTracts = shuffle(
@@ -68,7 +68,7 @@ function generateTractEndpointsQuestions(count: number): QuizQuestion[] {
     ).slice(0, 3);
     const wrongOptions = wrongTracts.map((t: { id: string; sourceRegions: string[]; targetRegions: string[] }) => ({
       id: t.id,
-      label: `${t.sourceRegions.join(", ")} \u2194 ${t.targetRegions.join(", ")}`,
+      label: `${regionListLabel(t.sourceRegions)} \u2194 ${regionListLabel(t.targetRegions)}`,
     }));
 
     const allOptions = shuffle([
@@ -150,7 +150,7 @@ function generateBuildCircuitQuestions(count: number): QuizQuestion[] {
     const answer: OrderingAnswer = {
       type: "ordering",
       items: shuffle([...circuit.steps]),
-      correctOrder: circuit.steps.map((s) => s.id),
+      correctOrder: circuit.steps.map((s: { id: string }) => s.id),
     };
 
     return {
@@ -161,7 +161,7 @@ function generateBuildCircuitQuestions(count: number): QuizQuestion[] {
       prompt: `Arrange the structures in the correct order for the ${circuit.name}:`,
       answer,
       sceneDirective: "neutral" as const,
-      explanation: `The ${circuit.name} follows this sequence: ${circuit.steps.map((s) => s.label).join(" \u2192 ")}`,
+      explanation: `The ${circuit.name} follows this sequence: ${circuit.steps.map((s: { label: string }) => s.label).join(" \u2192 ")}`,
       tags: ["circuit", circuit.name],
     };
   });

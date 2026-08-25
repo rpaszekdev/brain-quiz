@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Cellular architecture quiz generators
  * cell-type, cortical-layer, receptor-distribution, hippocampal-circuit
@@ -6,6 +5,12 @@
 
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
 import type { QuizQuestion, MultipleChoiceAnswer } from "../../types";
+import type {
+  HippocampalSubfield,
+  ReceptorDistribution,
+} from "../../data/cellular";
+import { regionLabel } from "../../brain-regions";
+import { corticalLayerLabel } from "../labels";
 import { registerGenerator } from "./index";
 
 function shuffle(arr: any[]): any[] {
@@ -60,7 +65,7 @@ function generateCellTypeQuestions(count: number): QuizQuestion[] {
         dimensionId: "cellular" as const,
         quizTypeId: "cell-type",
         difficulty: "intermediate" as const,
-        prompt: `Which signature cell type is found in the ${cell.regionId}?`,
+        prompt: `Which signature cell type is found in the ${regionLabel(cell.regionId)}?`,
         answer,
         sceneDirective: "highlight-region" as const,
         explanation: `${cell.name}: ${cell.description}. ${cell.uniqueFeature}`,
@@ -88,12 +93,12 @@ function generateCorticalLayerQuestions(count: number): QuizQuestion[] {
     const allOptions = shuffle([
       {
         id: String(layer.number),
-        label: `Layer ${layer.romanNumeral} (${layer.name})`,
+        label: corticalLayerLabel(layer),
       },
       ...wrongLayers.map(
         (l: { number: number; romanNumeral: string; name: string }) => ({
           id: String(l.number),
-          label: `Layer ${l.romanNumeral} (${l.name})`,
+          label: corticalLayerLabel(l),
         }),
       ),
     ]);
@@ -112,7 +117,7 @@ function generateCorticalLayerQuestions(count: number): QuizQuestion[] {
       prompt: `Which cortical layer is primarily responsible for: ${layer.functions[0]}?`,
       answer,
       sceneDirective: "neutral" as const,
-      explanation: `Layer ${layer.romanNumeral} (${layer.name}): ${layer.functions.join(", ")}. Input from: ${layer.inputFrom.join(", ")}. Output to: ${layer.outputTo.join(", ")}.`,
+      explanation: `${corticalLayerLabel(layer)}: ${layer.functions.join(", ")}. Input from: ${layer.inputFrom.join(", ")}. Output to: ${layer.outputTo.join(", ")}.`,
       tags: ["cellular", "cortical-layers"],
     });
   }
@@ -129,60 +134,51 @@ function generateReceptorDistributionQuestions(count: number): QuizQuestion[] {
     Math.min(count, RECEPTOR_DISTRIBUTION.length),
   );
 
-  return selected.map(
-    (
-      rd: {
-        receptor: string;
-        region: string;
-        density: string;
-        significance: string;
-      },
-      i: number,
-    ) => {
-      const wrongEntries = shuffle(
-        RECEPTOR_DISTRIBUTION.filter(
-          (r: { receptor: string; region: string }) =>
-            r.receptor !== rd.receptor || r.region !== rd.region,
-        ),
-      ).slice(0, 3);
+  return selected.map((rd: ReceptorDistribution, i: number) => {
+    // The data carries {id, name, type, highDensityRegions[], function} —
+    // the generator previously read receptor/region/density/significance,
+    // none of which exist, so every option rendered "undefined".
+    const regionId = rd.highDensityRegions[0]?.regionId ?? "";
+    const wrongEntries = shuffle(
+      RECEPTOR_DISTRIBUTION.filter((r: ReceptorDistribution) => r.id !== rd.id),
+    ).slice(0, 3);
 
-      const allOptions = shuffle([
-        { id: rd.receptor, label: rd.receptor },
-        ...wrongEntries.map((r: { receptor: string }) => ({
-          id: r.receptor,
-          label: r.receptor,
-        })),
-      ]);
+    const allOptions = shuffle([
+      { id: rd.id, label: rd.name },
+      ...wrongEntries.map((r: ReceptorDistribution) => ({
+        id: r.id,
+        label: r.name,
+      })),
+    ]);
 
-      // Deduplicate options
-      const seen = new Set<string>();
-      const uniqueOptions = allOptions
-        .filter((o: { id: string }) => {
-          if (seen.has(o.id)) return false;
-          seen.add(o.id);
-          return true;
-        })
-        .slice(0, 4);
+    // Deduplicate options
+    const seen = new Set<string>();
+    const uniqueOptions = allOptions
+      .filter((o: { id: string }) => {
+        if (seen.has(o.id)) return false;
+        seen.add(o.id);
+        return true;
+      })
+      .slice(0, 4);
 
-      const answer: MultipleChoiceAnswer = {
-        type: "multiple-choice",
-        options: uniqueOptions,
-        correctId: rd.receptor,
-      };
+    const answer: MultipleChoiceAnswer = {
+      type: "multiple-choice",
+      options: uniqueOptions,
+      correctId: rd.id,
+    };
 
-      return {
-        id: `receptor-dist-${i}`,
-        dimensionId: "cellular" as const,
-        quizTypeId: "receptor-distribution",
-        difficulty: "advanced" as const,
-        prompt: `Which receptor type has the highest density in the ${rd.region}?`,
-        answer,
-        sceneDirective: "highlight-region" as const,
-        explanation: `${rd.receptor} receptors are highly concentrated in the ${rd.region}. ${rd.significance}`,
-        tags: ["cellular", "receptors"],
-      };
-    },
-  );
+    return {
+      id: `receptor-dist-${i}`,
+      dimensionId: "cellular" as const,
+      quizTypeId: "receptor-distribution",
+      difficulty: "advanced" as const,
+      prompt: `Which receptor type has the highest density in the ${regionLabel(regionId)}?`,
+      answer,
+      sceneDirective: "highlight-region" as const,
+      explanation: `${rd.name} receptors are highly concentrated in the ${regionLabel(regionId)}. ${rd.function}`,
+      tags: ["cellular", "receptors"],
+    };
+  });
 }
 
 function generateHippocampalCircuitQuestions(count: number): QuizQuestion[] {
@@ -194,53 +190,41 @@ function generateHippocampalCircuitQuestions(count: number): QuizQuestion[] {
     Math.min(count, HIPPOCAMPAL_SUBFIELDS.length),
   );
 
-  return selected.map(
-    (
-      sf: {
-        id: string;
-        name: string;
-        inputFrom: string[];
-        outputTo: string[];
-        function: string;
-        cellTypes: string[];
-      },
-      i: number,
-    ) => {
-      const wrongSubfields = shuffle(
-        HIPPOCAMPAL_SUBFIELDS.filter((s: { id: string }) => s.id !== sf.id),
-      ).slice(0, 3);
+  return selected.map((sf: HippocampalSubfield, i: number) => {
+    const wrongSubfields = shuffle(
+      HIPPOCAMPAL_SUBFIELDS.filter((s: HippocampalSubfield) => s.id !== sf.id),
+    ).slice(0, 3);
 
-      // Ask about connections
-      const correctLabel = `Receives from: ${sf.inputFrom.join(", ")}; Projects to: ${sf.outputTo.join(", ")}`;
-      const allOptions = shuffle([
-        { id: sf.id, label: correctLabel },
-        ...wrongSubfields.map(
-          (s: { id: string; inputFrom: string[]; outputTo: string[] }) => ({
-            id: s.id,
-            label: `Receives from: ${s.inputFrom.join(", ")}; Projects to: ${s.outputTo.join(", ")}`,
-          }),
-        ),
-      ]);
+    // Ask about connections
+    const correctLabel = `Receives from: ${sf.inputFrom.join(", ")}; Projects to: ${sf.outputTo.join(", ")}`;
+    const allOptions = shuffle([
+      { id: sf.id, label: correctLabel },
+      ...wrongSubfields.map(
+        (s: { id: string; inputFrom: string[]; outputTo: string[] }) => ({
+          id: s.id,
+          label: `Receives from: ${s.inputFrom.join(", ")}; Projects to: ${s.outputTo.join(", ")}`,
+        }),
+      ),
+    ]);
 
-      const answer: MultipleChoiceAnswer = {
-        type: "multiple-choice",
-        options: allOptions,
-        correctId: sf.id,
-      };
+    const answer: MultipleChoiceAnswer = {
+      type: "multiple-choice",
+      options: allOptions,
+      correctId: sf.id,
+    };
 
-      return {
-        id: `hippocampal-circuit-${i}`,
-        dimensionId: "cellular" as const,
-        quizTypeId: "hippocampal-circuit",
-        difficulty: "advanced" as const,
-        prompt: `Which connection pattern describes ${sf.name}?`,
-        answer,
-        sceneDirective: "neutral" as const,
-        explanation: `${sf.name}: ${sf.function}. Cell types: ${sf.cellTypes.join(", ")}.`,
-        tags: ["cellular", "hippocampus"],
-      };
-    },
-  );
+    return {
+      id: `hippocampal-circuit-${i}`,
+      dimensionId: "cellular" as const,
+      quizTypeId: "hippocampal-circuit",
+      difficulty: "advanced" as const,
+      prompt: `Which connection pattern describes ${sf.name}?`,
+      answer,
+      sceneDirective: "neutral" as const,
+      explanation: `${sf.name}: ${sf.function}. Cell types: ${sf.principalCells}.`,
+      tags: ["cellular", "hippocampus"],
+    };
+  });
 }
 
 registerGenerator("cell-type", generateCellTypeQuestions);

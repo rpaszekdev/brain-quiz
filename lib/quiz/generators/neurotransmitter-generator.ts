@@ -1,10 +1,11 @@
-// @ts-nocheck
 /**
  * Neurotransmitter quiz generators — nt-source, nt-affected, pharma-bridge, disease-circuit
  */
 
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
-import type { QuizQuestion, MultipleChoiceAnswer, ClickOnBrainAnswer, MultiSelectAnswer } from "../../types";
+import type { QuizQuestion, MultipleChoiceAnswer, MultiSelectAnswer } from "../../types";
+import { regionLabel } from "../../brain-regions";
+import { neurotransmitterLabel } from "../labels";
 import { registerGenerator } from "./index";
 
 function shuffle(arr: any[]): any[] {
@@ -19,36 +20,36 @@ function shuffle(arr: any[]): any[] {
 // Clinical vignettes for NT identification
 const NT_VIGNETTES = [
   { vignette: "A 65-year-old presents with resting tremor, rigidity, and bradykinesia. Symptoms improve with levodopa.", ntId: "da-nigrostriatal", explanation: "Parkinson's disease results from degeneration of dopaminergic neurons in the substantia nigra pars compacta (nigrostriatal pathway)." },
-  { vignette: "A patient with treatment-resistant depression shows marked improvement with ketamine infusion.", ntId: "glutamate", explanation: "Ketamine acts as an NMDA receptor antagonist, rapidly boosting glutamatergic signaling and triggering BDNF-dependent synaptogenesis." },
-  { vignette: "A patient on an SSRI reports improved mood after 3 weeks. Side effects include sexual dysfunction.", ntId: "serotonin-dorsal", explanation: "SSRIs increase serotonin availability by blocking reuptake at serotonergic synapses. Therapeutic effects involve 5-HT1A receptor desensitization in the dorsal raphe." },
-  { vignette: "A child with severe epilepsy responds to vigabatrin, which irreversibly inhibits GABA transaminase.", ntId: "gaba", explanation: "GABA is the brain's primary inhibitory neurotransmitter. Enhancing GABAergic tone reduces seizure activity by increasing inhibition." },
-  { vignette: "A patient with myasthenia gravis improves with pyridostigmine (acetylcholinesterase inhibitor).", ntId: "ach-basal", explanation: "Myasthenia gravis involves antibodies against nicotinic ACh receptors at the neuromuscular junction. AChE inhibitors increase ACh availability." },
-  { vignette: "A patient with PTSD has exaggerated startle responses and hypervigilance, with elevated urinary catecholamines.", ntId: "norepinephrine", explanation: "PTSD involves noradrenergic hyperactivity from the locus coeruleus, driving hyperarousal, startle, and hypervigilance." },
+  { vignette: "A patient with treatment-resistant depression shows marked improvement with ketamine infusion.", ntId: "glu-cortical", explanation: "Ketamine acts as an NMDA receptor antagonist, rapidly boosting glutamatergic signaling and triggering BDNF-dependent synaptogenesis." },
+  { vignette: "A patient on an SSRI reports improved mood after 3 weeks. Side effects include sexual dysfunction.", ntId: "5ht-dorsal-raphe", explanation: "SSRIs increase serotonin availability by blocking reuptake at serotonergic synapses. Therapeutic effects involve 5-HT1A receptor desensitization in the dorsal raphe." },
+  { vignette: "A child with severe epilepsy responds to vigabatrin, which irreversibly inhibits GABA transaminase.", ntId: "gaba-cortical", explanation: "GABA is the brain's primary inhibitory neurotransmitter. Enhancing GABAergic tone reduces seizure activity by increasing inhibition." },
+  { vignette: "A patient with myasthenia gravis improves with pyridostigmine (acetylcholinesterase inhibitor).", ntId: "ach-basal-forebrain", explanation: "Myasthenia gravis involves antibodies against nicotinic ACh receptors at the neuromuscular junction. AChE inhibitors increase ACh availability." },
+  { vignette: "A patient with PTSD has exaggerated startle responses and hypervigilance, with elevated urinary catecholamines.", ntId: "ne-locus-coeruleus", explanation: "PTSD involves noradrenergic hyperactivity from the locus coeruleus, driving hyperarousal, startle, and hypervigilance." },
   { vignette: "A patient with schizophrenia develops tardive dyskinesia after years of haloperidol (D2 blocker).", ntId: "da-nigrostriatal", explanation: "Chronic D2 blockade in the nigrostriatal pathway causes dopamine receptor supersensitivity, leading to tardive dyskinesia." },
-  { vignette: "An Alzheimer's patient shows modest memory improvement on donepezil (AChE inhibitor).", ntId: "ach-basal", explanation: "AD involves degeneration of cholinergic neurons in the nucleus basalis of Meynert (Ch4). AChE inhibitors partially compensate." },
+  { vignette: "An Alzheimer's patient shows modest memory improvement on donepezil (AChE inhibitor).", ntId: "ach-basal-forebrain", explanation: "AD involves degeneration of cholinergic neurons in the nucleus basalis of Meynert (Ch4). AChE inhibitors partially compensate." },
 ];
 
 // Pharmacology bridge questions
 const PHARMA_QUESTIONS = [
-  { drug: "Fluoxetine (Prozac)", target: "serotonin-dorsal", mechanism: "SSRI — blocks serotonin reuptake transporter (SERT)" },
+  { drug: "Fluoxetine (Prozac)", target: "5ht-dorsal-raphe", mechanism: "SSRI — blocks serotonin reuptake transporter (SERT)" },
   { drug: "Methylphenidate (Ritalin)", target: "da-mesolimbic", mechanism: "Blocks dopamine and norepinephrine reuptake, increasing catecholamine signaling in prefrontal cortex" },
-  { drug: "Diazepam (Valium)", target: "gaba", mechanism: "Positive allosteric modulator at GABA-A receptors, enhancing chloride conductance" },
+  { drug: "Diazepam (Valium)", target: "gaba-cortical", mechanism: "Positive allosteric modulator at GABA-A receptors, enhancing chloride conductance" },
   { drug: "L-DOPA / Levodopa", target: "da-nigrostriatal", mechanism: "Dopamine precursor converted to dopamine by DOPA decarboxylase, replenishing striatal dopamine" },
   { drug: "Clozapine", target: "da-mesolimbic", mechanism: "Atypical antipsychotic — blocks D2 (loosely), 5-HT2A, and multiple other receptors" },
-  { drug: "Memantine", target: "glutamate", mechanism: "NMDA receptor antagonist — prevents excitotoxicity in Alzheimer's disease" },
-  { drug: "Propranolol", target: "norepinephrine", mechanism: "Beta-adrenergic blocker — used for performance anxiety and PTSD flashback reduction" },
-  { drug: "Galantamine", target: "ach-basal", mechanism: "AChE inhibitor + nicotinic receptor allosteric modulator — used in AD" },
+  { drug: "Memantine", target: "glu-cortical", mechanism: "NMDA receptor antagonist — prevents excitotoxicity in Alzheimer's disease" },
+  { drug: "Propranolol", target: "ne-locus-coeruleus", mechanism: "Beta-adrenergic blocker — used for performance anxiety and PTSD flashback reduction" },
+  { drug: "Galantamine", target: "ach-basal-forebrain", mechanism: "AChE inhibitor + nicotinic receptor allosteric modulator — used in AD" },
   { drug: "Pramipexole", target: "da-mesolimbic", mechanism: "D2/D3 receptor agonist — used in Parkinson's and restless legs syndrome" },
-  { drug: "Gabapentin", target: "gaba", mechanism: "Binds alpha-2-delta subunit of voltage-gated calcium channels (not actually GABA-ergic despite name)" },
+  { drug: "Gabapentin", target: "gaba-cortical", mechanism: "Binds alpha-2-delta subunit of voltage-gated calcium channels (not actually GABA-ergic despite name)" },
 ];
 
 // Disease-circuit (multi-select) questions
 const DISEASE_CIRCUITS = [
-  { disease: "Parkinson's Disease", affectedNTs: ["da-nigrostriatal", "ach-basal"], explanation: "PD involves dopaminergic loss in substantia nigra AND relative cholinergic overactivity (hence anticholinergics can help tremor)." },
-  { disease: "Major Depression", affectedNTs: ["serotonin-dorsal", "norepinephrine", "da-mesocortical"], explanation: "The monoamine hypothesis implicates serotonin, norepinephrine, and dopamine deficiency in depression." },
-  { disease: "Schizophrenia", affectedNTs: ["da-mesolimbic", "da-mesocortical", "glutamate"], explanation: "Positive symptoms: mesolimbic dopamine excess. Negative symptoms: mesocortical dopamine deficit. Glutamate NMDA hypofunction is also implicated." },
-  { disease: "Alzheimer's Disease", affectedNTs: ["ach-basal", "glutamate"], explanation: "AD involves cholinergic neuron loss (nucleus basalis) and glutamate excitotoxicity via NMDA receptor dysfunction." },
-  { disease: "Anxiety Disorders", affectedNTs: ["serotonin-dorsal", "gaba", "norepinephrine"], explanation: "Anxiety involves serotonergic underactivity, GABAergic deficiency, and noradrenergic overactivity." },
+  { disease: "Parkinson's Disease", affectedNTs: ["da-nigrostriatal", "ach-basal-forebrain"], explanation: "PD involves dopaminergic loss in substantia nigra AND relative cholinergic overactivity (hence anticholinergics can help tremor)." },
+  { disease: "Major Depression", affectedNTs: ["5ht-dorsal-raphe", "ne-locus-coeruleus", "da-mesocortical"], explanation: "The monoamine hypothesis implicates serotonin, norepinephrine, and dopamine deficiency in depression." },
+  { disease: "Schizophrenia", affectedNTs: ["da-mesolimbic", "da-mesocortical", "glu-cortical"], explanation: "Positive symptoms: mesolimbic dopamine excess. Negative symptoms: mesocortical dopamine deficit. Glutamate NMDA hypofunction is also implicated." },
+  { disease: "Alzheimer's Disease", affectedNTs: ["ach-basal-forebrain", "glu-cortical"], explanation: "AD involves cholinergic neuron loss (nucleus basalis) and glutamate excitotoxicity via NMDA receptor dysfunction." },
+  { disease: "Anxiety Disorders", affectedNTs: ["5ht-dorsal-raphe", "gaba-cortical", "ne-locus-coeruleus"], explanation: "Anxiety involves serotonergic underactivity, GABAergic deficiency, and noradrenergic overactivity." },
 ];
 
 function generateNTSourceQuestions(count: number): QuizQuestion[] {
@@ -58,10 +59,27 @@ function generateNTSourceQuestions(count: number): QuizQuestion[] {
   const systems = shuffle(NEUROTRANSMITTER_SYSTEMS).slice(0, Math.min(count, NEUROTRANSMITTER_SYSTEMS.length));
 
   return systems.map((sys: { id: string; name: string; molecule: string; sourceNuclei: string[]; description?: string }, i: number) => {
-    // Use the first source nucleus as the click target
-    const answer: ClickOnBrainAnswer = {
-      type: "click-on-brain",
-      correctRegionIds: sys.sourceNuclei.length > 0 ? sys.sourceNuclei : ["brain-stem"],
+    // Multiple choice, not click-on-brain: sourceNuclei are prose ("VTA
+    // (ventral tegmental area)") and most of these nuclei — VTA, raphe, locus
+    // coeruleus, nucleus basalis — have no mesh in the model, so no click could
+    // ever match. Every question of this type was previously unanswerable.
+    const nucleiLabel = (nuclei: string[]) =>
+      nuclei.map((n) => (n.includes("-") ? regionLabel(n) : n)).join(", ");
+    const correctLabel = nucleiLabel(sys.sourceNuclei);
+    const distractors = shuffle(
+      (NEUROTRANSMITTER_SYSTEMS as { id: string; sourceNuclei: string[] }[])
+        .filter((s) => s.id !== sys.id && s.sourceNuclei.length > 0),
+    )
+      .slice(0, 3)
+      .map((s: { id: string; sourceNuclei: string[] }) => ({
+        id: s.id,
+        label: nucleiLabel(s.sourceNuclei),
+      }));
+
+    const answer: MultipleChoiceAnswer = {
+      type: "multiple-choice",
+      options: shuffle([{ id: sys.id, label: correctLabel }, ...distractors]),
+      correctId: sys.id,
     };
 
     return {
@@ -69,10 +87,10 @@ function generateNTSourceQuestions(count: number): QuizQuestion[] {
       dimensionId: "neurotransmitters" as const,
       quizTypeId: "nt-source",
       difficulty: "intermediate" as const,
-      prompt: `Where are the cell bodies of the ${sys.name} (${sys.molecule}) system?`,
+      prompt: `Where are the cell bodies of the ${neurotransmitterLabel(sys)}?`,
       answer,
       sceneDirective: "neutral" as const,
-      explanation: `The ${sys.name} system originates from ${sys.sourceNuclei.join(", ")}.`,
+      explanation: `${sys.name} originates from ${nucleiLabel(sys.sourceNuclei)}.`,
       tags: ["neurotransmitters", sys.molecule],
     };
   });
@@ -91,10 +109,10 @@ function generateNTAffectedQuestions(count: number): QuizQuestion[] {
     ).slice(0, 3);
 
     const allOptions = shuffle([
-      { id: correctSys.id, label: `${correctSys.name} (${correctSys.molecule})` },
+      { id: correctSys.id, label: neurotransmitterLabel(correctSys) },
       ...wrongSystems.map((s: { id: string; name: string; molecule: string }) => ({
         id: s.id,
-        label: `${s.name} (${s.molecule})`,
+        label: neurotransmitterLabel(s),
       })),
     ]);
 
@@ -131,10 +149,10 @@ function generatePharmaBridgeQuestions(count: number): QuizQuestion[] {
     ).slice(0, 3);
 
     const allOptions = shuffle([
-      { id: correctSys.id, label: `${correctSys.name} (${correctSys.molecule})` },
+      { id: correctSys.id, label: neurotransmitterLabel(correctSys) },
       ...wrongSystems.map((s: { id: string; name: string; molecule: string }) => ({
         id: s.id,
-        label: `${s.name} (${s.molecule})`,
+        label: neurotransmitterLabel(s),
       })),
     ]);
 
@@ -167,7 +185,7 @@ function generateDiseaseCircuitQuestions(count: number): QuizQuestion[] {
   return selected.map((dc, i) => {
     const allSystems = NEUROTRANSMITTER_SYSTEMS.map((s: { id: string; name: string; molecule: string }) => ({
       id: s.id,
-      label: `${s.name} (${s.molecule})`,
+      label: neurotransmitterLabel(s),
     }));
 
     const answer: MultiSelectAnswer = {
@@ -182,7 +200,7 @@ function generateDiseaseCircuitQuestions(count: number): QuizQuestion[] {
         const sys = NEUROTRANSMITTER_SYSTEMS.find((s: { id: string }) => s.id === ntId);
         if (sys) {
           answer.options.pop(); // Remove last to make room
-          answer.options.push({ id: sys.id, label: `${sys.name} (${sys.molecule})` });
+          answer.options.push({ id: sys.id, label: neurotransmitterLabel(sys) });
         }
       }
     }

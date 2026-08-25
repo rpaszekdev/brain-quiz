@@ -187,7 +187,7 @@ function BrainQuizAppInner({ autoStart }: BrainQuizAppProps) {
     ) : null;
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: "calc(100vh - var(--topnav-h))", display: "flex", flexDirection: "column" }}>
       {!fullscreen && (
         <Topbar
           appMode={appMode}

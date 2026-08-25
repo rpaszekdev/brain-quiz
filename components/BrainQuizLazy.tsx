@@ -8,7 +8,7 @@ const BrainQuizApp = dynamic(() => import("@/components/BrainQuizApp"), {
   loading: () => (
     <div
       style={{
-        height: "100vh",
+        height: "calc(100vh - var(--topnav-h))",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

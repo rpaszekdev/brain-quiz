@@ -12,15 +12,8 @@ import { QuizResult } from "./QuizResult";
 import { track } from "@/lib/analytics";
 import type { DimensionId, QuizQuestion, UserAnswer } from "@/lib/types";
 
-// Ensure all generators are registered (side-effect imports)
-import "@/lib/quiz/generators/anatomy-generator";
-import "@/lib/quiz/generators/pathway-generator";
-import "@/lib/quiz/generators/network-generator";
-import "@/lib/quiz/generators/neurotransmitter-generator";
-import "@/lib/quiz/generators/clinical-generator";
-import "@/lib/quiz/generators/developmental-generator";
-import "@/lib/quiz/generators/neuroimaging-generator";
-import "@/lib/quiz/generators/cellular-generator";
+// Ensure all generators are registered (side-effect import)
+import "@/lib/quiz/generators/register-all";
 
 interface QuizShellProps {
   onPulseRegionChange: (regionId: string | null, enablePulse: boolean) => void;

@@ -1074,6 +1074,33 @@ function buildAliasIndex(): Map<string, BrainRegion> {
 
 const aliasIndex = buildAliasIndex();
 
+const regionsById = new Map(BRAIN_REGIONS.map((region) => [region.id, region]));
+
+export function getRegion(id: string): BrainRegion | undefined {
+  return regionsById.get(id);
+}
+
+/**
+ * Display name for a region id.
+ *
+ * Quiz generators interpolate region ids straight into prompts, which used to
+ * surface raw slugs to users ("found in the entorhinal-cortex?"). Falls back to
+ * a humanised slug so an unknown id degrades to readable text rather than
+ * leaking the id verbatim.
+ */
+export function regionLabel(id: string): string {
+  const region = regionsById.get(id);
+  if (region) return region.name;
+  return id
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+export function regionListLabel(ids: readonly string[]): string {
+  return ids.map(regionLabel).join(", ");
+}
+
 /**
  * Find brain regions mentioned in text.
  * Returns unique regions sorted by earliest appearance.

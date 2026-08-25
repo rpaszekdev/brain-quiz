@@ -55,4 +55,10 @@ export interface ArticlePage {
   readonly faqs: readonly SeoFaq[];
   readonly related: readonly ArticleRelatedLink[];
   readonly table?: ArticleTable;
+  /**
+   * How many sections render before the table. Default 0 (table first).
+   * The cranial nerve page sets 2 so the mnemonic — the thing people came
+   * for — appears above a 12-row anatomy table rather than below it.
+   */
+  readonly tableAfter?: number;
 }

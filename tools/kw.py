@@ -23,10 +23,13 @@ req = urllib.request.Request(
 rows = json.load(urllib.request.urlopen(req, timeout=300))
 json.dump(rows, open("kw.json", "w"), ensure_ascii=False, indent=2)
 
-print(f"{'keyword':<34}{'vol':>8}{'cpc':>7}{'KD':>5}  intent")
+print(f"{'keyword':<38}{DB:>7}{'world':>8}{'cpc':>7}{'KD':>5}  top countries")
 for r in rows:
-    print(f"{r.get('keyword',''):<34}{r.get('volume') or 0:>8}{r.get('cpc_usd') or 0:>7.2f}"
-          f"{r.get('keyword_difficulty') or 0:>5}  {','.join(r.get('intents') or [])}")
+    by_country = r.get("volume_by_country") or []
+    world = sum(c.get("volume") or 0 for c in by_country)
+    top = " ".join(f"{c['country']}:{c['volume']}" for c in by_country[:3] if c.get("volume"))
+    print(f"{r.get('keyword',''):<38}{r.get('volume') or 0:>7}{world:>8}{r.get('cpc_usd') or 0:>7.2f}"
+          f"{r.get('keyword_difficulty') or 0:>5}  {top}")
 
 ideas = {i["keyword"]: i for r in rows for i in (r.get("related_keywords") or []) + (r.get("questions") or [])}
 print(f"\n--- {len(ideas)} ideas (free, came with the seeds) → kw.json ---")

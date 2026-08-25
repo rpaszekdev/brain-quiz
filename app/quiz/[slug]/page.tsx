@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { QuizLanding } from "@/components/seo/QuizLanding";
 import { ALL_SLUGS, getQuizPage, getRelated } from "@/lib/seo/pages";
+// ponytail: quiz generators are only imported by a ssr:false component, so
+// nothing else evaluates them at build time. This import makes `next build`
+// the regression check for question text.
+import "@/lib/quiz/validate-questions";
 
 interface Params {
   params: Promise<{ slug: string }>;

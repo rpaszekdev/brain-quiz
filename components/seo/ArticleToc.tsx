@@ -9,9 +9,13 @@ import { headingSlug } from "@/lib/seo/slug";
  * Google something to build jump-to sitelinks from.
  */
 export function ArticleToc({ page }: { page: ArticlePage }) {
+  // Mirror the render order, including where the table is spliced in.
+  const tableAt = page.tableAfter ?? 0;
+  const sectionHeadings = page.sections.map((section) => section.heading);
   const entries = [
+    ...sectionHeadings.slice(0, tableAt),
     ...(page.table ? [page.table.heading] : []),
-    ...page.sections.map((section) => section.heading),
+    ...sectionHeadings.slice(tableAt),
     "Common questions",
   ];
 

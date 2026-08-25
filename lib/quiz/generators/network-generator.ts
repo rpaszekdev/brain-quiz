@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Network quiz generators — region-to-network, network-disruption, network-scenario
  */
@@ -20,12 +19,12 @@ function shuffle(arr: any[]): any[] {
 const DISRUPTION_SCENARIOS = [
   { condition: "Alzheimer's disease (early stage)", networkId: "dmn", explanation: "Early AD preferentially disrupts the Default Mode Network, with amyloid deposits concentrating in DMN hubs like posterior cingulate and medial prefrontal cortex." },
   { condition: "ADHD (inattentive type)", networkId: "cen", explanation: "ADHD involves hypoactivation of the Central Executive Network, particularly dorsolateral prefrontal cortex, impairing sustained attention and working memory." },
-  { condition: "Schizophrenia (positive symptoms)", networkId: "sn", explanation: "The Salience Network, especially anterior insula and dACC, shows aberrant activity in schizophrenia, leading to misattribution of salience to internal experiences." },
+  { condition: "Schizophrenia (positive symptoms)", networkId: "salience", explanation: "The Salience Network, especially anterior insula and dACC, shows aberrant activity in schizophrenia, leading to misattribution of salience to internal experiences." },
   { condition: "Hemispatial neglect (right parietal stroke)", networkId: "van", explanation: "Right-lateralized Ventral Attention Network damage causes hemispatial neglect — failure to attend to left-sided stimuli." },
   { condition: "Autism spectrum disorder", networkId: "dmn", explanation: "ASD involves reduced functional connectivity within the DMN, contributing to difficulties with self-referential processing and theory of mind." },
   { condition: "Depression (rumination)", networkId: "dmn", explanation: "Major depression involves hyperconnectivity within the DMN, particularly the subgenual cingulate, driving persistent rumination and self-focused thought." },
   { condition: "Parkinson's disease (akinesia)", networkId: "sensorimotor", explanation: "PD disrupts the sensorimotor network via basal ganglia dysfunction, impairing motor initiation and execution." },
-  { condition: "Frontotemporal dementia (behavioral variant)", networkId: "sn", explanation: "bvFTD preferentially degrades the Salience Network, with early atrophy in anterior insula and ACC, causing personality changes and loss of empathy." },
+  { condition: "Frontotemporal dementia (behavioral variant)", networkId: "salience", explanation: "bvFTD preferentially degrades the Salience Network, with early atrophy in anterior insula and ACC, causing personality changes and loss of empathy." },
   { condition: "Simultanagnosia (Balint syndrome)", networkId: "dan", explanation: "Bilateral parietal damage disrupts the Dorsal Attention Network, preventing the ability to attend to multiple objects simultaneously." },
   { condition: "Primary progressive aphasia (semantic variant)", networkId: "language", explanation: "Semantic variant PPA degrades the anterior temporal components of the Language Network, causing progressive loss of word meaning." },
 ];
@@ -33,7 +32,7 @@ const DISRUPTION_SCENARIOS = [
 // Network activity scenarios
 const ACTIVITY_SCENARIOS = [
   { activity: "You're daydreaming about your vacation plans while sitting quietly", networkId: "dmn", explanation: "Self-referential, future-oriented, stimulus-independent thought is the hallmark of DMN activity." },
-  { activity: "You hear a sudden loud noise while reading", networkId: "sn", explanation: "The Salience Network detects unexpected stimuli and initiates switching from task-negative to task-positive states." },
+  { activity: "You hear a sudden loud noise while reading", networkId: "salience", explanation: "The Salience Network detects unexpected stimuli and initiates switching from task-negative to task-positive states." },
   { activity: "You're solving a complex math problem under time pressure", networkId: "cen", explanation: "Working memory, cognitive control, and goal-directed reasoning engage the Central Executive Network." },
   { activity: "You're visually tracking a bird flying across the sky", networkId: "dan", explanation: "Voluntary, top-down directed attention to spatial locations engages the Dorsal Attention Network." },
   { activity: "A friend taps you on the shoulder unexpectedly", networkId: "van", explanation: "Bottom-up, stimulus-driven reorienting of attention activates the Ventral Attention Network." },
@@ -99,8 +98,9 @@ function generateNetworkDisruptionQuestions(count: number): QuizQuestion[] {
 
   const selected = shuffle(DISRUPTION_SCENARIOS).slice(0, Math.min(count, DISRUPTION_SCENARIOS.length));
 
-  return selected.map((scenario, i) => {
+  return selected.flatMap((scenario, i) => {
     const correctNetwork = FUNCTIONAL_NETWORKS.find((n: { id: string }) => n.id === scenario.networkId);
+    if (!correctNetwork) return [];
     const wrongNetworks = shuffle(
       FUNCTIONAL_NETWORKS.filter((n: { id: string }) => n.id !== scenario.networkId),
     ).slice(0, 3);
@@ -136,8 +136,9 @@ function generateNetworkScenarioQuestions(count: number): QuizQuestion[] {
 
   const selected = shuffle(ACTIVITY_SCENARIOS).slice(0, Math.min(count, ACTIVITY_SCENARIOS.length));
 
-  return selected.map((scenario, i) => {
+  return selected.flatMap((scenario, i) => {
     const correctNetwork = FUNCTIONAL_NETWORKS.find((n: { id: string }) => n.id === scenario.networkId);
+    if (!correctNetwork) return [];
     const wrongNetworks = shuffle(
       FUNCTIONAL_NETWORKS.filter((n: { id: string }) => n.id !== scenario.networkId),
     ).slice(0, 3);

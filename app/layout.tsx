@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Serif_JP, Inter } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "@/components/seo/SiteFooter";
+import { TopNav } from "@/components/seo/TopNav";
 
 const notoSerifJP = Noto_Serif_JP({
   subsets: ["latin"],
@@ -104,6 +105,7 @@ export default function RootLayout({
           )}
       </head>
       <body>
+        <TopNav />
         {children}
         <SiteFooter />
       </body>

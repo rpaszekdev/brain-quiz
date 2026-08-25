@@ -1,10 +1,12 @@
 import type { QuizPage } from "../types";
 import { ANATOMY_PAGES } from "./anatomy";
 import { CLINICAL_PAGES } from "./clinical";
+import { CRANIAL_NERVE_PAGES } from "./cranial-nerves";
 import { SYSTEMS_PAGES } from "./systems";
 
 /** Every quiz landing page, highest search volume first. */
 export const QUIZ_PAGES: QuizPage[] = [
+  ...CRANIAL_NERVE_PAGES,
   ...ANATOMY_PAGES,
   ...SYSTEMS_PAGES,
   ...CLINICAL_PAGES,

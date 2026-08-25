@@ -33,18 +33,6 @@ export function Topbar({
       <div
         style={{ display: "flex", alignItems: "center", gap: "var(--ma-4)" }}
       >
-        <span
-          className="app-title"
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: 16,
-            fontWeight: 400,
-            letterSpacing: "0.5px",
-            color: "var(--sumi-deep)",
-          }}
-        >
-          Brain Quiz
-        </span>
         <div className="mode-switcher">
           <button
             className={appMode === "explore" ? "active" : ""}

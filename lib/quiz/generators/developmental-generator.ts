@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Developmental neuroscience quiz generators
  * vesicle-origin, myelination-order, evolution-order
@@ -6,6 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
 import type { QuizQuestion, MultipleChoiceAnswer, OrderingAnswer } from "../../types";
+import { regionLabel } from "../../brain-regions";
 import { registerGenerator } from "./index";
 
 function shuffle(arr: any[]): any[] {
@@ -30,7 +30,11 @@ function generateVesicleOriginQuestions(count: number): QuizQuestion[] {
   }
 
   const selected = shuffle(pairs).slice(0, Math.min(count, pairs.length));
-  const vesicleNames = [...new Set(DEVELOPMENTAL_STAGES.map((s: { vesicle: string }) => s.vesicle))];
+  const vesicleNames: string[] = [
+    ...new Set(
+      DEVELOPMENTAL_STAGES.map((s: { vesicle: string }) => s.vesicle) as string[],
+    ),
+  ];
 
   return selected.map((pair, i) => {
     const wrongVesicles = shuffle(vesicleNames.filter((v: string) => v !== pair.vesicle)).slice(0, 3);
@@ -50,10 +54,10 @@ function generateVesicleOriginQuestions(count: number): QuizQuestion[] {
       dimensionId: "developmental" as const,
       quizTypeId: "vesicle-origin",
       difficulty: "intermediate" as const,
-      prompt: `The ${pair.structure} develops from which embryological vesicle?`,
+      prompt: `The ${regionLabel(pair.structure)} develops from which embryological vesicle?`,
       answer,
       sceneDirective: "neutral" as const,
-      explanation: `The ${pair.structure} develops from the ${pair.vesicle}.`,
+      explanation: `The ${regionLabel(pair.structure)} develops from the ${pair.vesicle}.`,
       tags: ["developmental", "embryology"],
     };
   });
@@ -123,7 +127,7 @@ function generateEvolutionOrderQuestions(count: number): QuizQuestion[] {
       prompt: "Sort these structures from earliest to most recent evolutionary appearance:",
       answer,
       sceneDirective: "neutral" as const,
-      explanation: `Correct order: ${sorted.map((s: { structure: string; mya: number }) => `${s.structure} (~${s.mya} MYA)`).join(" \u2192 ")}`,
+      explanation: `Correct order: ${sorted.map((s: { event: string; mya: number }) => `${s.event} (~${s.mya} MYA)`).join(" \u2192 ")}`,
       tags: ["developmental", "evolution"],
     });
   }

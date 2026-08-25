@@ -99,6 +99,7 @@ export const CRANIAL_NERVES_ARTICLE = {
       ],
     ],
   },
+  tableAfter: 2,
   sections: [
     {
       heading: "Cranial nerve mnemonic: the names in order",
@@ -248,12 +249,12 @@ export const CRANIAL_NERVES_ARTICLE = {
           " to orient the midbrain, pons and medulla before attaching nerve numbers to them. Rotate the model, hide structures and repeat the map; there is no attempt limit or email gate.",
         ],
         [
-          "Then switch from naming to failure patterns in the ",
+          "Then test names, numbers, functions and failure patterns in the ",
           {
-            href: "/quiz/lesion-localization",
-            label: "lesion localization quiz",
+            href: "/quiz/cranial-nerves",
+            label: "cranial nerves quiz",
           },
-          ". It is broader than a cranial-nerve drill, which is useful: optic-nerve and brainstem findings have to compete with cortical, cord and peripheral alternatives just as they do in clinical questions.",
+          ". Every question has four answer choices, and the quiz covers all twelve nerves without a login or attempt limit.",
         ],
       ],
     },

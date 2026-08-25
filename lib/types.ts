@@ -15,7 +15,8 @@ export type DimensionId =
   | "clinical"
   | "developmental"
   | "neuroimaging"
-  | "cellular";
+  | "cellular"
+  | "cranial-nerves";
 
 export interface Dimension {
   id: DimensionId;

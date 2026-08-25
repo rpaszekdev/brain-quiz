@@ -1,5 +1,11 @@
+import { Fragment } from "react";
 import Link from "next/link";
-import type { ArticlePage, ArticleParagraph } from "@/lib/seo/articles/types";
+import type {
+  ArticlePage,
+  ArticleParagraph,
+  ArticleSection,
+  ArticleTable,
+} from "@/lib/seo/articles/types";
 import { headingSlug } from "@/lib/seo/slug";
 import { ArticleToc } from "./ArticleToc";
 
@@ -33,7 +39,68 @@ function Paragraph({ paragraph }: { readonly paragraph: ArticleParagraph }) {
   );
 }
 
+function SectionBlock({ section }: { readonly section: ArticleSection }) {
+  return (
+    <section>
+      <h2 id={headingSlug(section.heading)}>{section.heading}</h2>
+      {section.body.map((paragraph) => (
+        <Paragraph key={paragraphKey(paragraph)} paragraph={paragraph} />
+      ))}
+      {section.subsections?.map((subsection) => (
+        <div className="seo-subsection" key={subsection.heading}>
+          <h3>{subsection.heading}</h3>
+          {subsection.body.map((paragraph) => (
+            <Paragraph key={paragraphKey(paragraph)} paragraph={paragraph} />
+          ))}
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function TableBlock({ table }: { readonly table: ArticleTable }) {
+  return (
+    <section className="seo-table-section">
+      <h2 id={headingSlug(table.heading)}>{table.heading}</h2>
+      <div className="seo-table-wrap">
+        <table className="seo-table">
+          <caption>{table.caption}</caption>
+          <thead>
+            <tr>
+              {table.columns.map((column) => (
+                <th key={column} scope="col">
+                  {column}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {table.rows.map((row) => (
+              <tr key={`${row[0]}-${row[1]}`}>
+                {row.map((cell, cellIndex) =>
+                  cellIndex === 0 ? (
+                    <th key={table.columns[cellIndex]} scope="row">
+                      {cell}
+                    </th>
+                  ) : (
+                    <td key={table.columns[cellIndex]}>{cell}</td>
+                  ),
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 export function ArticleLanding({ page }: ArticleLandingProps) {
+  // Where the table sits among the sections. The cranial nerve page puts its
+  // mnemonics first so the phrase people searched for is above the anatomy.
+  const tableAt = page.tableAfter ?? 0;
+  const tableNode = page.table ? <TableBlock table={page.table} /> : null;
+
   return (
     <article className="seo-page">
       <div className="seo-wrap seo-article-wrap">
@@ -44,59 +111,13 @@ export function ArticleLanding({ page }: ArticleLandingProps) {
 
         <ArticleToc page={page} />
 
-        {page.table && (
-          <section className="seo-table-section">
-            <h2 id={headingSlug(page.table.heading)}>{page.table.heading}</h2>
-            <div className="seo-table-wrap">
-              <table className="seo-table">
-                <caption>{page.table.caption}</caption>
-                <thead>
-                  <tr>
-                    {page.table.columns.map((column) => (
-                      <th key={column} scope="col">
-                        {column}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {page.table.rows.map((row) => (
-                    <tr key={`${row[0]}-${row[1]}`}>
-                      {row.map((cell, cellIndex) =>
-                        cellIndex === 0 ? (
-                          <th key={page.table?.columns[cellIndex]} scope="row">
-                            {cell}
-                          </th>
-                        ) : (
-                          <td key={page.table?.columns[cellIndex]}>{cell}</td>
-                        ),
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
+        {tableAt === 0 && tableNode}
 
-        {page.sections.map((section) => (
-          <section key={section.heading}>
-            <h2 id={headingSlug(section.heading)}>{section.heading}</h2>
-            {section.body.map((paragraph) => (
-              <Paragraph key={paragraphKey(paragraph)} paragraph={paragraph} />
-            ))}
-            {section.subsections?.map((subsection) => (
-              <div className="seo-subsection" key={subsection.heading}>
-                <h3>{subsection.heading}</h3>
-                {subsection.body.map((paragraph) => (
-                  <Paragraph
-                    key={paragraphKey(paragraph)}
-                    paragraph={paragraph}
-                  />
-                ))}
-              </div>
-            ))}
-          </section>
+        {page.sections.map((section, index) => (
+          <Fragment key={section.heading}>
+            <SectionBlock section={section} />
+            {tableAt === index + 1 && tableNode}
+          </Fragment>
         ))}
 
         <section>
