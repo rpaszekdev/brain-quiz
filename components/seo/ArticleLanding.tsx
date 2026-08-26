@@ -1,6 +1,8 @@
 import { Fragment } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type {
+  ArticleFigure,
   ArticlePage,
   ArticleParagraph,
   ArticleSection,
@@ -39,6 +41,20 @@ function Paragraph({ paragraph }: { readonly paragraph: ArticleParagraph }) {
   );
 }
 
+export function Figure({ figure }: { readonly figure: ArticleFigure }) {
+  return (
+    <figure className="seo-figure">
+      <Image
+        src={figure.src}
+        alt={figure.alt}
+        width={figure.width}
+        height={figure.height}
+      />
+      <figcaption>{figure.caption}</figcaption>
+    </figure>
+  );
+}
+
 function SectionBlock({ section }: { readonly section: ArticleSection }) {
   return (
     <section>
@@ -46,12 +62,14 @@ function SectionBlock({ section }: { readonly section: ArticleSection }) {
       {section.body.map((paragraph) => (
         <Paragraph key={paragraphKey(paragraph)} paragraph={paragraph} />
       ))}
+      {section.figure && <Figure figure={section.figure} />}
       {section.subsections?.map((subsection) => (
         <div className="seo-subsection" key={subsection.heading}>
           <h3>{subsection.heading}</h3>
           {subsection.body.map((paragraph) => (
             <Paragraph key={paragraphKey(paragraph)} paragraph={paragraph} />
           ))}
+          {subsection.figure && <Figure figure={subsection.figure} />}
         </div>
       ))}
     </section>

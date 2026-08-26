@@ -12,16 +12,26 @@ export type ArticleParagraph =
   | string
   | readonly (string | ArticleInlineLink)[];
 
+export interface ArticleFigure {
+  readonly src: string;
+  readonly alt: string;
+  readonly caption: string;
+  readonly width: number;
+  readonly height: number;
+}
+
 export interface ArticleSubsection {
   /** Rendered as h3 beneath its parent section h2. */
   readonly heading: string;
   readonly body: readonly ArticleParagraph[];
+  readonly figure?: ArticleFigure;
 }
 
 export interface ArticleSection {
   /** Rendered as h2. */
   readonly heading: string;
   readonly body: readonly ArticleParagraph[];
+  readonly figure?: ArticleFigure;
   readonly subsections?: readonly ArticleSubsection[];
 }
 

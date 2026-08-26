@@ -6,15 +6,17 @@ import { FRONTOPARIETAL_REGION_COPY } from "./frontoparietal";
 import { MEMORY_REGION_COPY } from "./memory";
 import { SUBCORTICAL_REGION_COPY } from "./subcortical";
 import { TEMPORAL_OCCIPITAL_REGION_COPY } from "./temporal-occipital";
+import type { ArticleFigure } from "@/lib/seo/articles/types";
 import type { RegionCopy, RegionPage } from "./types";
 
-const AUTHORED_REGION_COPY_ENTRIES: readonly (readonly [string, RegionCopy])[] = [
-  ...Object.entries(FRONTOPARIETAL_REGION_COPY),
-  ...Object.entries(TEMPORAL_OCCIPITAL_REGION_COPY),
-  ...Object.entries(MEMORY_REGION_COPY),
-  ...Object.entries(SUBCORTICAL_REGION_COPY),
-  ...Object.entries(BRAINSTEM_REGION_COPY),
-];
+const AUTHORED_REGION_COPY_ENTRIES: readonly (readonly [string, RegionCopy])[] =
+  [
+    ...Object.entries(FRONTOPARIETAL_REGION_COPY),
+    ...Object.entries(TEMPORAL_OCCIPITAL_REGION_COPY),
+    ...Object.entries(MEMORY_REGION_COPY),
+    ...Object.entries(SUBCORTICAL_REGION_COPY),
+    ...Object.entries(BRAINSTEM_REGION_COPY),
+  ];
 
 const COPY_BY_SLUG = new Map(AUTHORED_REGION_COPY_ENTRIES);
 
@@ -28,24 +30,28 @@ function makeTitle(name: string): string {
   return fullTitle.length <= 60 ? fullTitle : `${name} — Function & Quiz`;
 }
 
-export const REGION_PAGES: readonly RegionPage[] = RICH_REGIONS.map((region) => {
-  const details = BRAIN_DETAILS[region.id];
-  const copy = COPY_BY_SLUG.get(region.id);
+export const REGION_PAGES: readonly RegionPage[] = RICH_REGIONS.map(
+  (region) => {
+    const details = BRAIN_DETAILS[region.id];
+    const copy = COPY_BY_SLUG.get(region.id);
 
-  if (!details || !copy) {
-    throw new Error(`Missing SEO content for rich brain region "${region.id}"`);
-  }
+    if (!details || !copy) {
+      throw new Error(
+        `Missing SEO content for rich brain region "${region.id}"`,
+      );
+    }
 
-  const title = makeTitle(region.name);
-  return {
-    ...copy,
-    slug: region.id,
-    title,
-    h1: title,
-    region,
-    details,
-  };
-});
+    const title = makeTitle(region.name);
+    return {
+      ...copy,
+      slug: region.id,
+      title,
+      h1: title,
+      region,
+      details,
+    };
+  },
+);
 
 const PAGE_BY_SLUG = new Map(REGION_PAGES.map((page) => [page.slug, page]));
 
@@ -62,6 +68,28 @@ export function getRelatedRegions(page: RegionPage): RegionPage[] {
     const related = PAGE_BY_SLUG.get(slug);
     return related ? [related] : [];
   });
+}
+
+function validateFigure(figure: ArticleFigure, slug: string): string[] {
+  return [
+    ...(figure.alt.trim().length === 0
+      ? [`${slug}: figure alt cannot be empty`]
+      : figure.alt.trim().length < 20
+        ? [`${slug}: figure alt must be at least 20 characters`]
+        : []),
+    ...(figure.caption.trim().length === 0
+      ? [`${slug}: figure caption cannot be empty`]
+      : []),
+    ...(!figure.src.startsWith("/figures/")
+      ? [`${slug}: figure src must start with "/figures/"`]
+      : []),
+    ...(!Number.isInteger(figure.width) || figure.width <= 0
+      ? [`${slug}: figure width must be a positive integer`]
+      : []),
+    ...(!Number.isInteger(figure.height) || figure.height <= 0
+      ? [`${slug}: figure height must be a positive integer`]
+      : []),
+  ];
 }
 
 function validateRegionPage(page: RegionPage): string[] {
@@ -81,8 +109,8 @@ function validateRegionPage(page: RegionPage): string[] {
     ...(page.intro.length < 2 || page.intro.length > 3
       ? [`${page.slug}: intro must contain 2-3 original paragraphs`]
       : []),
-    ...(page.faqs.length !== 3
-      ? [`${page.slug}: must contain exactly 3 FAQs`]
+    ...(page.faqs.length < 3 || page.faqs.length > 4
+      ? [`${page.slug}: must contain 3-4 FAQs`]
       : []),
     ...(page.relatedSlugs.length < 2 || page.relatedSlugs.length > 3
       ? [`${page.slug}: must link to 2-3 related regions`]
@@ -90,6 +118,7 @@ function validateRegionPage(page: RegionPage): string[] {
     ...(relatedSet.size !== page.relatedSlugs.length
       ? [`${page.slug}: contains duplicate related-region links`]
       : []),
+    ...(page.figure ? validateFigure(page.figure, page.slug) : []),
     ...(!getQuizPage(page.quizSlug)
       ? [`${page.slug}: quiz slug "${page.quizSlug}" does not exist`]
       : []),

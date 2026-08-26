@@ -4,6 +4,7 @@ import { AUTONOMIC_ARTICLE } from "./autonomic";
 import { CRANIAL_NERVES_ARTICLE } from "./cranial-nerves";
 import type {
   ArticleCollection,
+  ArticleFigure,
   ArticleInlineLink,
   ArticlePage,
   ArticleParagraph,
@@ -71,6 +72,28 @@ function wordCount(value: string): number {
   return value.trim().split(/\s+/u).length;
 }
 
+function validateFigure(figure: ArticleFigure, location: string): string[] {
+  return [
+    ...(figure.alt.trim().length === 0
+      ? [`${location}: figure alt cannot be empty`]
+      : figure.alt.trim().length < 20
+        ? [`${location}: figure alt must be at least 20 characters`]
+        : []),
+    ...(figure.caption.trim().length === 0
+      ? [`${location}: figure caption cannot be empty`]
+      : []),
+    ...(!figure.src.startsWith("/figures/")
+      ? [`${location}: figure src must start with "/figures/"`]
+      : []),
+    ...(!Number.isInteger(figure.width) || figure.width <= 0
+      ? [`${location}: figure width must be a positive integer`]
+      : []),
+    ...(!Number.isInteger(figure.height) || figure.height <= 0
+      ? [`${location}: figure height must be a positive integer`]
+      : []),
+  ];
+}
+
 function validatePage(page: ArticlePage): string[] {
   const path = articlePath(page);
   const allLinks = [...inlineLinks(page), ...page.related];
@@ -122,6 +145,19 @@ function validatePage(page: ArticlePage): string[] {
               ],
         )
       : []),
+    ...page.sections.flatMap((section) => [
+      ...(section.figure
+        ? validateFigure(section.figure, `${path}: ${section.heading}`)
+        : []),
+      ...(section.subsections ?? []).flatMap((subsection) =>
+        subsection.figure
+          ? validateFigure(
+              subsection.figure,
+              `${path}: ${section.heading} > ${subsection.heading}`,
+            )
+          : [],
+      ),
+    ]),
     ...allLinks.flatMap((link) => [
       ...(!link.href.startsWith("/")
         ? [`${path}: link "${link.href}" is not an internal path`]

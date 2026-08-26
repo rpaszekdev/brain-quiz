@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { QuizPage } from "@/lib/seo/types";
 import type { RegionPage } from "@/lib/seo/regions";
+import { Figure } from "./ArticleLanding";
 
 interface RegionLandingProps {
   page: RegionPage;
@@ -32,6 +33,7 @@ export function RegionLanding({
         {page.intro.map((paragraph) => (
           <p key={paragraph.slice(0, 40)}>{paragraph}</p>
         ))}
+        {page.figure && <Figure figure={page.figure} />}
         <p>
           <Link href={`/quiz/${quiz.slug}`}>Test this anatomy in the {quiz.h1}</Link>
           {" or "}
