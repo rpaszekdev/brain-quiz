@@ -213,6 +213,13 @@ export function BrainViewer({
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
+    // ResizeObserver, not window resize: the container changes width without
+    // the window doing so — the sidebar is display:none under 767px, the
+    // mobile bottom sheet opens and closes, and the phone address bar
+    // collapses on scroll. Listening to the window missed all of those, so the
+    // canvas kept a stale width and the brain rendered off-centre.
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(container);
     window.addEventListener("resize", handleResize);
 
     const animate = () => {
@@ -238,6 +245,7 @@ export function BrainViewer({
     return () => {
       cancelAnimationFrame(animFrameRef.current);
       renderer.domElement.removeEventListener("click", handleCanvasClick);
+      resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
       gizmoRef.current?.dispose();
