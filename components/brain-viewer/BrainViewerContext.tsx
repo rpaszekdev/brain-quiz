@@ -16,7 +16,7 @@ interface BrainViewerContextValue {
   sceneRef: React.MutableRefObject<THREE.Scene | null>;
   cameraRef: React.MutableRefObject<THREE.PerspectiveCamera | null>;
   controlsRef: React.MutableRefObject<
-    | import("three/addons/controls/TrackballControls.js").TrackballControls
+    | import("three/addons/controls/OrbitControls.js").OrbitControls
     | null
   >;
   rendererRef: React.MutableRefObject<THREE.WebGLRenderer | null>;
@@ -53,7 +53,7 @@ export function BrainViewerProvider({ children }: { children: ReactNode }) {
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const controlsRef = useRef<
-    | import("three/addons/controls/TrackballControls.js").TrackballControls
+    | import("three/addons/controls/OrbitControls.js").OrbitControls
     | null
   >(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);

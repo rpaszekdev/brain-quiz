@@ -12,9 +12,8 @@ export function SiteFooter() {
     <footer className="site-footer">
       <nav className="site-footer-inner">
         <Link href="/" className="site-footer-mark">
-          脳
+          Brain Atlas
         </Link>
-        <Link href="/">Home</Link>
         <Link href="/browse">Browse all</Link>
         <Link href="/quiz/label-the-brain">Quizzes</Link>
         <Link href="/3d-brain-model">3D model</Link>

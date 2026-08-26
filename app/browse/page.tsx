@@ -30,7 +30,6 @@ export default function BrowsePage() {
   return (
     <main className="hub">
       <div className="hub-inner">
-        <p className="hub-mark">脳</p>
         <h1>Everything on Brain Atlas</h1>
         <p className="hub-lede">
           An interactive 3D brain, {QUIZ_PAGES.length} quizzes and{" "}

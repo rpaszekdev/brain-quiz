@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
-import { TrackballControls } from "three/addons/controls/TrackballControls.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import {
   BRAIN_REGIONS,
   getAllMeshFiles,
@@ -109,17 +109,22 @@ export function BrainViewer({
     backLight.position.set(-50, -30, -80);
     scene.add(backLight);
 
-    const controls = new TrackballControls(camera, renderer.domElement);
-    controls.rotateSpeed = 3.0;
-    controls.zoomSpeed = 1.2;
+    // OrbitControls, not TrackballControls: trackball has no up-vector
+    // constraint, so the brain could tumble upside down with no way to level
+    // it. Orbit keeps the horizon fixed and gives proper pinch-zoom on touch.
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.rotateSpeed = 0.8;
+    controls.zoomSpeed = 1.0;
     controls.panSpeed = 0.8;
-    controls.noPan = false;
-    controls.staticMoving = false;
-    controls.dynamicDampingFactor = 0.15;
+    controls.enablePan = true;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
     controls.target.set(0, 20, 0);
     controls.minDistance = 80;
     controls.maxDistance = 500;
-    controls.handleResize();
+    // Stop the page from also scrolling when a finger drags the canvas —
+    // html/body no longer lock overflow, so touch was ambiguous.
+    renderer.domElement.style.touchAction = "none";
     controlsRef.current = controls;
 
     meshToRegionRef.current = buildMeshToRegionMap();
@@ -204,7 +209,6 @@ export function BrainViewer({
       if (!container) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
-      controls.handleResize();
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);

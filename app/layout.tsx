@@ -23,7 +23,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://brainquiz.study";
 /*
  * Title targets the terms that actually have volume (Keyword Planner, 2026-08:
  * "brain anatomy quiz", "label the brain quiz", "brain parts quiz" all 1K-10K/mo
- * at low competition). The 脳 mark stays in the UI as branding — it was spending
+ * at low competition). The previous title was spending
  * the most valuable ranking signal on a character nobody searches for.
  */
 const TITLE = "Brain Anatomy Quiz — Label the Brain in 3D";
@@ -58,7 +58,6 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "Brain Atlas",
-  alternateName: "脳 Brain Atlas",
   description:
     "Interactive 3D brain anatomy quiz with 50+ regions. Explore a 3D brain model, identify structures, and test your neuroscience knowledge.",
   url: BASE_URL,

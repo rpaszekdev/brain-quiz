@@ -262,7 +262,7 @@ export const DIMENSIONS: Dimension[] = [
     shortName: "Imaging",
     icon: "",
     description: "Match imaging modalities, Brodmann areas, and atlas systems.",
-    color: "--ai",
+    color: "--asagi",
     quizTypes: [
       {
         id: "modality-selection",
@@ -300,7 +300,7 @@ export const DIMENSIONS: Dimension[] = [
     icon: "",
     description:
       "Identify cell types, cortical layers, and receptor distributions.",
-    color: "--moegi",
+    color: "--yamabuki",
     quizTypes: [
       {
         id: "cell-type",
@@ -347,7 +347,7 @@ export const DIMENSIONS: Dimension[] = [
     icon: "",
     description:
       "Name, number, function and lesion for all twelve cranial nerves.",
-    color: "--murasaki",
+    color: "--tobi",
     quizTypes: [
       {
         id: "nerve-number",

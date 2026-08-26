@@ -28,7 +28,7 @@ export default async function Image() {
             gap: '24px',
           }}
         >
-          <div style={{ fontSize: 96, lineHeight: 1 }}>脳</div>
+          <div style={{ fontSize: 64, lineHeight: 1 }}>Brain Atlas</div>
           <div
             style={{
               fontSize: 56,

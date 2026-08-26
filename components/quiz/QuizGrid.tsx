@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { DIMENSIONS } from "@/lib/dimensions";
 import type { DimensionId } from "@/lib/types";
 
@@ -20,11 +21,21 @@ export function QuizGrid({ onStart }: QuizGridProps) {
     <div className="sidebar-content quiz-grid-wrap">
       {DIMENSIONS.map((dimension) => (
         <section className="quiz-grid-group" key={dimension.id}>
-          <p className="quiz-grid-label">{dimension.name}</p>
+          <p className="quiz-grid-label">
+            <span
+              className="quiz-grid-swatch"
+              style={{ background: `var(${dimension.color})` }}
+              aria-hidden="true"
+            />
+            {dimension.name}
+          </p>
           <div className="quiz-grid">
             {dimension.quizTypes.map((quizType) => (
               <button
                 className="quiz-grid-card"
+                style={
+                  { "--course": `var(${dimension.color})` } as React.CSSProperties
+                }
                 key={quizType.id}
                 onClick={() => onStart(dimension.id, quizType.id)}
                 type="button"

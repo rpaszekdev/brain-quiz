@@ -14,17 +14,19 @@ import {
 
 interface NavLink {
   href: string;
-  kana: string;
   label: string;
 }
 
-/** One-word labels, kana mark alongside. Kanso — nothing else earns a slot. */
+/**
+ * One word each. The kana that used to sit beside these labels carried no
+ * meaning for English readers and added visual weight — decoration, not
+ * information. The aesthetic lives in the serif, the ground and the spacing.
+ */
 const LINKS: readonly NavLink[] = [
-  { href: "/", kana: "脳", label: "Atlas" },
-  { href: "/browse", kana: "一覧", label: "Browse" },
-  { href: "/quiz/label-the-brain", kana: "試験", label: "Quizzes" },
-  { href: "/mnemonics/cranial-nerves", kana: "記憶", label: "Mnemonics" },
-  { href: "/3d-brain-model", kana: "模型", label: "3D model" },
+  { href: "/browse", label: "Browse" },
+  { href: "/quiz/label-the-brain", label: "Quizzes" },
+  { href: "/mnemonics/cranial-nerves", label: "Mnemonics" },
+  { href: "/3d-brain-model", label: "3D model" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -46,8 +48,8 @@ export function TopNav() {
   return (
     <nav className="topnav" aria-label="Main">
       <div className="topnav-inner">
-        <Link href="/" className="topnav-mark" aria-label="Brain Atlas home">
-          脳
+        <Link href="/" className="topnav-mark">
+          Brain Atlas
         </Link>
 
         <div className="topnav-links">
@@ -57,10 +59,7 @@ export function TopNav() {
               href={link.href}
               data-active={isActive(pathname, link.href)}
             >
-              <span className="topnav-kana" aria-hidden="true">
-                {link.kana}
-              </span>
-              {link.label}
+{link.label}
             </Link>
           ))}
         </div>
@@ -76,7 +75,7 @@ export function TopNav() {
           </SheetTrigger>
           <SheetContent side="right">
             <SheetHeader>
-              <SheetTitle>脳 Brain Atlas</SheetTitle>
+              <SheetTitle>Brain Atlas</SheetTitle>
             </SheetHeader>
             <div className="topnav-drawer-links">
               {LINKS.map((link) => (
@@ -85,10 +84,7 @@ export function TopNav() {
                   href={link.href}
                   onClick={() => setOpen(false)}
                 >
-                  <span className="topnav-kana" aria-hidden="true">
-                    {link.kana}
-                  </span>
-                  {link.label}
+{link.label}
                 </Link>
               ))}
             </div>

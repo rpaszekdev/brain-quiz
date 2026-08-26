@@ -15,7 +15,7 @@ export function QuizHistory({ history, onRetake }: QuizHistoryProps) {
 
   return (
     <div className="quiz-history">
-      <p className="quiz-history-label">履歴 Recent</p>
+      <p className="quiz-history-label">Recent</p>
       {history.slice(0, 6).map((record) => (
         <button
           className="quiz-history-row"
