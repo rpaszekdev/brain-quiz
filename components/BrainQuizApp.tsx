@@ -255,6 +255,7 @@ function BrainQuizAppInner({ autoStart }: BrainQuizAppProps) {
       {isMobile && leftPanelContent && (
         <BottomSheet
           side="top"
+          backdrop={false}
           open={!!selectedRegion}
           onClose={() => {
             setSelectedRegion(null);

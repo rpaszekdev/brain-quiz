@@ -12,6 +12,12 @@ interface BottomSheetProps {
    * so the detail arrives above the thing it describes instead of on top of it.
    */
   side?: "bottom" | "top";
+  /**
+   * Dim and block the rest of the screen. Region details on phones pass false:
+   * the whole point is to read the description while still seeing — and
+   * rotating — the highlighted region underneath.
+   */
+  backdrop?: boolean;
 }
 
 export function BottomSheet({
@@ -19,6 +25,7 @@ export function BottomSheet({
   onClose,
   children,
   side = "bottom",
+  backdrop = true,
 }: BottomSheetProps) {
   const handleKey = useCallback(
     (e: KeyboardEvent) => {
@@ -36,10 +43,12 @@ export function BottomSheet({
 
   return (
     <>
-      <div
-        className={`sheet-backdrop ${open ? "sheet-backdrop-visible" : ""}`}
-        onClick={onClose}
-      />
+      {backdrop && (
+        <div
+          className={`sheet-backdrop ${open ? "sheet-backdrop-visible" : ""}`}
+          onClick={onClose}
+        />
+      )}
       <div className={`${base} ${open ? `${base}-open` : ""}`}>
         {side === "bottom" && (
           <div className="sheet-handle" onClick={onClose}>

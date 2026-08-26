@@ -1907,8 +1907,12 @@ html, body {
   top: var(--topnav-h);
   left: 0;
   right: 0;
-  max-height: 55vh;
-  background: var(--washi-cream);
+  /* A third of the screen: enough for name, function and a line of detail,
+     while leaving the brain the majority of the viewport. Longer content
+     scrolls inside rather than growing over the model. */
+  max-height: 34vh;
+  background: color-mix(in srgb, var(--washi-cream) 94%, transparent);
+  backdrop-filter: blur(8px) saturate(140%);
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
   z-index: 100;
