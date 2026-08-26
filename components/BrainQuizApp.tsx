@@ -248,6 +248,23 @@ function BrainQuizAppInner({ autoStart }: BrainQuizAppProps) {
         </BottomSheet>
       )}
 
+      {/* Phone — region details slide from the top so they don't cover the
+          part of the brain that was just tapped. Previously nothing rendered
+          here at all: tapping a region on a phone selected it and showed
+          nothing. */}
+      {isMobile && leftPanelContent && (
+        <BottomSheet
+          side="top"
+          open={!!selectedRegion}
+          onClose={() => {
+            setSelectedRegion(null);
+            setSelectedPathwayId(null);
+          }}
+        >
+          {leftPanelContent}
+        </BottomSheet>
+      )}
+
       {/* Tablet bottom sheet — left panel (ExploreDrawer) */}
       {isTablet && leftPanelContent && (
         <BottomSheet

@@ -1896,3 +1896,34 @@ html, body {
   border-radius: 50%;
   flex-shrink: 0;
 }
+
+/* ─── Top sheet ─────────────────────────────────────────────────────
+   Region details on phones. A bottom sheet would cover the part of the
+   brain you just tapped; sliding from the top keeps the region visible
+   below the description that explains it. Sits under the nav. */
+
+.mobile-top-sheet {
+  position: fixed;
+  top: var(--topnav-h);
+  left: 0;
+  right: 0;
+  max-height: 55vh;
+  background: var(--washi-cream);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  transform: translateY(calc(-100% - var(--topnav-h)));
+  transition: transform var(--dur-slow) var(--ease);
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-top-sheet-open {
+  transform: translateY(0);
+}
+
+.mobile-top-sheet .sheet-content {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
