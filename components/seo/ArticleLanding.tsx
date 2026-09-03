@@ -123,9 +123,22 @@ export function ArticleLanding({ page }: ArticleLandingProps) {
     <article className="seo-page">
       <div className="seo-wrap seo-article-wrap">
         <h1>{page.h1}</h1>
-        {page.intro.map((paragraph) => (
-          <p key={paragraph.slice(0, 60)}>{paragraph}</p>
-        ))}
+        {page.updated && (
+          <p className="seo-updated">
+            Updated{" "}
+            <time dateTime={page.updated}>
+              {new Date(`${page.updated}T12:00:00Z`).toLocaleDateString(
+                "en-US",
+                { year: "numeric", month: "long", day: "numeric" },
+              )}
+            </time>
+          </p>
+        )}
+        <div className="article-intro">
+          {page.intro.map((paragraph) => (
+            <p key={paragraph.slice(0, 60)}>{paragraph}</p>
+          ))}
+        </div>
 
         <ArticleToc page={page} />
 

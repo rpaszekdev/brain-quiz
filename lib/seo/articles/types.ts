@@ -8,9 +8,7 @@ export interface ArticleInlineLink {
 }
 
 /** A paragraph can be plain copy or copy with typed, crawlable links. */
-export type ArticleParagraph =
-  | string
-  | readonly (string | ArticleInlineLink)[];
+export type ArticleParagraph = string | readonly (string | ArticleInlineLink)[];
 
 export interface ArticleFigure {
   readonly src: string;
@@ -65,6 +63,8 @@ export interface ArticlePage {
   readonly faqs: readonly SeoFaq[];
   readonly related: readonly ArticleRelatedLink[];
   readonly table?: ArticleTable;
+  /** ISO date of the last substantive edit — schema dateModified + visible. */
+  readonly updated?: string;
   /**
    * How many sections render before the table. Default 0 (table first).
    * The cranial nerve page sets 2 so the mnemonic — the thing people came

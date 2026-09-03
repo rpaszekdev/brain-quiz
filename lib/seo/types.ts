@@ -35,4 +35,6 @@ export interface QuizPage {
   faqs: SeoFaq[];
   /** Slugs of related pages — renders as contextual internal links. */
   related: string[];
+  /** Study-guide links (e.g. /mnemonics/*) — memorize first, then test. */
+  guides?: { href: string; label: string }[];
 }

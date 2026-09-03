@@ -1,7 +1,9 @@
 import { getQuizPage } from "@/lib/seo/pages";
 import { getRegionPage } from "@/lib/seo/regions";
 import { AUTONOMIC_ARTICLE } from "./autonomic";
+import { CRANIAL_NERVE_EXITS_ARTICLE } from "./cranial-nerve-exits";
 import { CRANIAL_NERVES_ARTICLE } from "./cranial-nerves";
+import { FACIAL_NERVE_BRANCHES_ARTICLE } from "./facial-nerve-branches";
 import type {
   ArticleCollection,
   ArticleFigure,
@@ -13,6 +15,8 @@ import type {
 /** Every long-form article, ordered by estimated search demand. */
 export const ARTICLE_PAGES = [
   CRANIAL_NERVES_ARTICLE,
+  CRANIAL_NERVE_EXITS_ARTICLE,
+  FACIAL_NERVE_BRANCHES_ARTICLE,
   AUTONOMIC_ARTICLE,
 ] as const satisfies readonly ArticlePage[];
 
@@ -109,9 +113,7 @@ function validatePage(page: ArticlePage): string[] {
       ? [`${path}: title ${page.title.length} chars (max 60)`]
       : []),
     ...(page.description.length < 120 || page.description.length > 160
-      ? [
-          `${path}: description ${page.description.length} chars (want 120-160)`,
-        ]
+      ? [`${path}: description ${page.description.length} chars (want 120-160)`]
       : []),
     ...(!page.title.startsWith(page.primaryKeyword)
       ? [`${path}: title must start with "${page.primaryKeyword}"`]
@@ -120,7 +122,9 @@ function validatePage(page: ArticlePage): string[] {
     ...(wordCount(page.intro[0]) > 40
       ? [`${path}: first answer is ${wordCount(page.intro[0])} words (max 40)`]
       : []),
-    ...(page.sections.length === 0 ? [`${path}: needs at least one section`] : []),
+    ...(page.sections.length === 0
+      ? [`${path}: needs at least one section`]
+      : []),
     ...(page.faqs.length < 3 ? [`${path}: needs at least three FAQs`] : []),
     ...(page.related.length === 0 ? [`${path}: needs related links`] : []),
     ...(new Set(h2Headings).size !== h2Headings.length

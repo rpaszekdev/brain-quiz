@@ -73,6 +73,19 @@ export function QuizLanding({ page, related }: QuizLandingProps) {
           ))}
         </section>
 
+        {page.guides && page.guides.length > 0 && (
+          <nav className="seo-related">
+            <h2>Memorize first, then test</h2>
+            <ul>
+              {page.guides.map((guide) => (
+                <li key={guide.href}>
+                  <Link href={guide.href}>{guide.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
         {related.length > 0 && (
           <nav className="seo-related">
             <h2>Related quizzes</h2>

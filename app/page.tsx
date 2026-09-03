@@ -2,8 +2,13 @@ import Link from "next/link";
 import BrainQuizLazy from "@/components/BrainQuizLazy";
 import { BRAIN_REGIONS } from "@/lib/brain-regions";
 import { DIMENSIONS } from "@/lib/dimensions";
+import { ARTICLE_PAGES } from "@/lib/seo/articles";
 import { HOME_FAQS } from "@/lib/seo/home";
 import { QUIZ_PAGES } from "@/lib/seo/pages";
+
+const MNEMONIC_PAGES = ARTICLE_PAGES.filter(
+  (page) => page.collection === "mnemonics",
+);
 
 const categories = {
   cortical: "Cortical Regions",
@@ -50,16 +55,17 @@ export default function BrainQuizPage() {
           <p>
             Learn the parts of the brain on a 3D model you can rotate, rather
             than a flat diagram with arrows. Brain Atlas covers{" "}
-            {BRAIN_REGIONS.length} regions across {DIMENSIONS.length} dimensions,
-            from naming lobes to localising a stroke. It is free, needs no
-            account, and runs in the browser.
+            {BRAIN_REGIONS.length} regions across {DIMENSIONS.length}{" "}
+            dimensions, from naming lobes to localising a stroke. It is free,
+            needs no account, and runs in the browser.
           </p>
 
           <section>
             <h2>Three ways to use it</h2>
             <p>
-              <strong>Explore</strong> — rotate the brain and click any region to
-              read its name, function and connections. No scoring, no pressure.
+              <strong>Explore</strong> — rotate the brain and click any region
+              to read its name, function and connections. No scoring, no
+              pressure.
             </p>
             <p>
               <strong>Identify</strong> — a region is highlighted on the model
@@ -80,6 +86,20 @@ export default function BrainQuizPage() {
                 <li key={page.slug}>
                   <Link href={`/quiz/${page.slug}`}>{page.h1}</Link> —{" "}
                   {page.description}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <h2>Mnemonics and study guides</h2>
+            <ul>
+              {MNEMONIC_PAGES.map((page) => (
+                <li key={page.slug}>
+                  <Link href={`/mnemonics/${page.slug}`}>
+                    {page.primaryKeyword}
+                  </Link>{" "}
+                  — {page.description}
                 </li>
               ))}
             </ul>
@@ -123,9 +143,9 @@ export default function BrainQuizPage() {
             <h2>About Brain Atlas</h2>
             <p>
               Brain Atlas is a free educational tool for learning neuroanatomy,
-              built with Three.js for real-time 3D rendering using mesh data from
-              the Desikan-Killiany cortical atlas. There is no account, no login
-              and nothing to install.
+              built with Three.js for real-time 3D rendering using mesh data
+              from the Desikan-Killiany cortical atlas. There is no account, no
+              login and nothing to install.
             </p>
             <p>
               It is built for medical and psychology students, educators, and

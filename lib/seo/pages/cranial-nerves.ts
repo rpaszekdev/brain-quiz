@@ -50,6 +50,16 @@ export const CRANIAL_NERVE_PAGES: QuizPage[] = [
       "lesion-localization",
       "visual-field-defects",
     ],
+    guides: [
+      {
+        href: "/mnemonics/cranial-nerves",
+        label: "Cranial nerve mnemonics — all names, functions and variants",
+      },
+      {
+        href: "/mnemonics/cranial-nerve-exits",
+        label: "Cranial nerve exits — skull foramina mnemonics",
+      },
+    ],
   },
   {
     // Targets "match the cranial nerve with its main function" (5,400/mo,
@@ -112,5 +122,15 @@ export const CRANIAL_NERVE_PAGES: QuizPage[] = [
       },
     ],
     related: ["cranial-nerves", "lesion-localization", "brain-regions"],
+    guides: [
+      {
+        href: "/mnemonics/cranial-nerves",
+        label: "Cranial nerve mnemonics — the function mnemonic explained",
+      },
+      {
+        href: "/mnemonics/facial-nerve-branches",
+        label: "Facial nerve branches mnemonic — To Zanzibar By Motor Car",
+      },
+    ],
   },
 ];

@@ -4,10 +4,11 @@ export const CRANIAL_NERVES_ARTICLE = {
   collection: "mnemonics",
   slug: "cranial-nerves",
   primaryKeyword: "Cranial Nerve Mnemonics",
-  title: "Cranial Nerve Mnemonics — All 12 Names & Functions",
+  title: "Cranial Nerve Mnemonics — All Variants, Functions & Exits",
   description:
-    "Learn cranial nerve mnemonics for all 12 names and functions, skull exits, clinical lesion signs, memory methods and free anatomy testing.",
-  h1: "Cranial Nerve Mnemonics — All 12 Names & Functions",
+    "Every cranial nerve mnemonic: name-order and function variants, the OOOTTAFVGVAH and SSMMBMBSBBMM letter keys, skull exits and lesion signs.",
+  h1: "Cranial Nerve Mnemonics — All Names, Functions & Exits",
+  updated: "2026-09-03",
   intro: [
     "The cranial nerve mnemonic is “On Old Olympus’ Towering Top, A Finn And German Viewed Some Hops.” Its initials preserve the order from olfactory (I) to hypoglossal (XII).",
     "For function type, use “Some Say Marry Money, But My Brother Says Big Brains Matter More.” The initials encode sensory, sensory, motor, motor, both, motor, both, sensory, both, both, motor, motor.",
@@ -90,13 +91,7 @@ export const CRANIAL_NERVES_ARTICLE = {
         "Turns head with sternocleidomastoid; elevates shoulder with trapezius",
         "Enters via foramen magnum; leaves via jugular foramen",
       ],
-      [
-        "XII",
-        "Hypoglossal",
-        "Motor",
-        "Tongue movement",
-        "Hypoglossal canal",
-      ],
+      ["XII", "Hypoglossal", "Motor", "Tongue movement", "Hypoglossal canal"],
     ],
   },
   tableAfter: 2,
@@ -122,6 +117,35 @@ export const CRANIAL_NERVES_ARTICLE = {
           },
           ".",
         ],
+      ],
+    },
+    {
+      heading: "Every cranial nerve mnemonic variant, with letter keys",
+      body: [
+        "Students often remember only the initials and search for the letter run itself. For the twelve names in order the key is OOOTTAFVGVAH — olfactory, optic, oculomotor, trochlear, trigeminal, abducens, facial, vestibulocochlear (auditory), glossopharyngeal, vagus, spinal accessory, hypoglossal.",
+        "For function type the key is SSMMBMBSBBMM — sensory, sensory, motor, motor, both, motor, both, sensory, both, both, motor, motor. Write either string vertically down a page margin and you can rebuild the full table from memory during an exam.",
+      ],
+      subsections: [
+        {
+          heading: "Name-order variants",
+          body: [
+            "“On Old Olympus’ Towering Top, A Finn And German Viewed Some Hops” is the classic. “Oh, Oh, Oh, To Touch And Feel Very Good Velvet, AH” keeps the same OOOTTAFVGVAH sequence with the modern V for vestibulocochlear. “Ooh, Ooh, Ooh, To Touch And Feel Very Green Vegetables, AH” is the common clean rendering of the famous rude version taught in medical schools; the explicit wording changes nothing about the letter mapping, so any variant you already know will serve.",
+          ],
+        },
+        {
+          heading: "Function variants: S, M or B",
+          body: [
+            "“Some Say Marry Money, But My Brother Says Big Brains Matter More” is the standard classroom form. “Some Say Money Matters, But My Brother Says Big Business Makes Money” circulates just as widely, and a ruder campus version exists with the same SSMMBMBSBBMM initials. Pick one sentence and stay with it — mixing variants mid-recall is the usual way the B and M positions get scrambled.",
+          ],
+        },
+      ],
+    },
+    {
+      heading: "Cranial nerve exits mnemonic: Standing Room Only",
+      body: [
+        "“Standing Room Only” gives the three trigeminal exits in order: V1 leaves through the Superior orbital fissure, V2 through the foramen Rotundum, V3 through the foramen Ovale.",
+        "The remaining exits are easiest to learn as shared rooms rather than a twelve-item list. III, IV, V1 and VI travel together through the superior orbital fissure on their way to the orbit. VII and VIII enter the internal acoustic meatus side by side. IX, X and XI leave together through the jugular foramen — which is why one lesion there can combine hoarseness, dysphagia and shoulder weakness.",
+        "That leaves four single occupants: I through the cribriform plate, II through the optic canal, V2 and V3 through their named foramina, and XII through its own hypoglossal canal.",
       ],
     },
     {
@@ -266,7 +290,8 @@ export const CRANIAL_NERVES_ARTICLE = {
         "“On Old Olympus’ Towering Top, A Finn And German Viewed Some Hops” gives the traditional name order. Auditory is the older name represented by A for nerve VIII; the modern name is vestibulocochlear.",
     },
     {
-      question: "What mnemonic for cranial nerves gives sensory, motor or both?",
+      question:
+        "What mnemonic for cranial nerves gives sensory, motor or both?",
       answer:
         "Use “Some Say Marry Money, But My Brother Says Big Brains Matter More.” Its initials produce S-S-M-M-B-M-B-S-B-B-M-M for cranial nerves I through XII.",
     },
@@ -276,9 +301,24 @@ export const CRANIAL_NERVES_ARTICLE = {
         "In the traditional classification, I, II and VIII are sensory; III, IV, VI, XI and XII are motor; V, VII, IX and X are both. These broad labels simplify more detailed fibre types.",
     },
     {
-      question: "Are there rude mnemonics for the cranial nerves?",
+      question: "What does OOOTTAFVGVAH stand for?",
       answer:
-        "Yes. A widely used off-colour version exists, but its explicit wording is unnecessary. Clean mnemonics preserve the same initial-letter sequence and are easier to use in teaching, notes and group study.",
+        "OOOTTAFVGVAH is the initial-letter key for the twelve cranial nerves in order: olfactory, optic, oculomotor, trochlear, trigeminal, abducens, facial, vestibulocochlear, glossopharyngeal, vagus, spinal accessory, hypoglossal.",
+    },
+    {
+      question: "What does SSMMBMBSBBMM stand for?",
+      answer:
+        "SSMMBMBSBBMM encodes each cranial nerve's type for I through XII: sensory, sensory, motor, motor, both, motor, both, sensory, both, both, motor, motor. It is the letter key behind “Some Say Marry Money…”.",
+    },
+    {
+      question: "What is the dirty cranial nerve mnemonic?",
+      answer:
+        "A famous rude version of the name-order mnemonic circulates in medical schools. Its initials are identical to the clean variants — OOOTTAFVGVAH — so “Oh, Oh, Oh, To Touch And Feel Very Good Velvet, AH” teaches exactly the same sequence.",
+    },
+    {
+      question: "What is the mnemonic for cranial nerve exits?",
+      answer:
+        "“Standing Room Only” gives the trigeminal exits: V1 via the Superior orbital fissure, V2 via the foramen Rotundum, V3 via the foramen Ovale. Learn the rest as shared openings — III, IV, V1, VI at the superior orbital fissure; VII, VIII at the internal acoustic meatus; IX, X, XI at the jugular foramen.",
     },
     {
       question: "Why is the vagus nerve different from most cranial nerves?",
@@ -288,39 +328,56 @@ export const CRANIAL_NERVES_ARTICLE = {
   ],
   related: [
     {
+      href: "/mnemonics/cranial-nerve-exits",
+      label: "Cranial nerve exits",
+      description: "Standing Room Only and every skull foramen in one table.",
+    },
+    {
+      href: "/mnemonics/facial-nerve-branches",
+      label: "Facial nerve branches",
+      description: "To Zanzibar By Motor Car — the five branches of VII.",
+    },
+    {
       href: "/3d-brain-model",
       label: "Interactive 3D brain model",
-      description: "Rotate and isolate the structures around cranial-nerve origins.",
+      description:
+        "Rotate and isolate the structures around cranial-nerve origins.",
     },
     {
       href: "/quiz/lesion-localization",
       label: "Lesion localization quiz",
-      description: "Practise turning neurological deficits into an anatomical level.",
+      description:
+        "Practise turning neurological deficits into an anatomical level.",
     },
     {
       href: "/brain/brainstem",
       label: "Brainstem anatomy",
-      description: "Map the midbrain, pons, medulla and their cranial-nerve levels.",
+      description:
+        "Map the midbrain, pons, medulla and their cranial-nerve levels.",
     },
     {
       href: "/brain/facial-nucleus",
       label: "Facial nucleus",
-      description: "Use forehead sparing to separate cortical and peripheral weakness.",
+      description:
+        "Use forehead sparing to separate cortical and peripheral weakness.",
     },
     {
       href: "/brain/superior-colliculus",
       label: "Superior colliculus",
-      description: "Connect midbrain anatomy with saccades and orienting movements.",
+      description:
+        "Connect midbrain anatomy with saccades and orienting movements.",
     },
     {
       href: "/brain/medullary-pyramids",
       label: "Medullary pyramids",
-      description: "Review the corticospinal crossing beside lower cranial nerves.",
+      description:
+        "Review the corticospinal crossing beside lower cranial nerves.",
     },
     {
       href: "/compare/parasympathetic-vs-sympathetic",
       label: "Parasympathetic vs sympathetic",
-      description: "Follow parasympathetic fibres carried by III, VII, IX and X.",
+      description:
+        "Follow parasympathetic fibres carried by III, VII, IX and X.",
     },
   ],
 } satisfies ArticlePage;

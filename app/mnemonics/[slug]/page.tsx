@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleLanding } from "@/components/seo/ArticleLanding";
-import {
-  getArticlePage,
-  getArticleSlugs,
-} from "@/lib/seo/articles";
+import { getArticlePage, getArticleSlugs } from "@/lib/seo/articles";
 
 interface Params {
   readonly params: Promise<{ slug: string }>;
@@ -58,8 +55,21 @@ export default async function MnemonicArticlePage({ params }: Params) {
         inLanguage: "en",
         educationalLevel: "University",
         isAccessibleForFree: true,
+        ...(page.updated ? { dateModified: page.updated } : {}),
         about: { "@type": "Thing", name: page.primaryKeyword },
         author: { "@type": "Organization", name: "Brain Atlas" },
+        speakable: {
+          "@type": "SpeakableSpecification",
+          cssSelector: [".article-intro"],
+        },
+      },
+      {
+        "@type": "Quiz",
+        name: "Cranial nerves quiz",
+        url: "https://brainquiz.study/quiz/cranial-nerves",
+        educationalLevel: "University",
+        isAccessibleForFree: true,
+        about: { "@type": "Thing", name: page.primaryKeyword },
       },
       {
         "@type": "FAQPage",
