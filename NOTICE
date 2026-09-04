@@ -1,0 +1,13 @@
+Third-party assets
+==================
+
+The MIT licence in LICENSE covers the source code of this project only.
+
+The 3D brain meshes in `public/brain-meshes/` (102 .obj files) are third-party
+assets derived from "Brain for Blender" (https://brainder.org/), released under
+Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0).
+
+They remain under that licence. Any redistribution of them, modified or not,
+must carry the same attribution and share-alike terms.
+
+  https://creativecommons.org/licenses/by-sa/3.0/

@@ -113,7 +113,7 @@ spend cap.
 
 ## Licence
 
-Code is MIT — see [LICENSE](LICENSE).
+Code is MIT — see [LICENSE](LICENSE). Asset terms are in [NOTICE](NOTICE).
 
 The 3D meshes in `public/brain-meshes/` are **not** mine and are **not** MIT. They
 derive from ["Brain for Blender"](https://brainder.org/) and stay under

@@ -19,13 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-The MIT licence above covers the source code of this project only.
-
-The 3D brain meshes in `public/brain-meshes/` are third-party assets derived
-from "Brain for Blender" (https://brainder.org/), released under
-Creative Commons Attribution-ShareAlike 3.0 (CC BY-SA 3.0). They remain under
-that licence, and any redistribution of them must carry the same attribution
-and share-alike terms.
