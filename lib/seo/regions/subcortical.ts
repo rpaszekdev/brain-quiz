@@ -5,7 +5,7 @@ export const SUBCORTICAL_REGION_COPY = {
     description:
       "Learn amygdala function, fear pathways and emotional memory, with patient S.M., clinical relevance and a free interactive brain quiz.",
     intro: [
-      "The amygdala does not simply generate fear; it learns which cues predict danger and changes attention, autonomic response and memory accordingly. It works closely with the hippocampus, but the distinction matters: hippocampus binds context, while amygdala assigns emotional significance.",
+      "The amygdala assigns emotional significance: it learns which cues predict danger and changes attention, autonomic response and memory accordingly. It does not simply generate fear — it works with the hippocampus, which binds context while the amygdala tags what matters.",
       "Patient S.M. made that role unusually visible because bilateral amygdala damage reduced fear experience and recognition of fearful faces. In anxiety and PTSD the problem is not a missing structure but an imbalanced circuit, with strong amygdala responses and weaker prefrontal extinction control.",
     ],
     faqs: [
@@ -174,7 +174,7 @@ export const SUBCORTICAL_REGION_COPY = {
     description:
       "Learn cerebellum function, pathways and ipsilateral lesion signs, with motor-learning principles, exam tips and a free 3D brain quiz.",
     intro: [
-      "The cerebellum does not initiate a movement; it compares intended and actual performance so timing, force and sequence can be corrected. Its compact appearance is deceptive because it contains more neurons than the rest of the brain combined, largely in a repeated circuit architecture.",
+      "The cerebellum coordinates movement: it compares intended and actual performance so timing, force and sequence can be corrected, refining action rather than initiating it. Its compact appearance is deceptive because it contains more neurons than the rest of the brain combined, largely in a repeated circuit architecture.",
       "Cerebellar lesions are recognized by coordination errors rather than paralysis: ataxia, dysmetria, intention tremor and impaired rapid alternating movement. The deficits are typically ipsilateral, an exam distinction from the contralateral pattern expected after many cerebral cortical lesions.",
     ],
     faqs: [

@@ -1,6 +1,6 @@
 import type { SeoFaq } from "@/lib/seo/types";
 
-export type ArticleCollection = "mnemonics" | "compare";
+export type ArticleCollection = "mnemonics" | "compare" | "anatomy";
 
 export interface ArticleInlineLink {
   readonly href: string;

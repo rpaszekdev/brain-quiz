@@ -5,7 +5,7 @@ export const MEMORY_REGION_COPY = {
     description:
       "Learn hippocampus function, location and memory circuits, with patient H.M., clinical relevance, exam tips and a free interactive brain quiz.",
     intro: [
-      "The hippocampus is not a permanent filing cabinet for every memory. It binds the elements of new declarative experiences, supports spatial maps and helps consolidate information toward neocortex, while procedural learning can proceed through other systems.",
+      "The hippocampus forms new declarative memories: it binds the elements of an experience, supports spatial maps and helps consolidate information toward neocortex. It is not a permanent filing cabinet — procedural learning can proceed through other systems.",
       "That separation is the lesson of patient H.M.: after bilateral medial temporal surgery, new episodic learning was devastated but mirror-tracing skill could still improve. Clinically, the hippocampus also matters because it is vulnerable early in Alzheimer’s disease, temporal lobe epilepsy and hypoxic injury.",
     ],
     faqs: [

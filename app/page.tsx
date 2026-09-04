@@ -10,6 +10,10 @@ const MNEMONIC_PAGES = ARTICLE_PAGES.filter(
   (page) => page.collection === "mnemonics",
 );
 
+const ANATOMY_ARTICLES = ARTICLE_PAGES.filter(
+  (page) => page.collection === "anatomy",
+);
+
 const categories = {
   cortical: "Cortical Regions",
   subcortical: "Subcortical Structures",
@@ -97,6 +101,20 @@ export default function BrainQuizPage() {
               {MNEMONIC_PAGES.map((page) => (
                 <li key={page.slug}>
                   <Link href={`/mnemonics/${page.slug}`}>
+                    {page.primaryKeyword}
+                  </Link>{" "}
+                  — {page.description}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <h2>Anatomy guides</h2>
+            <ul>
+              {ANATOMY_ARTICLES.map((page) => (
+                <li key={page.slug}>
+                  <Link href={`/anatomy/${page.slug}`}>
                     {page.primaryKeyword}
                   </Link>{" "}
                   — {page.description}

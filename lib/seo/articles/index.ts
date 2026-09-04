@@ -1,9 +1,21 @@
 import { getQuizPage } from "@/lib/seo/pages";
 import { getRegionPage } from "@/lib/seo/regions";
 import { AUTONOMIC_ARTICLE } from "./autonomic";
+import { BLOOD_SUPPLY_OF_THE_BRAIN_ARTICLE } from "./blood-supply-of-the-brain";
+import { BROWN_SEQUARD_SYNDROME_ARTICLE } from "./brown-sequard-syndrome";
+import { CIRCLE_OF_WILLIS_ARTICLE } from "./circle-of-willis";
+import { CORTICOSPINAL_TRACT_ARTICLE } from "./corticospinal-tract";
 import { CRANIAL_NERVE_EXITS_ARTICLE } from "./cranial-nerve-exits";
 import { CRANIAL_NERVES_ARTICLE } from "./cranial-nerves";
+import { DORSAL_COLUMNS_ARTICLE } from "./dorsal-columns";
 import { FACIAL_NERVE_BRANCHES_ARTICLE } from "./facial-nerve-branches";
+import { FRONTAL_LOBE_ARTICLE } from "./frontal-lobe";
+import { LIMBIC_SYSTEM_ARTICLE } from "./limbic-system";
+import { LOBES_OF_THE_BRAIN_ARTICLE } from "./lobes-of-the-brain";
+import { OCCIPITAL_LOBE_ARTICLE } from "./occipital-lobe";
+import { PARIETAL_LOBE_ARTICLE } from "./parietal-lobe";
+import { SPINOTHALAMIC_TRACT_ARTICLE } from "./spinothalamic-tract";
+import { TEMPORAL_LOBE_ARTICLE } from "./temporal-lobe";
 import type {
   ArticleCollection,
   ArticleFigure,
@@ -15,6 +27,18 @@ import type {
 /** Every long-form article, ordered by estimated search demand. */
 export const ARTICLE_PAGES = [
   CRANIAL_NERVES_ARTICLE,
+  LOBES_OF_THE_BRAIN_ARTICLE,
+  FRONTAL_LOBE_ARTICLE,
+  TEMPORAL_LOBE_ARTICLE,
+  PARIETAL_LOBE_ARTICLE,
+  OCCIPITAL_LOBE_ARTICLE,
+  CIRCLE_OF_WILLIS_ARTICLE,
+  BROWN_SEQUARD_SYNDROME_ARTICLE,
+  BLOOD_SUPPLY_OF_THE_BRAIN_ARTICLE,
+  CORTICOSPINAL_TRACT_ARTICLE,
+  SPINOTHALAMIC_TRACT_ARTICLE,
+  DORSAL_COLUMNS_ARTICLE,
+  LIMBIC_SYSTEM_ARTICLE,
   CRANIAL_NERVE_EXITS_ARTICLE,
   FACIAL_NERVE_BRANCHES_ARTICLE,
   AUTONOMIC_ARTICLE,

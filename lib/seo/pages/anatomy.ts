@@ -115,4 +115,101 @@ export const ANATOMY_PAGES: QuizPage[] = [
     ],
     related: ["label-the-brain", "brodmann-areas", "brain-networks"],
   },
+  {
+    // Targets "parts of the brain quiz" (1K-10K/mo, Low comp, $1.72 CPC —
+    // Keyword Planner 2026-09-04). Same identify quiz as brain-regions; the
+    // copy answers the "parts" phrasing that page never uses.
+    slug: "parts-of-the-brain",
+    dimensionId: "anatomy",
+    quizTypeId: "identify",
+    title: "Parts of the Brain Quiz — Name Every Structure in 3D",
+    description:
+      "Free parts of the brain quiz on an interactive 3D model. Identify the lobes, cortex regions, subcortical structures, brainstem and cerebellum. No login.",
+    h1: "Parts of the Brain Quiz",
+    intro: [
+      "Each round highlights one part of the brain on a rotating 3D model and asks you to name it from four choices. The parts span all the major divisions: the four lobes, the cortical regions inside them, the subcortical structures, the brainstem and the cerebellum.",
+      "Start below — the quiz opens on the first question. Wrong answers show the correct name immediately, so a missed part becomes the next thing you remember.",
+    ],
+    sections: [
+      {
+        heading: "Which parts of the brain are in the quiz",
+        body: [
+          "The major divisions first: frontal, parietal, temporal and occipital lobes, the cerebellum and the brainstem. Then the named regions inside them — motor and somatosensory cortex, Broca's and Wernicke's areas, the visual cortex — and the buried structures: hippocampus, amygdala, thalamus, basal ganglia.",
+          "Every part is asked against plausible neighbours rather than random alternatives, because exams do the same: the postcentral gyrus is confused with the precentral, not with the cerebellum.",
+        ],
+      },
+      {
+        heading: "Learn the parts before testing them",
+        body: [
+          "If a highlighted part is unfamiliar, switch to Explore mode and click through the model freely — every part shows its name, function and connections. Test again once the shape and the name feel connected.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What are the main parts of the brain?",
+        answer:
+          "Three broad divisions: the cerebrum (four lobes of cortex plus subcortical structures), the cerebellum, and the brainstem (midbrain, pons, medulla). Most named regions people study are parts of the cerebrum.",
+      },
+      {
+        question: "Is this parts of the brain quiz free?",
+        answer:
+          "Yes. Every question, the full 3D model and all quiz modes are free, with no login, no attempt limit and no paywall.",
+      },
+      {
+        question: "What are the four lobes of the brain?",
+        answer:
+          "Frontal, parietal, temporal and occipital. Broadly: planning and movement in front, touch and space on top, hearing and memory at the sides, vision at the back.",
+      },
+    ],
+    related: ["brain-regions", "label-the-brain", "brodmann-areas"],
+  },
+  {
+    // Targets "brain lobes quiz" (100-1K/mo, Low comp — same pull). Identify
+    // quiz with lobe-first copy; the hub for lobe-level questions.
+    slug: "brain-lobes",
+    dimensionId: "anatomy",
+    quizTypeId: "identify",
+    title: "Brain Lobes Quiz — Frontal, Parietal, Temporal, Occipital",
+    description:
+      "Free brain lobes quiz: identify the four lobes and the key regions inside each on an interactive 3D brain. Learn what every lobe does. No login needed.",
+    h1: "Brain Lobes Quiz",
+    intro: [
+      "The four lobes — frontal, parietal, temporal, occipital — are the first map of the cortex, and this quiz tests them the way exams do: a region is highlighted on a 3D brain and you place it, or name the structures that live inside each lobe.",
+      "Lobe boundaries are landmarks, not lines on a diagram: the central sulcus separates frontal from parietal, the lateral fissure sets off the temporal lobe. Seeing them in 3D is what makes the boundaries stick.",
+    ],
+    sections: [
+      {
+        heading: "What each lobe does",
+        body: [
+          "Frontal: planning, movement, speech production and personality — it holds the motor cortex and Broca's area. Parietal: touch, spatial attention and number sense, behind the central sulcus. Temporal: hearing, language comprehension and memory, with the hippocampus tucked inside. Occipital: vision, nearly all of it.",
+          "The quiz asks both directions — from a highlighted lobe to its name, and from a named function to the lobe that owns it.",
+        ],
+      },
+      {
+        heading: "From lobes to the regions inside them",
+        body: [
+          "Knowing the lobe is the first pass; exams then ask what is inside it. After a lobes round, the same quiz can drill the regions each lobe contains — precentral gyrus in the frontal, postcentral in the parietal, Wernicke's area at the temporo-parietal junction, V1 in the occipital.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What are the four lobes of the brain and their functions?",
+        answer:
+          "Frontal (movement, planning, speech production), parietal (touch and spatial processing), temporal (hearing, comprehension, memory) and occipital (vision). Each hemisphere has all four.",
+      },
+      {
+        question: "What separates the frontal and parietal lobes?",
+        answer:
+          "The central sulcus. The precentral gyrus (motor cortex) lies immediately in front of it, the postcentral gyrus (somatosensory cortex) immediately behind it.",
+      },
+      {
+        question: "Is the insula a fifth lobe?",
+        answer:
+          "Many anatomists treat it as one. The insula is a fold of cortex buried inside the lateral fissure, hidden from the surface view — some counts also add the limbic lobe, giving six.",
+      },
+    ],
+    related: ["parts-of-the-brain", "brain-regions", "label-the-brain"],
+  },
 ];
