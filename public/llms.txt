@@ -9,7 +9,7 @@ Brain Atlas is a free, interactive neuroscience learning tool. Users explore a 3
 - **Identify Mode**: A brain region is highlighted — name it.
 - **Locate Mode**: Given a region name — click the correct area on the 3D model.
 
-The app covers 28 brain regions and is designed for students, educators, and anyone curious about cognitive neuroscience.
+The app covers 49 brain regions and is designed for students, educators, and anyone curious about cognitive neuroscience.
 
 ## Features
 
