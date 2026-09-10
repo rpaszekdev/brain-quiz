@@ -93,6 +93,20 @@
   flex: 0 0 auto;
   width: clamp(300px, 26vw, 440px);
   aspect-ratio: 1;
+  /* It is an <a> now: without display:block the inline box collapses and the
+     aspect-ratio never applies. */
+  display: block;
+  cursor: pointer;
+  transition: transform var(--dur-normal, 250ms) var(--ease, ease);
+}
+
+.heroMedia:hover {
+  transform: scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroMedia { transition: none; }
+  .heroMedia:hover { transform: none; }
 }
 
 .heroVideo {
@@ -100,6 +114,9 @@
   height: 100%;
   object-fit: contain;
   display: block;
+  /* The wrapper is the link. A <video> eats the click as a media interaction,
+     so the anchor never fired — let the pointer through to it. */
+  pointer-events: none;
   /* h.264 reproduces the flat cream ~3/255 off (yuv420p round trip), which
      shows up as a rectangle on a flat ground. Feathering the edge removes the
      boundary rather than chasing a colour match the codec will not give us. */

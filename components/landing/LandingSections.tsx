@@ -21,9 +21,17 @@ const AUDIENCES = [
 
 const SUBJECTS = [
   { href: "/browse", label: "Neuroanatomy", icon: Brain },
-  { href: "/quiz/cranial-nerves", label: "Cranial nerves", icon: BookOpenCheck },
+  {
+    href: "/quiz/cranial-nerves",
+    label: "Cranial nerves",
+    icon: BookOpenCheck,
+  },
   { href: "/quiz/white-matter-tracts", label: "Pathways", icon: Map },
-  { href: "/quiz/lesion-localization", label: "Clinical cases", icon: Waypoints },
+  {
+    href: "/quiz/lesion-localization",
+    label: "Clinical cases",
+    icon: Waypoints,
+  },
 ] as const;
 
 const OUTCOMES = [
@@ -38,7 +46,9 @@ export function LandingSections() {
       <section className={`${styles.wrapWide} ${styles.sectionFirst}`}>
         <div className={styles.hero}>
           <div className={styles.heroCopy}>
-            <h1 className={styles.heroTitle}>Learn the brain by exploring it.</h1>
+            <h1 className={styles.heroTitle}>
+              Learn the brain by exploring it.
+            </h1>
             <p className={styles.heroLead}>
               Click any region on the brain. Read what it does, then quiz
               yourself on it.
@@ -50,7 +60,15 @@ export function LandingSections() {
             marketing image cannot drift from the product. muted + playsInline
             are what let iOS autoplay it at all.
           */}
-          <div className={styles.heroMedia}>
+          {/* The loop is the most tappable thing on the page, so it opens the
+              real model rather than sitting there as decoration. It points at
+              the atlas page, not the explorer, so a tap costs one small page
+              instead of ~50 mesh requests fired from the front door. */}
+          <Link
+            href="/3d-brain-model"
+            className={styles.heroMedia}
+            aria-label="Open the interactive 3D brain model"
+          >
             <video
               className={styles.heroVideo}
               src="/brain-rotate.mp4"
@@ -61,7 +79,7 @@ export function LandingSections() {
               playsInline
               aria-label="A brain model rotating, with each lobe in its own colour"
             />
-          </div>
+          </Link>
 
           <Link
             href={`/quiz/${QUIZ_TILES[0].slug}`}
@@ -74,7 +92,9 @@ export function LandingSections() {
       </section>
 
       <section className={`${styles.wrap} ${styles.section}`}>
-        <h2 className={styles.h2}>Built for people who get examined on this.</h2>
+        <h2 className={styles.h2}>
+          Built for people who get examined on this.
+        </h2>
         <div className={styles.audiences}>
           {AUDIENCES.map((audience) => (
             <div key={audience.label} className={styles.audience}>
