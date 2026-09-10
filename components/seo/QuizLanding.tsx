@@ -3,7 +3,19 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import BrainQuizLazy from "@/components/BrainQuizLazy";
+import PlayQuizLazy from "@/components/play/PlayQuizLazy";
 import type { QuizPage } from "@/lib/seo/types";
+
+/**
+ * Anatomy identification is answered the same way everywhere on the site: the
+ * model above, the question and four options below.
+ *
+ * Only "identify" qualifies — "locate" asks for a click on the model itself,
+ * which the explorer shell handles and this layout does not.
+ */
+function usesStandardLayout(page: QuizPage): boolean {
+  return page.dimensionId === "anatomy" && page.quizTypeId === "identify";
+}
 
 interface QuizLandingProps {
   page: QuizPage;
@@ -44,12 +56,16 @@ export function QuizLanding({ page, related }: QuizLandingProps) {
 
       {started && (
         <div className="seo-app-slot" ref={appRef}>
-          <BrainQuizLazy
-            autoStart={{
-              dimensionId: page.dimensionId,
-              quizTypeId: page.quizTypeId,
-            }}
-          />
+          {usesStandardLayout(page) ? (
+            <PlayQuizLazy quizTypeId={page.quizTypeId} />
+          ) : (
+            <BrainQuizLazy
+              autoStart={{
+                dimensionId: page.dimensionId,
+                quizTypeId: page.quizTypeId,
+              }}
+            />
+          )}
         </div>
       )}
 

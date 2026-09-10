@@ -1,0 +1,273 @@
+/*
+ * Single-question quiz surface: model on top, question underneath.
+ *
+ * Distinct from QuizShell, which puts the model beside a sidebar for people who
+ * are exploring. Here the image is the question, so it gets the top half of the
+ * screen and the options sit directly under it in reading order.
+ */
+
+.page {
+  min-height: calc(100svh - var(--topnav-h));
+  background: var(--washi-white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 52rem;
+  padding: 0 1.25rem 3rem;
+}
+
+/* ── Progress ─────────────────────────────────────────── */
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  font-size: 0.8125rem;
+  color: var(--sumi-light);
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  flex: 1 1 auto;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--washi-warm);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--ai);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.score {
+  font-weight: 600;
+  color: var(--sumi-medium);
+}
+
+.clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--sumi-light);
+}
+
+/* ── Model ────────────────────────────────────────────── */
+
+.viewer {
+  position: relative;
+  width: 100%;
+  height: clamp(300px, 44vh, 460px);
+}
+
+/* The orientation gizmo helps someone exploring the model; here it is one more
+   thing in the frame while you are trying to read a highlight. Matched by its
+   inline absolute positioning, the way the figure renderer does it. */
+.viewer canvas[style*="absolute"] {
+  display: none !important;
+}
+
+.viewerLoading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.875rem;
+  color: var(--sumi-light);
+}
+
+/* ── Question ─────────────────────────────────────────── */
+
+.prompt {
+  font-family: var(--font-serif);
+  font-size: clamp(1.375rem, 2.6vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.hint {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--sumi-light);
+  margin: 0 0 1.5rem;
+}
+
+/* ── Options ──────────────────────────────────────────── */
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--washi-warm);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--washi-white) 50%, #fff);
+  font: inherit;
+  font-size: 1rem;
+  color: var(--sumi-deep);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--ai);
+  background: var(--ai-light);
+}
+
+.option:disabled { cursor: default; }
+
+.option[data-state="selected"] {
+  border-color: var(--ai);
+  background: var(--ai-light);
+}
+
+.option[data-state="correct"] {
+  border-color: var(--moegi);
+  background: var(--moegi-light);
+}
+
+.option[data-state="wrong"] {
+  border-color: var(--beni);
+  background: var(--beni-light);
+}
+
+/* The marker carries the letter before answering and the verdict after, so the
+   row never changes width and the list does not jump when feedback lands. */
+.marker {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--washi-warm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sumi-light);
+}
+
+.option[data-state="selected"] .marker {
+  border-color: var(--ai);
+  color: var(--ai);
+}
+
+.option[data-state="correct"] .marker {
+  border-color: var(--moegi);
+  color: var(--moegi);
+}
+
+.option[data-state="wrong"] .marker {
+  border-color: var(--beni);
+  color: var(--beni);
+}
+
+/* ── Feedback ─────────────────────────────────────────── */
+
+.feedback {
+  margin-top: 1.5rem;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid var(--washi-warm);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--washi-white) 50%, #fff);
+}
+
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  margin-bottom: 0.4rem;
+}
+
+.verdictRight { color: var(--moegi); }
+.verdictWrong { color: var(--beni); }
+
+.answerName {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  margin: 0 0 0.35rem;
+}
+
+.explanation {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--sumi-medium);
+  margin: 0;
+}
+
+/* ── Actions ──────────────────────────────────────────── */
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--ai);
+  color: var(--washi-white);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.primary:hover:not(:disabled) { filter: brightness(1.12); }
+
+.primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Result ───────────────────────────────────────────── */
+
+.result {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.resultScore {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 8vw, 5rem);
+  line-height: 1;
+  margin: 0 0 0.5rem;
+}
+
+.resultLabel {
+  font-size: 1rem;
+  color: var(--sumi-light);
+  margin: 0 0 2rem;
+}
+
+@media (max-width: 620px) {
+  .viewer { height: 260px; }
+  .option { font-size: 0.9375rem; }
+}

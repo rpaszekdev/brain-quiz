@@ -1570,27 +1570,56 @@ html, body {
 .topnav-links {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  margin-right: auto;
+  gap: 0.5rem;
 }
 
+/* Pills, not text links: this is a quiz platform, so the bar should read as
+   controls. Underlined text reads as prose and gets scanned past. */
 .topnav-links a {
-  color: var(--sumi-light);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--sumi-medium);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   letter-spacing: 0.01em;
-  padding: 0.35rem 0;
-  border-bottom: 1px solid transparent;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--washi-warm);
+  border-radius: 6px;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
   white-space: nowrap;
 }
 
-.topnav-links a:hover { color: var(--sumi-deep); }
+.topnav-links a:hover {
+  color: var(--sumi-deep);
+  border-color: var(--ai);
+  background: var(--ai-light);
+}
 
 .topnav-links a[data-active="true"] {
-  color: var(--sumi-deep);
-  border-bottom-color: var(--sumi-deep);
+  color: var(--washi-white);
+  background: var(--ai);
+  border-color: var(--ai);
 }
+
+.topnav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  background: var(--ai);
+  color: var(--washi-white);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter 0.15s ease;
+}
+
+.topnav-cta:hover { filter: brightness(1.12); }
 
 .topnav-toggle {
   display: none;
@@ -1603,6 +1632,7 @@ html, body {
 
 @media (max-width: 720px) {
   .topnav-links { display: none; }
+  .topnav-inner > .topnav-cta { display: none; }
   .topnav-toggle { display: inline-flex; margin-left: auto; }
 }
 

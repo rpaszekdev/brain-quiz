@@ -248,7 +248,19 @@ export function BrainViewer({
       resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
+      // dispose() kills the GL context but leaves the <canvas> in the DOM.
+      // React StrictMode runs this effect twice in dev, so the dead first
+      // canvas stayed above the live one and pushed the brain a full viewport
+      // below the fold — the viewer looked empty. Remove the element too.
+      renderer.domElement.remove();
       gizmoRef.current?.dispose();
+      // The mesh/material registries are module-level refs that the load
+      // promises append to. Without clearing them the second mount raycasts
+      // against meshes belonging to the disposed scene.
+      allMeshObjectsRef.current = [];
+      regionMaterialsRef.current.clear();
+      meshByFileRef.current.clear();
+      gizmoRef.current = null;
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

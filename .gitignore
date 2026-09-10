@@ -34,3 +34,6 @@ next-env.d.ts
 .vercel
 
 .shots/
+
+# LeafMarker task system
+.leafmarker/

@@ -7,6 +7,7 @@ import {
   useBrainViewer,
 } from "@/components/brain-viewer/BrainViewerContext";
 import { BrainViewer } from "@/components/brain-viewer/BrainViewer";
+import { TurntableShot } from "@/components/render/Turntable";
 import { getRegion } from "@/lib/brain-regions";
 
 /**
@@ -22,12 +23,19 @@ const READY_ATTR = "shotReady";
 /** Leaves a margin of brain-to-frame so the figure does not feel cropped. */
 const FRAME_PADDING = 1.15;
 
-function Shot({ slug }: { readonly slug: string }) {
+function Shot({
+  slug,
+  spin,
+}: {
+  readonly slug: string;
+  readonly spin: boolean;
+}) {
   const {
     highlightRegion,
     viewerReady,
     cameraRef,
     controlsRef,
+    rendererRef,
     allMeshObjectsRef,
   } = useBrainViewer();
   const [missing, setMissing] = useState(false);
@@ -41,7 +49,7 @@ function Shot({ slug }: { readonly slug: string }) {
       return;
     }
 
-    highlightRegion(region);
+    if (!spin) highlightRegion(region);
 
     // flyToRegion orbits a fixed 250 units from whatever the controls were last
     // targeting, which leaves the brain off-centre and at a different size per
@@ -65,7 +73,11 @@ function Shot({ slug }: { readonly slug: string }) {
       const fov = (camera.fov * Math.PI) / 180;
       const distance = ((maxDim / 2) * FRAME_PADDING) / Math.tan(fov / 2);
 
-      const { azimuth, elevation } = region.camera;
+      // ponytail: spin frames the whole brain head-on and lets the capture
+      // script own the azimuth, so no region angle applies.
+      const { azimuth, elevation } = spin
+        ? { azimuth: 0, elevation: 12 }
+        : region.camera;
       const az = (azimuth * Math.PI) / 180;
       const el = (elevation * Math.PI) / 180;
 
@@ -77,6 +89,18 @@ function Shot({ slug }: { readonly slug: string }) {
       );
       camera.lookAt(centre);
       controls.update();
+
+      if (spin) {
+        // Handle for the capture script: it orbits the camera itself so the
+        // rotation is exact, rather than nudging OrbitControls with fake drags.
+        (window as unknown as Record<string, unknown>).__spin = {
+          camera,
+          controls,
+          renderer: rendererRef.current,
+          centre: { x: centre.x, y: centre.y, z: centre.z },
+          distance,
+        };
+      }
     }
 
     const timer = setTimeout(() => {
@@ -87,9 +111,11 @@ function Shot({ slug }: { readonly slug: string }) {
   }, [
     viewerReady,
     slug,
+    spin,
     highlightRegion,
     cameraRef,
     controlsRef,
+    rendererRef,
     allMeshObjectsRef,
   ]);
 
@@ -109,21 +135,26 @@ function Shot({ slug }: { readonly slug: string }) {
  */
 export function RegionShot() {
   const [slug, setSlug] = useState<string | null>(null);
+  const [spin, setSpin] = useState(false);
+  const [turntable, setTurntable] = useState(false);
 
   // Read from location rather than useSearchParams: this is a client-only dev
   // tool, and useSearchParams would force a Suspense boundary for no benefit.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setSlug(params.get("region") ?? "hippocampus");
+    setSpin(params.has("spin"));
+    setTurntable(params.get("mode") === "turntable");
   }, []);
 
+  if (turntable) return <TurntableShot />;
   if (!slug) return null;
 
   return (
     <div
       style={{
         width: 1200,
-        height: 800,
+        height: spin ? 1200 : 800,
         background: "var(--washi-cream)",
       }}
     >
@@ -139,7 +170,7 @@ export function RegionShot() {
         body { margin: 0; padding: 0; }
       `}</style>
       <BrainViewerProvider>
-        <Shot slug={slug} />
+        <Shot slug={slug} spin={spin} />
       </BrainViewerProvider>
     </div>
   );

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import BrainQuizLazy from "@/components/BrainQuizLazy";
+import { LandingSections } from "@/components/landing/LandingSections";
 import { BRAIN_REGIONS } from "@/lib/brain-regions";
 import { DIMENSIONS } from "@/lib/dimensions";
 import { ARTICLE_PAGES } from "@/lib/seo/articles";
@@ -43,19 +43,17 @@ export default function BrainQuizPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      {/* The app is the point of this page, so it mounts immediately here.
-          Landing pages under /quiz/* defer it behind a button instead, where
-          the prose is what the visitor arrived for. */}
-      <div className="seo-app-slot">
-        <BrainQuizLazy />
-      </div>
+      {/* The landing is the front door: hero, quiz tiles, subjects. The 3D app
+          no longer mounts here — it costs ~50 mesh requests before a visitor
+          has chosen anything, and it lives one click away at /3d-brain-model. */}
+      <LandingSections />
 
       {/* Visible, crawlable content. Previously this block was clipped to a
           1px sr-only box — search engines de-weight hidden text, so all of it
           was being written and none of it counted. */}
       <main className="seo-page">
         <div className="seo-wrap">
-          <h1>Brain Anatomy Quiz</h1>
+          <h2>Brain anatomy quiz, free and in 3D</h2>
           <p>
             Learn the parts of the brain on a 3D model you can rotate, rather
             than a flat diagram with arrows. Brain Atlas covers{" "}

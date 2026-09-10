@@ -1,0 +1,326 @@
+/*
+ * Marketing landing surface.
+ *
+ * Deliberately not the same rhythm as /quiz/* prose pages: this one leads with
+ * targets rather than paragraphs, so the type scale is smaller and the space
+ * goes into the grid instead of into the copy.
+ */
+
+.page {
+  background: var(--washi-white);
+  color: var(--sumi-deep);
+}
+
+.wrap {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* The hero is allowed more width than the rest of the page: it has to hold the
+   fold on a large display, where a 76rem column reads as a small island. */
+.wrapWide {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+
+/* The grid steps further in than the rest of the page so it reads as one
+   object rather than a wall running edge to edge. */
+.wrapInset {
+  max-width: 66rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.section {
+  padding: 4.5rem 0;
+  border-top: 1px solid var(--washi-warm);
+}
+
+.sectionFirst {
+  /* Own the fold rather than ending halfway down it. svh, not vh, so mobile
+     browser chrome does not push the CTA under the address bar. */
+  min-height: calc(100svh - var(--topnav-h));
+  display: flex;
+  align-items: center;
+  padding: 3rem 0;
+  border-top: none;
+}
+
+.h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: 1.2;
+  margin: 0 0 2rem;
+  font-weight: 500;
+}
+
+/* ── Hero ─────────────────────────────────────────────── */
+
+.hero {
+  display: flex;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  width: 100%;
+}
+
+.heroCopy {
+  /* Wide enough that the display serif keeps its two-line break: below about
+     20ch the headline fragments into four lines and stops reading as a line. */
+  flex: 1 1 auto;
+  min-width: min(100%, 22ch);
+}
+
+.heroTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 4.4vw, 4.5rem);
+  line-height: 1.08;
+  margin: 0 0 1rem;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.heroLead {
+  font-size: clamp(1rem, 1.3vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--sumi-light);
+  margin: 0;
+  max-width: 36ch;
+}
+
+.heroMedia {
+  flex: 0 0 auto;
+  width: clamp(300px, 26vw, 440px);
+  aspect-ratio: 1;
+}
+
+.heroVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  /* h.264 reproduces the flat cream ~3/255 off (yuv420p round trip), which
+     shows up as a rectangle on a flat ground. Feathering the edge removes the
+     boundary rather than chasing a colour match the codec will not give us. */
+  -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 74%, transparent 100%);
+}
+
+/* ── Buttons ──────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.15rem;
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: filter 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.btnPrimary {
+  background: var(--ai);
+  color: var(--washi-white);
+}
+
+.btnPrimary:hover { filter: brightness(1.12); }
+
+.btnQuiet {
+  background: transparent;
+  color: var(--ai);
+  border-color: var(--washi-warm);
+}
+
+.btnQuiet:hover {
+  border-color: var(--ai);
+  background: var(--ai-light);
+}
+
+.btnLarge {
+  padding: 1rem 1.6rem;
+  font-size: 1.0625rem;
+}
+
+.btnRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+/* ── Audiences ────────────────────────────────────────── */
+
+.audiences {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.audience {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: center;
+}
+
+.audience svg { color: var(--kitsune); }
+
+.audienceLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--sumi-deep);
+}
+
+/* ── Quiz grid ────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.85rem;
+  padding: 1.75rem 1.25rem;
+  border: 1px solid var(--washi-warm);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--washi-white) 60%, #fff);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.tile:hover {
+  border-color: var(--ai);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(26, 26, 26, 0.06);
+}
+
+.tileMeta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--sumi-light);
+  font-variant-numeric: tabular-nums;
+}
+
+.tileIcon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--washi-warm);
+  border-radius: 4px;
+  color: var(--kitsune);
+  background: var(--washi-white);
+}
+
+.tileTitle {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.tileBlurb {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--sumi-light);
+  margin: 0;
+}
+
+/* ── Subjects ─────────────────────────────────────────── */
+
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.subject {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--washi-warm);
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--sumi-deep);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.subject:hover {
+  border-color: var(--ai);
+  background: var(--ai-light);
+}
+
+/* ── Outcomes ─────────────────────────────────────────── */
+
+.outcomes {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 60ch;
+}
+
+.outcome {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--sumi-medium);
+}
+
+.outcome svg {
+  color: var(--kitsune);
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+}
+
+.lead {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--sumi-light);
+  margin: -1.25rem 0 0;
+  max-width: 60ch;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+
+@media (max-width: 1000px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 860px) {
+  .sectionFirst { min-height: 0; padding: 2.5rem 0 3.5rem; }
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+  .heroMedia { width: min(70vw, 320px); align-self: center; }
+  .audiences { grid-template-columns: repeat(2, 1fr); row-gap: 2rem; }
+}
+
+@media (max-width: 620px) {
+  .grid { grid-template-columns: 1fr; }
+  .subjects { grid-template-columns: 1fr; }
+  .section { padding: 3rem 0; }
+}

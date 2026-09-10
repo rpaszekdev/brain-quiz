@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu } from "lucide-react";
+import {
+  ArrowRight,
+  Brain,
+  LayoutGrid,
+  Menu,
+  Sparkles,
+  Waypoints,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -15,18 +23,25 @@ import {
 interface NavLink {
   href: string;
   label: string;
+  icon: LucideIcon;
 }
 
+/** The one action the bar is really for, kept visually distinct from the links. */
+const CTA = { href: "/quiz/label-the-brain", label: "Start a quiz" } as const;
+
 /**
- * One word each. The kana that used to sit beside these labels carried no
- * meaning for English readers and added visual weight — decoration, not
- * information. The aesthetic lives in the serif, the ground and the spacing.
+ * One word each, now carrying an icon.
+ *
+ * This is a quiz platform, so the bar reads as controls rather than prose: a
+ * bordered pill per destination and one filled call to action. Quizzes are not
+ * a link here — the CTA covers them, and a second entry pointing at the same
+ * page would only split the target.
  */
 const LINKS: readonly NavLink[] = [
-  { href: "/browse", label: "Browse" },
-  { href: "/quiz/label-the-brain", label: "Quizzes" },
-  { href: "/mnemonics/cranial-nerves", label: "Mnemonics" },
-  { href: "/3d-brain-model", label: "3D model" },
+  { href: "/3d-brain-model", label: "Explore", icon: Brain },
+  { href: "/browse", label: "Browse", icon: LayoutGrid },
+  { href: "/anatomy/corticospinal-tract", label: "Pathways", icon: Waypoints },
+  { href: "/mnemonics/cranial-nerves", label: "Mnemonics", icon: Sparkles },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -59,10 +74,16 @@ export function TopNav() {
               href={link.href}
               data-active={isActive(pathname, link.href)}
             >
-{link.label}
+              <link.icon size={16} strokeWidth={1.75} aria-hidden />
+              {link.label}
             </Link>
           ))}
         </div>
+
+        <Link href={CTA.href} className="topnav-cta">
+          {CTA.label}
+          <ArrowRight size={16} strokeWidth={2} aria-hidden />
+        </Link>
 
         <Sheet open={open} onOpenChange={setOpen}>
           {/* Base UI (shadcn v4) uses `render`, not Radix's `asChild`. */}
@@ -84,9 +105,18 @@ export function TopNav() {
                   href={link.href}
                   onClick={() => setOpen(false)}
                 >
-{link.label}
+                  <link.icon size={16} strokeWidth={1.75} aria-hidden />
+                  {link.label}
                 </Link>
               ))}
+              <Link
+                href={CTA.href}
+                className="topnav-cta"
+                onClick={() => setOpen(false)}
+              >
+                {CTA.label}
+                <ArrowRight size={16} strokeWidth={2} aria-hidden />
+              </Link>
             </div>
           </SheetContent>
         </Sheet>
