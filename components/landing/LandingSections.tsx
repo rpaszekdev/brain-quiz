@@ -65,7 +65,7 @@ export function LandingSections() {
               the atlas page, not the explorer, so a tap costs one small page
               instead of ~50 mesh requests fired from the front door. */}
           <Link
-            href="/3d-brain-model"
+            href="/3d-brain-model?open=1"
             className={styles.heroMedia}
             aria-label="Open the interactive 3D brain model"
           >
@@ -170,7 +170,7 @@ export function LandingSections() {
             Open study guides
           </Link>
           <Link
-            href="/3d-brain-model"
+            href="/3d-brain-model?open=1"
             className={`${styles.btn} ${styles.btnPrimary}`}
           >
             <Brain size={16} strokeWidth={1.75} aria-hidden />

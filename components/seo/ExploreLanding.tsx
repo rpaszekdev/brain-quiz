@@ -12,12 +12,20 @@ interface ExploreLandingProps {
 }
 
 /** Prose-first landing shell that defers the WebGL viewer until requested. */
-export function ExploreLanding({
-  page,
-  relatedQuizzes,
-}: ExploreLandingProps) {
+export function ExploreLanding({ page, relatedQuizzes }: ExploreLandingProps) {
   const [started, setStarted] = useState(false);
   const appRef = useRef<HTMLDivElement>(null);
+
+  // `?open=1` means the visitor already asked for the model — the home page's
+  // brain loop links here with it — so skip the button and mount the viewer.
+  // Read in an effect rather than useState: the server has no search params,
+  // so deciding during the first render would be a hydration mismatch, and
+  // useSearchParams() would opt this statically generated page into Suspense.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).has("open")) {
+      setStarted(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (started) appRef.current?.scrollIntoView({ behavior: "smooth" });
