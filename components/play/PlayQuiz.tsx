@@ -14,11 +14,12 @@ import {
   useBrainViewer,
 } from "@/components/brain-viewer/BrainViewerContext";
 import { BrainViewer } from "@/components/brain-viewer/BrainViewer";
+import BrainQuizLazy from "@/components/BrainQuizLazy";
 import { BRAIN_REGIONS } from "@/lib/brain-regions";
 import { INITIAL_QUIZ_STATE, quizReducer } from "@/lib/quiz/quiz-engine";
 import { generateQuestions } from "@/lib/quiz/generators";
 import "@/lib/quiz/generators/register-all";
-import type { MultipleChoiceAnswer } from "@/lib/types";
+import type { DimensionId, MultipleChoiceAnswer } from "@/lib/types";
 import styles from "./play.module.css";
 
 const QUESTION_COUNT = 10;
@@ -47,7 +48,7 @@ function formatElapsed(ms: number): string {
   return `${mm}:${ss}`;
 }
 
-function Play({ quizTypeId, count }: Required<PlayQuizProps>) {
+function Play({ quizTypeId, count }: { quizTypeId: string; count: number }) {
   const { highlightRegion, viewerReady } = useBrainViewer();
   const [state, dispatch] = useReducer(quizReducer, INITIAL_QUIZ_STATE);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -290,13 +291,51 @@ function Play({ quizTypeId, count }: Required<PlayQuizProps>) {
 export interface PlayQuizProps {
   /** Registered generator id. Anything producing multiple-choice questions. */
   quizTypeId?: string;
+  /**
+   * Dimension the generator belongs to. Only needed for the fallback: a
+   * generator that answers by clicking the model cannot use this screen, and
+   * the legacy explorer needs both ids to auto-start.
+   */
+  dimensionId?: DimensionId;
   count?: number;
+}
+
+/**
+ * Can this screen ask that question?
+ *
+ * Every generator is asked for one question and the answer shape decides it.
+ * A static list of "supported quiz types" would drift the first time a
+ * generator changed; asking the generator itself cannot.
+ */
+function producesMultipleChoice(quizTypeId: string): boolean {
+  try {
+    const [probe] = generateQuestions(quizTypeId, 1);
+    return probe?.answer.type === "multiple-choice";
+  } catch {
+    return false;
+  }
 }
 
 export function PlayQuiz({
   quizTypeId = "identify",
+  dimensionId,
   count = QUESTION_COUNT,
 }: PlayQuizProps) {
+  const supported = useMemo(
+    () => producesMultipleChoice(quizTypeId),
+    [quizTypeId],
+  );
+
+  // click-on-brain, ordering and multi-select answers need the explorer's
+  // controls. Send them there rather than rendering a model with no question.
+  if (!supported) {
+    return (
+      <BrainQuizLazy
+        autoStart={dimensionId ? { dimensionId, quizTypeId } : undefined}
+      />
+    );
+  }
+
   return (
     <main className={styles.page}>
       <BrainViewerProvider>
