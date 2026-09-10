@@ -327,12 +327,21 @@
 
 @media (max-width: 860px) {
   .sectionFirst { min-height: 0; padding: 2.5rem 0 3.5rem; }
+  /* Phones get one centred column in reading order: title, then the brain,
+     then the call to action. The desktop row is left-aligned because the copy
+     and the model sit side by side; stacked, a left edge under a centred
+     circle just looks like a mistake. */
   .hero {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 2rem;
+    align-items: center;
+    text-align: center;
+    gap: 1.75rem;
   }
-  .heroMedia { width: min(70vw, 320px); align-self: center; }
+  .heroCopy { min-width: 0; width: 100%; }
+  .heroTitle { font-size: clamp(2.25rem, 9vw, 3.25rem); }
+  /* max-width still caps the line length; auto margins keep it centred. */
+  .heroLead { margin-inline: auto; }
+  .heroMedia { width: min(70vw, 320px); }
   .audiences { grid-template-columns: repeat(2, 1fr); row-gap: 2rem; }
 }
 
