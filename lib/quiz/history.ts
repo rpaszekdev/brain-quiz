@@ -1,11 +1,12 @@
 import type { DimensionId } from "../types";
+import { getStorage } from "./storage";
 
 /**
  * Completed-quiz history.
  *
  * Separate from `session.ts`: a session is the one quiz you have not finished,
  * history is every quiz you have. Same storage contract — plain JSON in
- * localStorage, no account, no sync.
+ * whatever store `storage.ts` hands back, no account, no sync.
  */
 const STORAGE_KEY = "quiz-history";
 const MAX_ENTRIES = 20;
@@ -20,10 +21,11 @@ export interface QuizResultRecord {
 }
 
 export function loadHistory(): readonly QuizResultRecord[] {
-  if (typeof window === "undefined") return [];
+  const store = getStorage();
+  if (!store) return [];
 
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = store.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? (parsed as QuizResultRecord[]) : [];
@@ -39,9 +41,10 @@ export function recordResult(
   const entry: QuizResultRecord = { ...result, completedAt: Date.now() };
   const next = [entry, ...loadHistory()].slice(0, MAX_ENTRIES);
 
-  if (typeof window !== "undefined") {
+  const store = getStorage();
+  if (store) {
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      store.setItem(STORAGE_KEY, JSON.stringify(next));
     } catch {
       // Quota or private mode — history is not worth breaking the quiz for.
     }
@@ -50,9 +53,8 @@ export function recordResult(
 }
 
 export function clearHistory(): void {
-  if (typeof window === "undefined") return;
   try {
-    window.localStorage.removeItem(STORAGE_KEY);
+    getStorage()?.removeItem(STORAGE_KEY);
   } catch {
     // ignore
   }
