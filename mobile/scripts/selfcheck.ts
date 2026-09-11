@@ -11,7 +11,7 @@ import { BRAIN_REGIONS } from "@/lib/brain-regions";
 import { QUIZ_GROUPS, findQuizType } from "../src/quiz/catalog";
 import { streakDays } from "../src/quiz/streak";
 import { lookFor } from "../src/viewer/highlight";
-import { regionCameraPosition } from "../src/viewer/camera";
+import { FALLBACK_TARGET, fitDistance, regionCameraPosition } from "../src/viewer/camera";
 
 // Every quiz the app offers builds ten answerable multiple-choice questions.
 let quizTypes = 0;
@@ -47,8 +47,8 @@ for (const q of generateQuestions("identify", 10)) {
   const region = BRAIN_REGIONS.find((r) => r.id === (q.answer as { correctId: string }).correctId);
   assert.ok(region, `${q.id}: correctId is not a region`);
   assert.ok(region.meshFiles.length > 0, `${region.id}: no meshes`);
-  const pos = regionCameraPosition(region);
-  assert.ok(Math.abs(pos.distanceTo({ x: 0, y: 20, z: 0 } as never) - 250) < 1e-6, `${region.id}: camera not on the 250 orbit`);
+  const pos = regionCameraPosition(region, FALLBACK_TARGET, 250);
+  assert.ok(Math.abs(pos.distanceTo(FALLBACK_TARGET) - 250) < 1e-6, `${region.id}: camera not on the 250 orbit`);
 }
 
 // Streak: today + yesterday = 2; only two days ago = 0; gap breaks it.
@@ -71,3 +71,9 @@ assert.equal(lookFor({ region: null, focusId: null, mode: "accent", categoryFilt
 assert.equal(lookFor({ region: other, focusId: null, mode: "accent", categoryFilter: other.category === "cortical" ? "subcortical" : "cortical" }).opacity, 0.06);
 
 process.stdout.write(`selfcheck ok · ${quizTypes} quiz types · ${BRAIN_REGIONS.length} regions · short quizzes: ${short.join(", ") || "none"}\n`);
+
+// Camera fit: wide canvases keep the website's distance, portrait ones back off.
+assert.equal(fitDistance(1.5), 250);
+assert.equal(fitDistance(1), 250);
+assert.ok(Math.abs(fitDistance(0.5) - 500) < 1e-9);
+assert.equal(fitDistance(NaN), 250);

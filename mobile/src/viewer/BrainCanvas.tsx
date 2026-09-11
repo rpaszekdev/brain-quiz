@@ -1,11 +1,12 @@
-import { Suspense, useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useState } from "react";
+import type * as THREE from "three";
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 import { Canvas } from "@react-three/fiber/native";
 import type { BrainRegion } from "@/lib/brain-regions";
 import { colors, serif } from "../theme";
 import { BrainModel } from "./BrainModel";
 import { CameraRig } from "./CameraRig";
-import { CAMERA_HOME, regionCameraPosition } from "./camera";
+import { FALLBACK_TARGET, homeCameraPosition, fitDistance } from "./camera";
 import type { FocusMode } from "./highlight";
 
 export interface BrainCanvasProps {
@@ -32,17 +33,22 @@ export function BrainCanvas({
   style,
 }: BrainCanvasProps) {
   const [ready, setReady] = useState(false);
-  const onReady = useCallback(() => setReady(true), []);
-  const goal = useMemo(
-    () => (flyToFocus && focus ? regionCameraPosition(focus) : null),
-    [flyToFocus, focus],
-  );
+  const [target, setTarget] = useState<THREE.Vector3>(FALLBACK_TARGET);
+  const onReady = useCallback((center: THREE.Vector3) => {
+    setTarget(center);
+    setReady(true);
+  }, []);
 
   return (
     <View style={[styles.wrap, style]}>
       <Canvas
         style={styles.canvas}
-        camera={{ position: [...CAMERA_HOME], fov: 50, near: 0.1, far: 1000 }}
+        camera={{
+          position: homeCameraPosition(FALLBACK_TARGET, fitDistance(1)).toArray(),
+          fov: 50,
+          near: 0.1,
+          far: 1000,
+        }}
       >
         <color attach="background" args={[colors.washiWhite]} />
         <ambientLight intensity={0.7} />
@@ -57,7 +63,7 @@ export function BrainCanvas({
             onReady={onReady}
           />
         </Suspense>
-        <CameraRig goal={goal} />
+        <CameraRig target={target} focus={flyToFocus ? focus : null} />
       </Canvas>
       {!ready && (
         <View style={styles.loading} pointerEvents="none">

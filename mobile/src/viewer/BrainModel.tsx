@@ -1,4 +1,6 @@
 import { useEffect, useMemo } from "react";
+import { Platform } from "react-native";
+import { Asset } from "expo-asset";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { useLoader, type ThreeEvent } from "@react-three/fiber/native";
@@ -52,13 +54,17 @@ export interface BrainModelProps {
   mode: FocusMode;
   categoryFilter: BrainRegion["category"] | null;
   onTapRegion?: (region: BrainRegion) => void;
-  onReady?: () => void;
+  /** Fires once the meshes are tagged, with the model's bounding-box centre. */
+  onReady?: (center: THREE.Vector3) => void;
 }
 
 export function BrainModel({ focusId, mode, categoryFilter, onTapRegion, onReady }: BrainModelProps) {
-  // R3F native accepts a Metro asset id here and resolves it through expo-asset,
-  // but its type only admits strings. The cast is the price of that polyfill.
-  const gltf = useLoader(GLTFLoader, brainGlb as unknown as string);
+  // On the phone R3F native accepts a Metro asset id and resolves it through
+  // expo-asset (its type only admits strings, hence the cast). In a browser
+  // that polyfill is skipped, so hand Three a plain URL instead.
+  const source =
+    Platform.OS === "web" ? Asset.fromModule(brainGlb).uri : (brainGlb as unknown as string);
+  const gltf = useLoader(GLTFLoader, source);
   // useLoader caches one scene per asset. Two viewers alive at once (Play over
   // Explore) must not fight over the same materials, so each gets a clone;
   // geometry is shared, only the 102 materials are per-instance.
@@ -66,8 +72,9 @@ export function BrainModel({ focusId, mode, categoryFilter, onTapRegion, onReady
   const tagged = useMemo(() => tagMeshes(root), [root]);
 
   useEffect(() => {
-    onReady?.();
-  }, [tagged, onReady]);
+    const center = new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3());
+    onReady?.(center);
+  }, [root, tagged, onReady]);
 
   // Three materials are mutable by design; this effect is the one place that
   // writes to them, and it derives every value from props.
@@ -81,9 +88,16 @@ export function BrainModel({ focusId, mode, categoryFilter, onTapRegion, onReady
 
   const handleClick = (event: ThreeEvent<MouseEvent>) => {
     event.stopPropagation();
-    const regionId = event.object.userData.regionId;
-    const region = BRAIN_REGIONS.find((r) => r.id === regionId);
-    if (region) onTapRegion?.(region);
+    // The nearest hit is often an unassigned sliver — paracentral lobule,
+    // corpus callosum, a ventricle — so walk the ray to the first mesh that
+    // names a region rather than dropping the tap.
+    for (const hit of event.intersections) {
+      const region = BRAIN_REGIONS.find((r) => r.id === hit.object.userData.regionId);
+      if (region) {
+        onTapRegion?.(region);
+        return;
+      }
+    }
   };
 
   return <primitive object={root} onClick={handleClick} />;

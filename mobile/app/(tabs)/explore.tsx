@@ -29,7 +29,14 @@ export default function Explore() {
       <View style={styles.header}>
         <Text style={styles.title}>Explore</Text>
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+      {/* ScrollView defaults to flexGrow: 1, which would let a one-line chip strip
+          claim half the screen from the canvas below it. */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.chipStrip}
+        contentContainerStyle={styles.chips}
+      >
         {CATEGORIES.map((c) => (
           <Chip
             key={c.id}
@@ -77,7 +84,8 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.washiWhite },
   header: { paddingHorizontal: space.lg, paddingTop: space.sm },
   title: { fontFamily: serif, fontSize: 28, color: colors.sumiDeep },
-  chips: { paddingHorizontal: space.lg, paddingVertical: space.md, gap: space.sm },
+  chipStrip: { flexGrow: 0, flexShrink: 0 },
+  chips: { paddingHorizontal: space.lg, paddingVertical: space.md, gap: space.sm, alignItems: "center" },
   canvas: { flex: 1 },
   sheet: {
     position: "absolute",

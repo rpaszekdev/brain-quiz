@@ -1,16 +1,19 @@
-import { useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber/native";
 import { OrbitControls } from "@react-three/drei/native";
-import { CAMERA_TARGET } from "./camera";
+import type { BrainRegion } from "@/lib/brain-regions";
+import { fitDistance, homeCameraPosition, regionCameraPosition } from "./camera";
 
 /** Higher is snappier; 6 lands in roughly the website's 600 ms. */
 const FLY_DAMPING = 6;
 const ARRIVED_DISTANCE = 0.5;
 
 interface CameraRigProps {
-  /** Where the camera should fly to. null leaves it under the user's thumb. */
-  goal: THREE.Vector3 | null;
+  /** Orbit centre — the model's measured centre once it has loaded. */
+  target: THREE.Vector3;
+  /** Region whose camera preset to fly to. null leaves the user in control. */
+  focus: BrainRegion | null;
 }
 
 /**
@@ -18,11 +21,27 @@ interface CameraRigProps {
  * brain off-centre is almost never what was meant, and there is no keyboard
  * to recover with.
  */
-export function CameraRig({ goal }: CameraRigProps) {
+export function CameraRig({ target, focus }: CameraRigProps) {
   const controls = useRef<React.ComponentRef<typeof OrbitControls>>(null);
   const camera = useThree((state) => state.camera);
+  const aspect = useThree((state) => state.viewport.aspect);
+  const distance = fitDistance(aspect);
+
+  const goal = useMemo(
+    () => (focus ? regionCameraPosition(focus, target, distance) : null),
+    [focus, target, distance],
+  );
   const lastGoal = useRef<THREE.Vector3 | null>(null);
   const flying = useRef(false);
+
+  // A new target means the model just reported its centre (the loading
+  // overlay is still up), so snapping rather than flying is invisible.
+  useEffect(() => {
+    if (focus) return;
+    camera.position.copy(homeCameraPosition(target, distance));
+    controls.current?.target.copy(target);
+    controls.current?.update();
+  }, [camera, target, distance, focus]);
 
   useFrame((_, delta) => {
     const changed =
@@ -46,11 +65,11 @@ export function CameraRig({ goal }: CameraRigProps) {
   return (
     <OrbitControls
       ref={controls}
-      target={[...CAMERA_TARGET]}
+      target={target}
       enablePan={false}
       enableDamping
-      minDistance={120}
-      maxDistance={400}
+      minDistance={distance * 0.5}
+      maxDistance={distance * 1.6}
     />
   );
 }

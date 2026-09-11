@@ -18,10 +18,15 @@ in Expo Go — no native build needed for development.
 ## Checks
 
 ```sh
-npm run typecheck          # tsc
-npx tsx scripts/selfcheck.ts   # every quiz type generates valid questions; streak + highlight maths
-npm run export             # full Metro bundle, proves the phone build resolves
+npm run typecheck              # tsc
+npx tsx scripts/selfcheck.ts   # every quiz type generates valid questions; streak, highlight, camera maths
+npm run export                 # full iOS Metro bundle, proves the phone build resolves
+npx expo start --web           # same app in a browser: the fastest way to see every screen without a phone
 ```
+
+The web target runs the identical bundle (react-three-fiber on expo-gl web,
+localStorage instead of expo-sqlite) and is what the screens were verified
+against. It is a test surface, not a product.
 
 ## Rebuild the brain model
 
