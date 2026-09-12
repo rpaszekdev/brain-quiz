@@ -1,13 +1,24 @@
-import { Suspense, useCallback, useState } from "react";
+import { Suspense, useCallback, useRef, useState } from "react";
 import type * as THREE from "three";
-import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  type GestureResponderEvent,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
 import { Canvas } from "@react-three/fiber/native";
 import type { BrainRegion } from "@/lib/brain-regions";
 import { colors, serif } from "../theme";
-import { BrainModel } from "./BrainModel";
+import { BrainModel, type PickRegion } from "./BrainModel";
 import { CameraRig } from "./CameraRig";
 import { FALLBACK_TARGET, homeCameraPosition, fitDistance } from "./camera";
 import type { FocusMode } from "./highlight";
+
+/** A touch that moves or lingers more than this is an orbit, not a tap. */
+const TAP_MAX_MOVE = 10;
+const TAP_MAX_MS = 300;
 
 export interface BrainCanvasProps {
   /** Highlighted region. In "isolate" mode everything else fades out. */
@@ -20,9 +31,30 @@ export interface BrainCanvasProps {
   style?: StyleProp<ViewStyle>;
 }
 
+interface TouchStart {
+  readonly x: number;
+  readonly y: number;
+  readonly at: number;
+}
+
+/**
+ * Canvas-relative touch point. react-native-web forwards the raw DOM
+ * TouchEvent, which has no locationX, so fall back to its first touch there.
+ */
+function touchPoint(event: GestureResponderEvent): { x: number; y: number } {
+  const native = event.nativeEvent;
+  if (typeof native.locationX === "number") return { x: native.locationX, y: native.locationY };
+  const touch = (native as unknown as TouchEvent).changedTouches[0];
+  const rect = (event.currentTarget as unknown as HTMLElement).getBoundingClientRect();
+  return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+}
+
 /**
  * The 3D brain, sized by its parent. Lights and camera match the website's
  * BrainViewer so a region looks the same on both.
+ *
+ * Renders on demand (only when something changes) and without MSAA; the
+ * pixel ratio cannot be lowered because expo-gl draws at native resolution.
  */
 export function BrainCanvas({
   focus,
@@ -34,21 +66,43 @@ export function BrainCanvas({
 }: BrainCanvasProps) {
   const [ready, setReady] = useState(false);
   const [target, setTarget] = useState<THREE.Vector3>(FALLBACK_TARGET);
+  const pick = useRef<PickRegion | null>(null);
+  const touchStart = useRef<TouchStart | null>(null);
   const onReady = useCallback((center: THREE.Vector3) => {
     setTarget(center);
     setReady(true);
   }, []);
 
+  // Touch events reach this view regardless of R3F's pan responder, so a tap
+  // can be told apart from an orbit without the model listening for pointers.
+  const onTouchStart = (event: GestureResponderEvent) => {
+    touchStart.current = { ...touchPoint(event), at: Date.now() };
+  };
+  const onTouchEnd = (event: GestureResponderEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start || !onTapRegion) return;
+    const { x, y } = touchPoint(event);
+    const moved = Math.hypot(x - start.x, y - start.y);
+    if (moved > TAP_MAX_MOVE || Date.now() - start.at > TAP_MAX_MS) return;
+    const region = pick.current?.(x, y) ?? null;
+    if (region) onTapRegion(region);
+  };
+
   return (
     <View style={[styles.wrap, style]}>
       <Canvas
         style={styles.canvas}
+        gl={{ antialias: false }}
+        frameloop="demand"
         camera={{
           position: homeCameraPosition(FALLBACK_TARGET, fitDistance(1)).toArray(),
           fov: 50,
           near: 0.1,
           far: 1000,
         }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
         <color attach="background" args={[colors.washiWhite]} />
         <ambientLight intensity={0.7} />
@@ -59,7 +113,7 @@ export function BrainCanvas({
             focusId={focus?.id ?? null}
             mode={mode}
             categoryFilter={categoryFilter}
-            onTapRegion={onTapRegion}
+            pickRef={pick}
             onReady={onReady}
           />
         </Suspense>

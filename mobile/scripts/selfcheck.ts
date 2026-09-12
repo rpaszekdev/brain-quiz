@@ -5,9 +5,10 @@
  * usage: npx tsx scripts/selfcheck.ts   (from mobile/)
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { generateQuestions } from "@/lib/quiz/generators";
 import "@/lib/quiz/generators/register-all";
-import { BRAIN_REGIONS } from "@/lib/brain-regions";
+import { BRAIN_REGIONS, buildMeshToRegionMap } from "@/lib/brain-regions";
 import { QUIZ_GROUPS, findQuizType } from "../src/quiz/catalog";
 import { streakDays } from "../src/quiz/streak";
 import { lookFor } from "../src/viewer/highlight";
@@ -66,8 +67,8 @@ const hippo = BRAIN_REGIONS.find((r) => r.id === "hippocampus") ?? BRAIN_REGIONS
 const other = BRAIN_REGIONS.find((r) => r.id !== hippo.id)!;
 assert.equal(lookFor({ region: hippo, focusId: hippo.id, mode: "isolate", categoryFilter: null }).opacity, 1);
 assert.equal(lookFor({ region: other, focusId: hippo.id, mode: "isolate", categoryFilter: null }).opacity, 0.06);
-assert.equal(lookFor({ region: other, focusId: hippo.id, mode: "accent", categoryFilter: null }).opacity, 0.85);
-assert.equal(lookFor({ region: null, focusId: null, mode: "accent", categoryFilter: null }).opacity, 0.6);
+assert.equal(lookFor({ region: other, focusId: hippo.id, mode: "accent", categoryFilter: null }).opacity, 1);
+assert.equal(lookFor({ region: null, focusId: null, mode: "accent", categoryFilter: null }).opacity, 1);
 assert.equal(lookFor({ region: other, focusId: null, mode: "accent", categoryFilter: other.category === "cortical" ? "subcortical" : "cortical" }).opacity, 0.06);
 
 process.stdout.write(`selfcheck ok · ${quizTypes} quiz types · ${BRAIN_REGIONS.length} regions · short quizzes: ${short.join(", ") || "none"}\n`);
@@ -77,3 +78,19 @@ assert.equal(fitDistance(1.5), 250);
 assert.equal(fitDistance(1), 250);
 assert.ok(Math.abs(fitDistance(0.5) - 500) < 1e-9);
 assert.equal(fitDistance(NaN), 250);
+
+// GLB: one mesh per region that owns files (regions may list the same file;
+// the map gives it to one of them) plus one for the unassigned slivers.
+const glb = readFileSync("assets/brain.glb");
+assert.equal(glb.toString("latin1", 0, 4), "glTF", "brain.glb: not a GLB");
+const jsonLength = glb.readUInt32LE(12);
+const gltf = JSON.parse(glb.toString("utf8", 20, 20 + jsonLength)) as {
+  meshes: unknown[];
+  nodes: { extras?: Record<string, unknown> }[];
+};
+const regionsWithMeshes = new Set(buildMeshToRegionMap().values()).size;
+assert.equal(gltf.meshes.length, regionsWithMeshes + 1, `brain.glb: ${gltf.meshes.length} meshes`);
+assert.ok(
+  gltf.nodes.every((n) => n.extras !== undefined && "regionId" in n.extras),
+  "brain.glb: a node lost its regionId",
+);

@@ -39,7 +39,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "glb": "node scripts/obj-to-glb.mjs",
+    "glb": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/obj-to-glb.ts",
     "typecheck": "tsc --noEmit",
     "export": "expo export --platform ios --output-dir dist"
   },

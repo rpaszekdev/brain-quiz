@@ -20,11 +20,15 @@ interface CameraRigProps {
  * Orbit plus fly-to. Pan is off: on a phone a two-finger drag that shifts the
  * brain off-centre is almost never what was meant, and there is no keyboard
  * to recover with.
+ *
+ * The canvas renders on demand, so every camera change here asks for a frame;
+ * OrbitControls asks for its own while the user drags or damping settles.
  */
 export function CameraRig({ target, focus }: CameraRigProps) {
   const controls = useRef<React.ComponentRef<typeof OrbitControls>>(null);
   const camera = useThree((state) => state.camera);
   const aspect = useThree((state) => state.viewport.aspect);
+  const invalidate = useThree((state) => state.invalidate);
   const distance = fitDistance(aspect);
 
   const goal = useMemo(
@@ -41,7 +45,13 @@ export function CameraRig({ target, focus }: CameraRigProps) {
     camera.position.copy(homeCameraPosition(target, distance));
     controls.current?.target.copy(target);
     controls.current?.update();
-  }, [camera, target, distance, focus]);
+    invalidate();
+  }, [camera, target, distance, focus, invalidate]);
+
+  // A focus change alters no scene prop, so nothing else would start the fly.
+  useEffect(() => {
+    invalidate();
+  }, [goal, invalidate]);
 
   useFrame((_, delta) => {
     const changed =
@@ -60,6 +70,7 @@ export function CameraRig({ target, focus }: CameraRigProps) {
     );
     controls.current?.update();
     if (camera.position.distanceTo(goal) < ARRIVED_DISTANCE) flying.current = false;
+    else invalidate();
   });
 
   return (

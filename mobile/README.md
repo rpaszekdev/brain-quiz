@@ -33,7 +33,7 @@ against. It is a test surface, not a product.
 Only needed when `public/brain-meshes/*.obj` change.
 
 ```sh
-npm run glb            # ratio 0.4, error 0.005  → assets/brain.glb (~5.4 MB)
+npm run glb            # ratio 0.25, error 0.01 → assets/brain.glb (~3.4 MB, one mesh per region)
 npm run glb -- 0.3 0.01   # smaller, coarser
 ```
 
@@ -58,7 +58,7 @@ app/                 expo-router screens
 src/quiz/            catalog, usePlay, streak, per-region stats
 src/viewer/          BrainCanvas · BrainModel · CameraRig · highlight · camera
 src/ui/              Button · Option · ProgressBar · Chip · SectionTitle
-scripts/             obj-to-glb.mjs · selfcheck.ts
+scripts/             obj-to-glb.ts · selfcheck.ts
 ```
 
 Storage is `expo-sqlite/kv-store` injected into `lib/quiz/storage.ts`, so the

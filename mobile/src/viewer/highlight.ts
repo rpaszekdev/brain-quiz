@@ -6,10 +6,14 @@ export interface MeshLook {
   readonly emissive: number;
 }
 
-/** Values copied from the website's BrainViewerContext so both look alike. */
+/**
+ * Values follow the website's BrainViewerContext, except the idle looks are
+ * opaque: a transparent mesh cannot be depth-culled, and on a phone GPU that
+ * overdraw was most of the frame.
+ */
 const LOOK = {
-  region: { opacity: 0.85, emissive: 0.05 },
-  unassigned: { opacity: 0.6, emissive: 0 },
+  region: { opacity: 1, emissive: 0.05 },
+  unassigned: { opacity: 1, emissive: 0 },
   focus: { opacity: 1, emissive: 0.8 },
   dimmedRegion: { opacity: 0.06, emissive: 0 },
   dimmedUnassigned: { opacity: 0.03, emissive: 0 },
