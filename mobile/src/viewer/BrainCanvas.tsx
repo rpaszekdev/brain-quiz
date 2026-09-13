@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useRef, useState } from "react";
+import { Suspense, useCallback, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 import {
   StyleSheet,
@@ -23,11 +23,19 @@ const TAP_MAX_MS = 300;
 export interface BrainCanvasProps {
   /** Highlighted region. In "isolate" mode everything else fades out. */
   focus: BrainRegion | null;
+  /**
+   * Explicit highlight set. When provided it replaces the single `focus`
+   * highlight (e.g. every endpoint of a tract, every member of a network);
+   * the camera still flies to `focus`.
+   */
+  highlightIds?: readonly string[] | null;
   mode?: FocusMode;
   /** Whether a new focus also moves the camera to that region's preset. */
   flyToFocus?: boolean;
   categoryFilter?: BrainRegion["category"] | null;
   onTapRegion?: (region: BrainRegion) => void;
+  /** Fires on a confirmed tap that hits no region (empty canvas, sliver). */
+  onTapEmpty?: () => void;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -58,12 +66,20 @@ function touchPoint(event: GestureResponderEvent): { x: number; y: number } {
  */
 export function BrainCanvas({
   focus,
+  highlightIds = null,
   mode = "isolate",
   flyToFocus = true,
   categoryFilter = null,
   onTapRegion,
+  onTapEmpty,
   style,
 }: BrainCanvasProps) {
+  // Memoised: a fresh array every render would re-run the material loop.
+  const focusId = focus?.id ?? null;
+  const focusIds = useMemo(
+    () => highlightIds ?? (focusId ? [focusId] : []),
+    [highlightIds, focusId],
+  );
   const [ready, setReady] = useState(false);
   const [target, setTarget] = useState<THREE.Vector3>(FALLBACK_TARGET);
   const pick = useRef<PickRegion | null>(null);
@@ -81,12 +97,13 @@ export function BrainCanvas({
   const onTouchEnd = (event: GestureResponderEvent) => {
     const start = touchStart.current;
     touchStart.current = null;
-    if (!start || !onTapRegion) return;
+    if (!start || (!onTapRegion && !onTapEmpty)) return;
     const { x, y } = touchPoint(event);
     const moved = Math.hypot(x - start.x, y - start.y);
     if (moved > TAP_MAX_MOVE || Date.now() - start.at > TAP_MAX_MS) return;
     const region = pick.current?.(x, y) ?? null;
-    if (region) onTapRegion(region);
+    if (region) onTapRegion?.(region);
+    else onTapEmpty?.();
   };
 
   return (
@@ -110,7 +127,7 @@ export function BrainCanvas({
         <directionalLight position={[-50, -30, -80]} intensity={0.3} />
         <Suspense fallback={null}>
           <BrainModel
-            focusId={focus?.id ?? null}
+            focusIds={focusIds}
             mode={mode}
             categoryFilter={categoryFilter}
             pickRef={pick}

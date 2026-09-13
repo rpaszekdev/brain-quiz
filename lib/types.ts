@@ -46,6 +46,20 @@ export type AnswerFormatType =
   | "ordering"
   | "multi-select";
 
+/**
+ * What the 3D viewer should show alongside a question. Optional so older
+ * generators keep working; when absent the viewer falls back to the
+ * correctId-is-a-region rule.
+ */
+export interface QuizScene {
+  /** Region ids to glow (tract endpoints, network members, the region itself). */
+  regionIds: string[];
+  /** White-matter tract id behind the question, if any. */
+  tractId?: string;
+  /** Functional network id behind the question, if any. */
+  networkId?: string;
+}
+
 export interface QuizQuestion {
   id: string;
   dimensionId: DimensionId;
@@ -54,6 +68,7 @@ export interface QuizQuestion {
   prompt: string;
   answer: AnswerFormat;
   sceneDirective: SceneDirective;
+  scene?: QuizScene;
   explanation: string;
   tags: string[];
 }

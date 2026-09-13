@@ -6,17 +6,21 @@ import { recordResult } from "@/lib/quiz/history";
 import { INITIAL_QUIZ_STATE, quizReducer } from "@/lib/quiz/quiz-engine";
 import { clearSession, loadSession, saveSession } from "@/lib/quiz/session";
 import type { MultipleChoiceAnswer, QuizQuestion } from "@/lib/types";
-import { findQuizType } from "./catalog";
+import { DRILL_SOURCE_TYPES, drillMeta, findQuizType } from "./catalog";
 import { recordRegionOutcome } from "./region-stats";
+import { sceneRegionIds } from "./scene";
 
 const QUESTION_COUNT = 10;
 const TICK_MS = 1000;
+const DRILL_SAMPLE = 500;
 
 export interface PlayOptions {
   quizTypeId: string;
   /** Continue the saved session for this quiz type if there is one. */
   resume?: boolean;
   count?: number;
+  /** When quizTypeId is "drill", the region id being drilled. */
+  drillRegionId?: string;
 }
 
 function multipleChoice(question: QuizQuestion | undefined): MultipleChoiceAnswer | null {
@@ -28,12 +32,63 @@ function regionFor(id: string | undefined): BrainRegion | null {
 }
 
 /**
+ * Build a mixed-format drill around one region: every question involves it
+ * (as the answer or in its scene). Falls back to plain identify so a drill
+ * never comes up empty.
+ */
+function drillQuestions(regionId: string, count: number): QuizQuestion[] {
+  const pool: QuizQuestion[] = [];
+  for (const typeId of DRILL_SOURCE_TYPES) {
+    try {
+      // Generators clamp to their data set, so a large count yields every
+      // question the type can ask; 8 would miss the drilled region most runs.
+      for (const q of generateQuestions(typeId, DRILL_SAMPLE)) {
+        const mc = multipleChoice(q);
+        if (!mc) continue;
+        if (mc.correctId === regionId || sceneRegionIds(q).includes(regionId)) {
+          pool.push(q);
+        }
+      }
+    } catch {
+      // A source type with no data is skipped, not fatal.
+    }
+  }
+  // Each generator asks about a region once, so a pool is 2–6 questions.
+  // Pad with fresh identify draws: same region, different distractors.
+  for (let round = 0; pool.length > 0 && pool.length < count && round < count; round++) {
+    const extra = generateQuestions("identify", DRILL_SAMPLE).find(
+      (q) => multipleChoice(q)?.correctId === regionId,
+    );
+    if (!extra) break;
+    pool.push({ ...extra, id: `${extra.id}-pad${round}` });
+  }
+  const shuffled = shuffle(pool).slice(0, count);
+  return shuffled.length > 0 ? shuffled : generateQuestions("identify", count);
+}
+
+function shuffle<T>(arr: T[]): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+/**
  * One quiz run: the reducer from lib/quiz plus the per-question UI state the
  * website keeps in PlayQuiz.tsx. Also persists progress so Home can offer
  * "continue", and records history and per-region tallies on finish.
  */
-export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT }: PlayOptions) {
-  const meta = useMemo(() => findQuizType(quizTypeId), [quizTypeId]);
+export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT, drillRegionId }: PlayOptions) {
+  const isDrill = quizTypeId === "drill";
+  const meta = useMemo(
+    () =>
+      isDrill
+        ? drillMeta(regionFor(drillRegionId)?.name ?? "Brain")
+        : findQuizType(quizTypeId),
+    [quizTypeId, isDrill, drillRegionId],
+  );
   const [state, dispatch] = useReducer(quizReducer, INITIAL_QUIZ_STATE);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -46,6 +101,18 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT }: 
   useEffect(() => {
     if (!meta) {
       setError(`No quiz called "${quizTypeId}".`);
+      return;
+    }
+    if (isDrill) {
+      if (!drillRegionId || !regionFor(drillRegionId)) {
+        setError("Pick a region to drill from your weak spots.");
+        return;
+      }
+      try {
+        dispatch({ type: "START_QUIZ", questions: drillQuestions(drillRegionId, count) });
+      } catch (cause) {
+        setError(cause instanceof Error ? cause.message : "Could not build this quiz.");
+      }
       return;
     }
     const saved = resume ? loadSession() : null;
@@ -70,7 +137,7 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT }: 
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not build this quiz.");
     }
-  }, [meta, quizTypeId, resume, count]);
+  }, [meta, quizTypeId, resume, count, isDrill, drillRegionId]);
 
   const question = state.questions[state.currentIndex];
   const answer = useMemo(() => multipleChoice(question), [question]);
@@ -78,9 +145,18 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT }: 
   const correctLabel =
     answer?.options.find((option) => option.id === answer.correctId)?.label ?? "";
 
+  /** Regions the viewer glows for the current question (tract endpoints,
+   *  network members, or the identified region). */
+  const highlightIds = useMemo(() => sceneRegionIds(question), [question]);
+  /** Camera target: first scene region, falling back to the correct region. */
+  const focusRegion = useMemo(
+    () => regionFor(highlightIds[0]) ?? correctRegion,
+    [highlightIds, correctRegion],
+  );
+
   // Decided once per run so the viewer never mounts and unmounts mid-quiz.
   const showsBrain = useMemo(
-    () => state.questions.some((q) => regionFor(multipleChoice(q)?.correctId) !== null),
+    () => state.questions.some((q) => sceneRegionIds(q).length > 0),
     [state.questions],
   );
 
@@ -97,6 +173,8 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT }: 
   }, [answered, state.phase, state.currentIndex]);
 
   useEffect(() => {
+    // Drills are throwaway practice runs: never resume them from Home.
+    if (isDrill) return;
     if (state.phase !== "playing" || !meta || state.questions.length === 0) return;
     saveSession({
       dimensionId: meta.dimension.id,
@@ -106,7 +184,7 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT }: 
       currentIndex: state.currentIndex,
       score: state.score,
     });
-  }, [state.phase, state.questions, state.answers, state.currentIndex, state.score, meta, quizTypeId]);
+  }, [isDrill, state.phase, state.questions, state.answers, state.currentIndex, state.score, meta, quizTypeId]);
 
   useEffect(() => {
     if (state.phase !== "result" || !meta) return;
@@ -124,12 +202,15 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT }: 
     if (!question || !answer || selectedId === null || answered) return;
     const correct = selectedId === answer.correctId;
     setAnswered(true);
-    if (correctRegion) recordRegionOutcome(correctRegion.id, correct);
+    // Drills attribute every answer to the drilled region; normal runs to
+    // the correct region when the answer itself is one.
+    if (isDrill && drillRegionId) recordRegionOutcome(drillRegionId, correct);
+    else if (correctRegion) recordRegionOutcome(correctRegion.id, correct);
     dispatch({
       type: "SUBMIT_ANSWER",
       answer: { questionId: question.id, selectedId, correct, timeMs: Date.now() - askedAt.current },
     });
-  }, [question, answer, selectedId, answered, correctRegion]);
+  }, [question, answer, selectedId, answered, correctRegion, isDrill, drillRegionId]);
 
   const next = useCallback(() => {
     setSelectedId(null);
@@ -141,11 +222,17 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT }: 
     setSelectedId(null);
     setAnswered(false);
     try {
-      dispatch({ type: "START_QUIZ", questions: generateQuestions(quizTypeId, count) });
+      dispatch({
+        type: "START_QUIZ",
+        questions:
+          isDrill && drillRegionId
+            ? drillQuestions(drillRegionId, count)
+            : generateQuestions(quizTypeId, count),
+      });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not build this quiz.");
     }
-  }, [quizTypeId, count]);
+  }, [quizTypeId, count, isDrill, drillRegionId]);
 
   return {
     meta,
@@ -154,6 +241,8 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT }: 
     question,
     answer,
     correctRegion,
+    focusRegion,
+    highlightIds,
     correctLabel,
     showsBrain,
     selectedId,

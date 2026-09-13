@@ -20,21 +20,27 @@ const LOOK = {
 } as const satisfies Record<string, MeshLook>;
 
 export type FocusMode =
-  /** Quiz: the focused region alone stays visible. */
+  /** Quiz: the focused regions alone stay visible. */
   | "isolate"
-  /** Explore: the focused region glows, everything else stays readable. */
+  /** Explore: focused regions glow, everything else stays readable. */
   | "accent";
 
 export interface LookQuery {
+  /** Primary owner (drives the category filter); null for unassigned slivers. */
   readonly region: BrainRegion | null;
-  readonly focusId: string | null;
+  /** Every owning region id — atlas files are shared (e.g. inferiorparietal
+   *  by parietal, angular and ventral-ppc), so a mesh lights up when ANY
+   *  owner is focused. Empty for unassigned slivers. */
+  readonly regionIds: readonly string[];
+  /** Highlighted region ids. Empty means no focus. */
+  readonly focusIds: readonly string[];
   readonly mode: FocusMode;
   readonly categoryFilter: BrainRegion["category"] | null;
 }
 
-export function lookFor({ region, focusId, mode, categoryFilter }: LookQuery): MeshLook {
-  if (focusId !== null) {
-    if (region?.id === focusId) return LOOK.focus;
+export function lookFor({ region, regionIds, focusIds, mode, categoryFilter }: LookQuery): MeshLook {
+  if (focusIds.length > 0) {
+    if (regionIds.some((id) => focusIds.includes(id))) return LOOK.focus;
     if (mode === "isolate") return region ? LOOK.dimmedRegion : LOOK.dimmedUnassigned;
   }
   if (categoryFilter !== null) {

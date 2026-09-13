@@ -22,9 +22,17 @@ function formatElapsed(ms: number): string {
 
 export default function PlayScreen() {
   const router = useRouter();
-  const { quizTypeId, resume } = useLocalSearchParams<{ quizTypeId: string; resume?: string }>();
+  const { quizTypeId, resume, region } = useLocalSearchParams<{
+    quizTypeId: string;
+    resume?: string;
+    region?: string;
+  }>();
   const { height } = useWindowDimensions();
-  const play = usePlay({ quizTypeId: quizTypeId ?? "identify", resume: resume === "1" });
+  const play = usePlay({
+    quizTypeId: quizTypeId ?? "identify",
+    resume: resume === "1",
+    drillRegionId: quizTypeId === "drill" ? region : undefined,
+  });
 
   const close = () => (router.canGoBack() ? router.back() : router.replace("/"));
 
@@ -85,7 +93,11 @@ export default function PlayScreen() {
       </View>
 
       {play.showsBrain && (
-        <BrainCanvas focus={play.correctRegion} style={{ height: height * BRAIN_HEIGHT_RATIO }} />
+        <BrainCanvas
+          focus={play.focusRegion}
+          highlightIds={play.highlightIds}
+          style={{ height: height * BRAIN_HEIGHT_RATIO }}
+        />
       )}
 
       <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">

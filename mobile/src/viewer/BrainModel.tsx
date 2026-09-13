@@ -15,20 +15,35 @@ export type PickRegion = (x: number, y: number) => BrainRegion | null;
 
 interface TaggedMesh {
   readonly mesh: THREE.Mesh;
+  /** Primary owner (first in declaration order) — drives colour and picking. */
   readonly region: BrainRegion | null;
+  /** Every owning region id. Empty for unassigned slivers. */
+  readonly regionIds: readonly string[];
   readonly material: THREE.MeshLambertMaterial;
 }
 
+function regionById(id: string): BrainRegion | null {
+  return BRAIN_REGIONS.find((r) => r.id === id) ?? null;
+}
+
 /**
- * One mesh per region, coloured like the website. The GLB carries
- * userData.regionId from the conversion script — node names are not trusted
- * because GLTFLoader strips dots and slashes out of them.
+ * One mesh per atlas owner-set, coloured like the website. The GLB carries
+ * extras.regionIds (all owners) plus extras.regionId (the primary owner) into
+ * userData — node names are not trusted because GLTFLoader strips dots and
+ * slashes out of them. Meshes from older GLBs carry only regionId, which is
+ * treated as the sole owner.
  */
 function tagMeshes(root: THREE.Object3D): readonly TaggedMesh[] {
   const tagged: TaggedMesh[] = [];
   root.traverse((child) => {
     if (!(child instanceof THREE.Mesh)) return;
-    const region = BRAIN_REGIONS.find((r) => r.id === child.userData.regionId) ?? null;
+    const userData = child.userData as { regionId?: unknown; regionIds?: unknown };
+    const ids: readonly string[] = Array.isArray(userData.regionIds)
+      ? (userData.regionIds as unknown[]).filter((id): id is string => typeof id === "string")
+      : typeof userData.regionId === "string"
+        ? [userData.regionId]
+        : [];
+    const region = ids.length > 0 ? regionById(ids[0]) : null;
     const color = region
       ? new THREE.Color(region.color[0] / 255, region.color[1] / 255, region.color[2] / 255)
       : UNASSIGNED_COLOR;
@@ -41,13 +56,14 @@ function tagMeshes(root: THREE.Object3D): readonly TaggedMesh[] {
       side: THREE.FrontSide,
     });
     child.material = material;
-    tagged.push({ mesh: child, region, material });
+    tagged.push({ mesh: child, region, regionIds: ids, material });
   });
   return tagged;
 }
 
 export interface BrainModelProps {
-  focusId: string | null;
+  /** Highlighted region ids. Empty means no focus. */
+  focusIds: readonly string[];
   mode: FocusMode;
   categoryFilter: BrainRegion["category"] | null;
   /** Filled once the model is loaded; the canvas calls it on a confirmed tap. */
@@ -56,7 +72,7 @@ export interface BrainModelProps {
   onReady?: (center: THREE.Vector3) => void;
 }
 
-export function BrainModel({ focusId, mode, categoryFilter, pickRef, onReady }: BrainModelProps) {
+export function BrainModel({ focusIds, mode, categoryFilter, pickRef, onReady }: BrainModelProps) {
   // On the phone R3F native accepts a Metro asset id and resolves it through
   // expo-asset (its type only admits strings, hence the cast). In a browser
   // that polyfill is skipped, so hand Three a plain URL instead.
@@ -65,7 +81,7 @@ export function BrainModel({ focusId, mode, categoryFilter, pickRef, onReady }: 
   const gltf = useLoader(GLTFLoader, source);
   // useLoader caches one scene per asset. Two viewers alive at once (Play over
   // Explore) must not fight over the same materials, so each gets a clone;
-  // geometry is shared, only the 50 materials are per-instance.
+  // geometry is shared, only the materials are per-instance.
   const root = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
   const tagged = useMemo(() => tagMeshes(root), [root]);
   const get = useThree((state) => state.get);
@@ -88,21 +104,32 @@ export function BrainModel({ focusId, mode, categoryFilter, pickRef, onReady }: 
       // The nearest hit is often an unassigned sliver — corpus callosum, a
       // ventricle — so walk the ray to the first mesh that names a region.
       for (const hit of raycaster.intersectObject(root, true)) {
-        const region = BRAIN_REGIONS.find((r) => r.id === hit.object.userData.regionId);
-        if (region) return region;
+        const userData = hit.object.userData as { regionId?: unknown; regionIds?: unknown };
+        const ids: readonly string[] = Array.isArray(userData.regionIds)
+          ? (userData.regionIds as unknown[]).filter(
+              (id): id is string => typeof id === "string",
+            )
+          : typeof userData.regionId === "string"
+            ? [userData.regionId]
+            : [];
+        if (ids.length === 0) continue;
+        // On a shared mesh prefer the region the viewer is focused on, so a
+        // tap on inferiorparietal while exploring the angular gyrus picks it.
+        const focused = ids.find((id) => focusIds.includes(id));
+        return regionById(focused ?? ids[0]);
       }
       return null;
     };
     return () => {
       pickRef.current = null;
     };
-  }, [get, root, pickRef]);
+  }, [get, root, pickRef, focusIds]);
 
   // Three materials are mutable by design; this effect is the one place that
   // writes to them, and it derives every value from props.
   useEffect(() => {
-    for (const { region, material } of tagged) {
-      const look = lookFor({ region, focusId, mode, categoryFilter });
+    for (const { region, regionIds, material } of tagged) {
+      const look = lookFor({ region, regionIds, focusIds, mode, categoryFilter });
       const transparent = look.opacity < 1;
       if (material.transparent !== transparent) {
         // Opaque programs are compiled with alpha pinned to 1, so flipping
@@ -115,7 +142,7 @@ export function BrainModel({ focusId, mode, categoryFilter, pickRef, onReady }: 
       material.emissiveIntensity = look.emissive;
     }
     invalidate();
-  }, [tagged, focusId, mode, categoryFilter, invalidate]);
+  }, [tagged, focusIds, mode, categoryFilter, invalidate]);
 
   return <primitive object={root} />;
 }

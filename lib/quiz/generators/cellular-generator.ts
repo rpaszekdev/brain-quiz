@@ -9,7 +9,7 @@ import type {
   HippocampalSubfield,
   ReceptorDistribution,
 } from "../../data/cellular";
-import { regionLabel } from "../../brain-regions";
+import { BRAIN_REGIONS, regionLabel } from "../../brain-regions";
 import { corticalLayerLabel } from "../labels";
 import { registerGenerator } from "./index";
 
@@ -68,6 +68,7 @@ function generateCellTypeQuestions(count: number): QuizQuestion[] {
         prompt: `Which signature cell type is found in the ${regionLabel(cell.regionId)}?`,
         answer,
         sceneDirective: "highlight-region" as const,
+        scene: { regionIds: [cell.regionId] },
         explanation: `${cell.name}: ${cell.description}. ${cell.uniqueFeature}`,
         tags: ["cellular", cell.name],
       };
@@ -227,7 +228,62 @@ function generateHippocampalCircuitQuestions(count: number): QuizQuestion[] {
   });
 }
 
+function generateCellToRegionQuestions(count: number): QuizQuestion[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { CELL_TYPES } = require("../../data/cellular") as any;
+
+  const selected = shuffle(CELL_TYPES as any[]).slice(
+    0,
+    Math.min(count, CELL_TYPES.length),
+  );
+
+  return selected.map(
+    (
+      cell: {
+        id: string;
+        name: string;
+        regionId: string;
+        description: string;
+        uniqueFeature: string;
+      },
+      i: number,
+    ) => {
+      const wrongRegions = shuffle(
+        BRAIN_REGIONS.filter((r) => r.id !== cell.regionId),
+      ).slice(0, 3);
+
+      const allOptions = shuffle([
+        { id: cell.regionId, label: regionLabel(cell.regionId) },
+        ...wrongRegions.map((r: { id: string; name: string }) => ({
+          id: r.id,
+          label: r.name,
+        })),
+      ]);
+
+      const answer: MultipleChoiceAnswer = {
+        type: "multiple-choice",
+        options: allOptions,
+        correctId: cell.regionId,
+      };
+
+      return {
+        id: `cell-to-region-${i}-${cell.id}`,
+        dimensionId: "cellular" as const,
+        quizTypeId: "cell-to-region",
+        difficulty: "intermediate" as const,
+        prompt: `The ${cell.name} is the signature cell of which region?`,
+        answer,
+        sceneDirective: "highlight-region" as const,
+        scene: { regionIds: [cell.regionId] },
+        explanation: `${cell.name}: ${cell.description}. ${cell.uniqueFeature}`,
+        tags: ["cellular", cell.name],
+      };
+    },
+  );
+}
+
 registerGenerator("cell-type", generateCellTypeQuestions);
+registerGenerator("cell-to-region", generateCellToRegionQuestions);
 registerGenerator("cortical-layer", generateCorticalLayerQuestions);
 registerGenerator(
   "receptor-distribution",

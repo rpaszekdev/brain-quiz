@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
 import type { QuizQuestion, MultipleChoiceAnswer, ClickOnBrainAnswer } from "../../types";
-import { BRAIN_REGIONS, getRegion } from "../../brain-regions";
+import { BRAIN_REGIONS, getRegion, regionLabel } from "../../brain-regions";
 import { registerGenerator } from "./index";
 
 function shuffle(arr: any[]): any[] {
@@ -86,6 +86,7 @@ function generateDeficitFromRegionQuestions(count: number): QuizQuestion[] {
       prompt: `A lesion in the highlighted region would most likely cause:`,
       answer,
       sceneDirective: "highlight-region" as const,
+      scene: { regionIds: [...syn.regionIds] },
       explanation: syn.description,
       tags: ["clinical", "deficit"],
     };
@@ -311,8 +312,52 @@ function generateVisualFieldQuestions(count: number): QuizQuestion[] {
   });
 }
 
+function generateLocalizeDeficitQuestions(count: number): QuizQuestion[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { CLINICAL_SYNDROMES } = require("../../data/clinical") as any;
+
+  const syndromes = shuffle(
+    CLINICAL_SYNDROMES.filter(
+      (s: { regionIds: string[]; symptoms: string[] }) =>
+        s.regionIds.length > 0 && s.symptoms.length > 0 && getRegion(s.regionIds[0]),
+    ),
+  ).slice(0, Math.min(count, 10));
+
+  return syndromes.map((syn: { id: string; name: string; symptoms: string[]; regionIds: string[]; description: string }, i: number) => {
+    const correctId = syn.regionIds[0];
+    // Exclude every member region so a multi-region syndrome has one answer.
+    const wrong = shuffle(
+      BRAIN_REGIONS.filter((r) => !syn.regionIds.includes(r.id)),
+    ).slice(0, 3);
+    const allOptions = shuffle([
+      { id: correctId, label: regionLabel(correctId) },
+      ...wrong.map((r) => ({ id: r.id, label: r.name })),
+    ]);
+
+    const answer: MultipleChoiceAnswer = {
+      type: "multiple-choice",
+      options: allOptions,
+      correctId,
+    };
+
+    return {
+      id: `localize-deficit-${i}-${syn.id}`,
+      dimensionId: "clinical" as const,
+      quizTypeId: "localize-deficit",
+      difficulty: "intermediate" as const,
+      prompt: `A patient presents with: ${syn.symptoms.slice(0, 3).join(", ")}. Which region is lesioned?`,
+      answer,
+      sceneDirective: "highlight-region" as const,
+      scene: { regionIds: [...syn.regionIds] },
+      explanation: `${syn.name}: ${syn.description}`,
+      tags: ["clinical", "deficit", syn.name],
+    };
+  });
+}
+
 registerGenerator("lesion-deficit", generateLesionDeficitQuestions);
 registerGenerator("deficit-from-region", generateDeficitFromRegionQuestions);
+registerGenerator("localize-deficit", generateLocalizeDeficitQuestions);
 registerGenerator("which-artery", generateWhichArteryQuestions);
 registerGenerator("name-syndrome", generateNameSyndromeQuestions);
 registerGenerator("case-vignette", generateCaseVignetteQuestions);

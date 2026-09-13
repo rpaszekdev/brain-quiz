@@ -79,13 +79,14 @@ function generateRegionToNetworkQuestions(count: number): QuizQuestion[] {
     };
 
     return {
-      id: `region-to-network-${i}`,
+      id: `region-to-network-${i}-${pair.regionId}`,
       dimensionId: "networks" as const,
       quizTypeId: "region-to-network",
       difficulty: "intermediate" as const,
       prompt: `The highlighted region belongs to which functional network?`,
       answer,
       sceneDirective: "highlight-region" as const,
+      scene: { regionIds: [pair.regionId], networkId: pair.networkId },
       explanation: `This region is a member of the ${pair.networkName}.`,
       tags: ["networks", pair.networkName],
     };
@@ -124,6 +125,10 @@ function generateNetworkDisruptionQuestions(count: number): QuizQuestion[] {
       prompt: `Which functional network is primarily disrupted in: ${scenario.condition}?`,
       answer,
       sceneDirective: "highlight-network" as const,
+      scene: {
+        regionIds: [...(correctNetwork.memberRegions as string[])],
+        networkId: scenario.networkId,
+      },
       explanation: scenario.explanation,
       tags: ["networks", "clinical", scenario.condition],
     };

@@ -6,11 +6,14 @@
  * Three's GLTFLoader reads without a decoder — Hermes has no WebAssembly, so
  * Draco and meshopt are not options on the phone.
  *
- * Files are grouped by lib/brain-regions.ts and joined into one primitive per
- * region, plus one for the unassigned slivers: 50 draw calls instead of 102,
- * and draw calls are what the expo-gl bridge charges for. Every node and mesh
- * carries extras.regionId (null for unassigned); the viewer never trusts node
- * names because GLTFLoader strips dots and slashes from them.
+ * Files sharing the exact same owner set (lib/brain-regions.ts
+ * buildMeshToRegionsMap) are joined into one primitive per owner set, plus one
+ * for the unassigned slivers: ~50 draw calls instead of 102, and draw calls
+ * are what the expo-gl bridge charges for. Every node and mesh carries
+ * extras.regionIds (all owners, [] for unassigned) and extras.regionId (the
+ * primary owner, null for unassigned, kept for older viewers); the viewer
+ * never trusts node names because GLTFLoader strips dots and slashes from
+ * them.
  *
  * Winding is left alone: the closed subcortical meshes all face outward and the
  * cortical patches are cut from one consistently wound pial surface, so the
@@ -29,7 +32,7 @@ import { Document, NodeIO, type Primitive } from "@gltf-transform/core";
 import { KHRMeshQuantization } from "@gltf-transform/extensions";
 import { dedup, joinPrimitives, prune, quantize, simplify, weld } from "@gltf-transform/functions";
 import { MeshoptSimplifier } from "meshoptimizer";
-import { buildMeshToRegionMap } from "../../lib/brain-regions.ts";
+import { buildMeshToRegionsMap } from "../../lib/brain-regions.ts";
 
 const here = fileURLToPath(new URL(".", import.meta.url));
 const MESH_ROOT = join(here, "../../public/brain-meshes");
@@ -107,11 +110,19 @@ const files = readdirSync(MESH_ROOT)
   );
 if (files.length === 0) throw new Error(`no .obj files under ${MESH_ROOT}`);
 
-const fileToRegion = buildMeshToRegionMap();
-const groups = new Map<string, readonly string[]>();
+const fileToRegions = buildMeshToRegionsMap();
+/** Owner-set key: pipe-joined owner ids in declaration order, so files shared
+ *  by the same regions (e.g. inferiorparietal by parietal/angular/ventral-ppc)
+ *  join into one mesh tagged with every owner instead of going to one winner. */
+const ownerKey = (owners: readonly string[] | undefined): string =>
+  owners && owners.length > 0 ? owners.join("|") : UNASSIGNED;
+const groups = new Map<string, { owners: readonly string[]; files: string[] }>();
 for (const file of files) {
-  const key = fileToRegion.get(file) ?? UNASSIGNED;
-  groups.set(key, [...(groups.get(key) ?? []), file]);
+  const owners = fileToRegions.get(file) ?? [];
+  const key = ownerKey(fileToRegions.get(file));
+  const group = groups.get(key);
+  if (group) group.files.push(file);
+  else groups.set(key, { owners, files: [file] });
 }
 
 const doc = new Document();
@@ -130,11 +141,14 @@ function loadPrimitive(file: string): Primitive {
   return doc.createPrimitive().setAttribute("POSITION", pos).setIndices(idx);
 }
 
-for (const [key, groupFiles] of groups) {
-  const parts = groupFiles.map(loadPrimitive);
+for (const [key, group] of groups) {
+  const parts = group.files.map(loadPrimitive);
   const prim = parts.length === 1 ? parts[0] : joinPrimitives(parts);
   if (parts.length > 1) for (const part of parts) part.dispose();
-  const extras = { regionId: key === UNASSIGNED ? null : key };
+  const extras = {
+    regionId: group.owners.length > 0 ? group.owners[0] : null,
+    regionIds: [...group.owners],
+  };
   const mesh = doc.createMesh(key).addPrimitive(prim).setExtras(extras);
   scene.addChild(doc.createNode(key).setMesh(mesh).setExtras(extras));
 }

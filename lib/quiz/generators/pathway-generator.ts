@@ -22,13 +22,41 @@ async function getPathways() {
   return NEURAL_PATHWAYS;
 }
 
+interface TractLike {
+  id: string;
+  name: string;
+  type: string;
+  sourceRegions: string[];
+  targetRegions: string[];
+  description: string;
+}
+
+/** Deduplicated endpoint region ids for a tract (sources + targets). */
+function tractEndpointIds(tract: TractLike): string[] {
+  return [...new Set([...tract.sourceRegions, ...tract.targetRegions])];
+}
+
+/**
+ * Commissural tracts join mirrored regions across hemispheres, so "X to X"
+ * reads as a bug. Association/projection tracts join genuinely different
+ * regions and keep the "A to B" wording.
+ */
+function nameTractPrompt(tract: TractLike): string {
+  const source = tract.sourceRegions[0] ?? "";
+  const target = tract.targetRegions[0] ?? "";
+  if (tract.type === "commissural" || source === target) {
+    return `Which commissural tract connects left and right ${regionLabel(source)}?`;
+  }
+  return `Which white matter tract connects ${regionLabel(source)} to ${regionLabel(target)}?`;
+}
+
 function generateNameTractQuestions(count: number): QuizQuestion[] {
   // Synchronous version using require-style dynamic import
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { NEURAL_PATHWAYS } = require("../../data/pathways") as any;
   const pathways = shuffle(NEURAL_PATHWAYS).slice(0, Math.min(count, NEURAL_PATHWAYS.length));
 
-  return pathways.map((tract: { id: string; name: string; sourceRegions: string[]; targetRegions: string[]; description: string; type: string }, i: number) => {
+  return pathways.map((tract: TractLike, i: number) => {
     const wrongTracts = shuffle(
       NEURAL_PATHWAYS.filter((t: { id: string }) => t.id !== tract.id),
     ).slice(0, 3);
@@ -45,9 +73,10 @@ function generateNameTractQuestions(count: number): QuizQuestion[] {
       dimensionId: "pathways" as const,
       quizTypeId: "name-tract",
       difficulty: "intermediate" as const,
-      prompt: `Which white matter tract connects ${regionLabel(tract.sourceRegions[0] ?? "")} to ${regionLabel(tract.targetRegions[0] ?? "")}?`,
+      prompt: nameTractPrompt(tract),
       answer,
       sceneDirective: "highlight-tract" as const,
+      scene: { regionIds: tractEndpointIds(tract), tractId: tract.id },
       explanation: tract.description,
       tags: [tract.type, tract.name],
     };
@@ -59,8 +88,8 @@ function generateTractEndpointsQuestions(count: number): QuizQuestion[] {
   const { NEURAL_PATHWAYS } = require("../../data/pathways") as any;
   const pathways = shuffle(NEURAL_PATHWAYS).slice(0, Math.min(count, NEURAL_PATHWAYS.length));
 
-  return pathways.map((tract: { id: string; name: string; sourceRegions: string[]; targetRegions: string[]; description: string }, i: number) => {
-    const correctLabel = `${regionListLabel(tract.sourceRegions)} \u2194 ${regionListLabel(tract.targetRegions)}`;
+  return pathways.map((tract: TractLike, i: number) => {
+    const correctLabel = `${regionListLabel(tract.sourceRegions)} ↔ ${regionListLabel(tract.targetRegions)}`;
 
     // Generate wrong endpoint combinations from other tracts
     const wrongTracts = shuffle(
@@ -68,7 +97,7 @@ function generateTractEndpointsQuestions(count: number): QuizQuestion[] {
     ).slice(0, 3);
     const wrongOptions = wrongTracts.map((t: { id: string; sourceRegions: string[]; targetRegions: string[] }) => ({
       id: t.id,
-      label: `${regionListLabel(t.sourceRegions)} \u2194 ${regionListLabel(t.targetRegions)}`,
+      label: `${regionListLabel(t.sourceRegions)} ↔ ${regionListLabel(t.targetRegions)}`,
     }));
 
     const allOptions = shuffle([
@@ -90,6 +119,7 @@ function generateTractEndpointsQuestions(count: number): QuizQuestion[] {
       prompt: `The ${tract.name} connects which regions?`,
       answer,
       sceneDirective: "highlight-tract" as const,
+      scene: { regionIds: tractEndpointIds(tract), tractId: tract.id },
       explanation: tract.description,
       tags: ["pathways", tract.name],
     };

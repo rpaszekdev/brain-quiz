@@ -31,3 +31,35 @@ export function findQuizType(quizTypeId: string): QuizTypeMeta | null {
   }
   return null;
 }
+
+/**
+ * Quiz types whose correct answer (or scene) is a region — the pool the
+ * weak-spot drill draws from, so every drill question can involve the
+ * region being drilled.
+ */
+export const DRILL_SOURCE_TYPES = [
+  "identify",
+  "function-to-region",
+  "cell-to-region",
+  "localize-deficit",
+  "deficit-from-region",
+  "brodmann-to-region",
+] as const;
+
+/** Synthetic catalog entry for the weak-spot drill (see usePlay "drill"). */
+export function drillMeta(regionName: string): QuizTypeMeta {
+  const dimension =
+    DIMENSIONS.find((d) => d.id === "anatomy") ?? DIMENSIONS[0];
+  return {
+    dimension,
+    quizType: {
+      id: "drill",
+      dimensionId: dimension.id,
+      name: `Drill: ${regionName}`,
+      description: "Your misses, mixed formats, one region.",
+      answerFormat: "multiple-choice",
+      difficulty: "beginner",
+      questionCount: 10,
+    },
+  };
+}

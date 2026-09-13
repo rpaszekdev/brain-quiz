@@ -118,12 +118,39 @@ export function getAllMeshFiles(): string[] {
   return files;
 }
 
-/** Build a reverse lookup: mesh file path → region id */
+/** Build a reverse lookup: mesh file path → region id (last region wins).
+ *
+ * Kept for the website viewer. Several atlas files are shared by 2–3 regions
+ * (e.g. inferiorparietal by parietal-cortex, angular-gyrus and ventral-ppc),
+ * so this map silently drops all but the last claimant. Prefer
+ * buildMeshToRegionsMap() for anything that must not lose regions.
+ */
 export function buildMeshToRegionMap(): Map<string, string> {
   const map = new Map<string, string>();
   for (const region of BRAIN_REGIONS) {
     for (const file of region.meshFiles) {
       map.set(file, region.id);
+    }
+  }
+  return map;
+}
+
+/** Build the full reverse lookup: mesh file path → every owning region id.
+ *
+ * Owners are in BRAIN_REGIONS declaration order; the first owner is the
+ * primary one (used for mesh colouring and tap-to-pick). A mesh lights up
+ * when ANY of its owners is focused.
+ */
+export function buildMeshToRegionsMap(): Map<string, readonly string[]> {
+  const map = new Map<string, string[]>();
+  for (const region of BRAIN_REGIONS) {
+    for (const file of region.meshFiles) {
+      const owners = map.get(file);
+      if (owners) {
+        if (!owners.includes(region.id)) owners.push(region.id);
+      } else {
+        map.set(file, [region.id]);
+      }
     }
   }
   return map;
@@ -265,6 +292,9 @@ export const BRAIN_REGIONS: BrainRegion[] = [
     meshFiles: [
       "cortical/lh.pial.DK.postcentral.obj",
       "cortical/rh.pial.DK.postcentral.obj",
+      // Paracentral lobule carries the leg/foot sensory homunculus.
+      "cortical/lh.pial.DK.paracentral.obj",
+      "cortical/rh.pial.DK.paracentral.obj",
     ],
     color: [100, 200, 100, 255],
     description: "Touch, pressure, temperature, proprioception processing",
@@ -288,6 +318,9 @@ export const BRAIN_REGIONS: BrainRegion[] = [
       "cortical/rh.pial.DK.inferiorparietal.obj",
       "cortical/lh.pial.DK.supramarginal.obj",
       "cortical/rh.pial.DK.supramarginal.obj",
+      // Precuneus is posteromedial parietal cortex (no finer parcellation).
+      "cortical/lh.pial.DK.precuneus.obj",
+      "cortical/rh.pial.DK.precuneus.obj",
     ],
     color: [60, 180, 120, 255],
     description: "Spatial awareness, attention, sensory integration, numeracy",
@@ -541,7 +574,12 @@ export const BRAIN_REGIONS: BrainRegion[] = [
     id: "hypothalamus",
     name: "Hypothalamus",
     aliases: ["hypothalamus", "hypothalamic", "suprachiasmatic nucleus", "SCN"],
-    meshFiles: [], // No direct mesh — too small for FreeSurfer parcellation
+    // No direct mesh — too small for FreeSurfer parcellation, so the
+    // ventral diencephalon (which contains it) stands in as a proxy.
+    meshFiles: [
+      "subcortical/Left-VentralDC.obj",
+      "subcortical/Right-VentralDC.obj",
+    ],
     color: [0, 180, 180, 255],
     description:
       "Homeostasis, hunger, thirst, circadian rhythm, hormone regulation",
@@ -616,6 +654,8 @@ export const BRAIN_REGIONS: BrainRegion[] = [
     meshFiles: [
       "subcortical/Left-Cerebellum-Cortex.obj",
       "subcortical/Right-Cerebellum-Cortex.obj",
+      "subcortical/Left-Cerebellum-White-Matter.obj",
+      "subcortical/Right-Cerebellum-White-Matter.obj",
     ],
     color: [150, 100, 50, 255],
     description:

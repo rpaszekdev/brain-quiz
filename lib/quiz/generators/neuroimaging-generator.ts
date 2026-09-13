@@ -4,6 +4,7 @@
 
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
 import type { QuizQuestion, MultipleChoiceAnswer, OrderingAnswer } from "../../types";
+import { BRAIN_REGIONS, regionLabel } from "../../brain-regions";
 import { brodmannLabel, withQualifier } from "../labels";
 import { registerGenerator } from "./index";
 
@@ -104,6 +105,45 @@ function generateBrodmannMatchQuestions(count: number): QuizQuestion[] {
       prompt: `${brodmannLabel(ba)} is associated with which function(s)?`,
       answer,
       sceneDirective: "highlight-region" as const,
+      scene: { regionIds: [ba.regionId] },
+      explanation: `${brodmannLabel(ba)}: ${ba.functions.join(", ")}`,
+      tags: ["neuroimaging", "brodmann"],
+    };
+  });
+}
+
+function generateBrodmannToRegionQuestions(count: number): QuizQuestion[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { BRODMANN_AREAS } = require("../../data/neuroimaging") as any;
+
+  const selected = shuffle(BRODMANN_AREAS).slice(0, Math.min(count, BRODMANN_AREAS.length));
+
+  return selected.map((ba: { number: number; name: string; functions: string[]; regionId: string }, i: number) => {
+    // Distinct region ids only — several areas map to the same region.
+    const wrongRegions = shuffle(
+      BRAIN_REGIONS.filter((r) => r.id !== ba.regionId),
+    ).slice(0, 3);
+
+    const allOptions = shuffle([
+      { id: ba.regionId, label: regionLabel(ba.regionId) },
+      ...wrongRegions.map((r) => ({ id: r.id, label: r.name })),
+    ]);
+
+    const answer: MultipleChoiceAnswer = {
+      type: "multiple-choice",
+      options: allOptions,
+      correctId: ba.regionId,
+    };
+
+    return {
+      id: `brodmann-to-region-${i}-ba${ba.number}`,
+      dimensionId: "neuroimaging" as const,
+      quizTypeId: "brodmann-to-region",
+      difficulty: "intermediate" as const,
+      prompt: `${brodmannLabel(ba)} is found in which region?`,
+      answer,
+      sceneDirective: "highlight-region" as const,
+      scene: { regionIds: [ba.regionId] },
       explanation: `${brodmannLabel(ba)}: ${ba.functions.join(", ")}`,
       tags: ["neuroimaging", "brodmann"],
     };
@@ -194,4 +234,5 @@ function generateResolutionRankingQuestions(count: number): QuizQuestion[] {
 
 registerGenerator("modality-selection", generateModalitySelectionQuestions);
 registerGenerator("brodmann-match", generateBrodmannMatchQuestions);
+registerGenerator("brodmann-to-region", generateBrodmannToRegionQuestions);
 registerGenerator("resolution-ranking", generateResolutionRankingQuestions);

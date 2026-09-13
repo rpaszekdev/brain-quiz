@@ -4,20 +4,94 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { loadHistory } from "@/lib/quiz/history";
 import { loadSession, type QuizSession } from "@/lib/quiz/session";
+import type { QuizTypeDefinition } from "@/lib/types";
 import { QUIZ_GROUPS, findQuizType } from "../../src/quiz/catalog";
 import { loadRegionStats, weakestRegions, type WeakRegion } from "../../src/quiz/region-stats";
 import { streakDays } from "../../src/quiz/streak";
 import { colors, radius, serif, space } from "../../src/theme";
+import { Chip } from "../../src/ui/Chip";
 import { ProgressBar } from "../../src/ui/ProgressBar";
 import { SectionTitle } from "../../src/ui/SectionTitle";
 
 const STREAK_DOTS = 7;
+
+type DifficultyFilter = "all" | QuizTypeDefinition["difficulty"];
+
+/**
+ * Three lanes, ordered from "look" to "reason". Quiz types are curated by id;
+ * anything the catalog gains later falls into "More practice" automatically.
+ */
+const LANES: readonly {
+  id: string;
+  title: string;
+  blurb: string;
+  quizTypeIds: readonly string[];
+}[] = [
+  {
+    id: "learn",
+    title: "1 · Learn the brain",
+    blurb: "See it in 3D, name it",
+    quizTypeIds: [
+      "identify",
+      "function-to-region",
+      "identify-deep",
+      "name-tract",
+      "tract-endpoints",
+      "region-to-network",
+    ],
+  },
+  {
+    id: "connect",
+    title: "2 · Connect",
+    blurb: "How it works",
+    quizTypeIds: [
+      "network-disruption",
+      "network-scenario",
+      "cell-to-region",
+      "cell-type",
+      "brodmann-to-region",
+      "brodmann-match",
+      "nt-affected",
+      "pharma-bridge",
+      "cortical-layer",
+      "receptor-distribution",
+      "hippocampal-circuit",
+      "modality-selection",
+      "vesicle-origin",
+    ],
+  },
+  {
+    id: "apply",
+    title: "3 · Apply",
+    blurb: "Clinics, cases, nerves",
+    quizTypeIds: [
+      "localize-deficit",
+      "deficit-from-region",
+      "which-artery",
+      "name-syndrome",
+      "case-vignette",
+      "visual-field",
+      "nerve-number",
+      "nerve-function",
+      "nerve-lesion",
+      "nerve-type",
+    ],
+  },
+];
+
+const FILTERS: readonly { id: DifficultyFilter; label: string }[] = [
+  { id: "all", label: "All levels" },
+  { id: "beginner", label: "Beginner" },
+  { id: "intermediate", label: "Intermediate" },
+  { id: "advanced", label: "Advanced" },
+];
 
 export default function Home() {
   const router = useRouter();
   const [session, setSession] = useState<QuizSession | null>(null);
   const [streak, setStreak] = useState(0);
   const [weak, setWeak] = useState<WeakRegion | null>(null);
+  const [filter, setFilter] = useState<DifficultyFilter>("all");
 
   // Re-read on every visit: a quiz just finished in the modal above us.
   useFocusEffect(
@@ -29,6 +103,22 @@ export default function Home() {
   );
 
   const resumeMeta = session ? findQuizType(session.quizTypeId) : null;
+
+  const laneTiles = LANES.map((lane) => ({
+    ...lane,
+    quizTypes: lane.quizTypeIds.flatMap((id) => {
+      const meta = findQuizType(id);
+      if (!meta) return [];
+      if (filter !== "all" && meta.quizType.difficulty !== filter) return [];
+      return [meta.quizType];
+    }),
+  })).filter((lane) => lane.quizTypes.length > 0);
+
+  // Catalog types nobody curated yet — they still show up instead of vanishing.
+  const curated = new Set(LANES.flatMap((lane) => lane.quizTypeIds));
+  const extra = QUIZ_GROUPS.flatMap((group) =>
+    group.quizTypes.filter((q) => !curated.has(q.id)),
+  ).filter((q) => filter === "all" || q.difficulty === filter);
 
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
@@ -63,19 +153,34 @@ export default function Home() {
         )}
 
         {weak && (
-          <Pressable style={styles.weak} onPress={() => router.push("/play/identify")}>
+          <Pressable
+            style={styles.weak}
+            onPress={() => router.push(`/play/drill?region=${weak.region.id}`)}
+          >
             <Text style={styles.weakLabel}>Weak spot: {weak.region.name}</Text>
             <Text style={styles.weakCta}>
-              {Math.round(weak.accuracy * 100)}% right · practice regions ›
+              {Math.round(weak.accuracy * 100)}% right · drill it ›
             </Text>
           </Pressable>
         )}
 
-        {QUIZ_GROUPS.map((group) => (
-          <View key={group.dimension.id}>
-            <SectionTitle label={group.dimension.shortName} />
+        <View style={styles.filters}>
+          {FILTERS.map((f) => (
+            <Chip
+              key={f.id}
+              label={f.label}
+              active={filter === f.id}
+              onPress={() => setFilter(f.id)}
+            />
+          ))}
+        </View>
+
+        {laneTiles.map((lane) => (
+          <View key={lane.id}>
+            <SectionTitle label={lane.title} />
+            <Text style={styles.laneBlurb}>{lane.blurb}</Text>
             <View style={styles.grid}>
-              {group.quizTypes.map((quizType) => (
+              {lane.quizTypes.map((quizType) => (
                 <Pressable
                   key={quizType.id}
                   style={styles.tile}
@@ -93,6 +198,29 @@ export default function Home() {
             </View>
           </View>
         ))}
+
+        {extra.length > 0 && (
+          <View>
+            <SectionTitle label="More practice" />
+            <View style={styles.grid}>
+              {extra.map((quizType) => (
+                <Pressable
+                  key={quizType.id}
+                  style={styles.tile}
+                  onPress={() => router.push(`/play/${quizType.id}`)}
+                >
+                  <Text style={styles.tileTitle}>{quizType.name}</Text>
+                  <Text style={styles.tileBlurb} numberOfLines={2}>
+                    {quizType.description}
+                  </Text>
+                  <Text style={styles.tileMeta}>
+                    {quizType.questionCount} q · {quizType.difficulty}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -122,6 +250,8 @@ const styles = StyleSheet.create({
   },
   weakLabel: { fontSize: 15, fontWeight: "600", color: colors.sumiDeep },
   weakCta: { fontSize: 13, color: colors.kitsune, fontWeight: "600" },
+  filters: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, marginTop: space.lg },
+  laneBlurb: { fontSize: 13, color: colors.sumiLight, marginBottom: space.md, marginTop: -4 },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: space.md },
   tile: {
     width: "48%",
