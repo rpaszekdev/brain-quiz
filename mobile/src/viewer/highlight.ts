@@ -1,4 +1,5 @@
 import type { BrainRegion } from "@/lib/brain-regions";
+import type { BrainScene } from "./scene";
 
 /** Opacity and emissive strength a mesh should be drawn with. */
 export interface MeshLook {
@@ -26,26 +27,23 @@ export type FocusMode =
   | "accent";
 
 export interface LookQuery {
-  /** Primary owner (drives the category filter); null for unassigned slivers. */
+  /** Primary owner; null for unassigned slivers. */
   readonly region: BrainRegion | null;
-  /** Every owning region id — atlas files are shared (e.g. inferiorparietal
-   *  by parietal, angular and ventral-ppc), so a mesh lights up when ANY
-   *  owner is focused. Empty for unassigned slivers. */
+  /** Every owning region id — shared atlas files light up for ANY owner. */
   readonly regionIds: readonly string[];
-  /** Highlighted region ids. Empty means no focus. */
-  readonly focusIds: readonly string[];
-  readonly mode: FocusMode;
-  readonly categoryFilter: BrainRegion["category"] | null;
+  readonly scene: BrainScene;
 }
 
-export function lookFor({ region, regionIds, focusIds, mode, categoryFilter }: LookQuery): MeshLook {
-  if (focusIds.length > 0) {
-    if (regionIds.some((id) => focusIds.includes(id))) return LOOK.focus;
-    if (mode === "isolate") return region ? LOOK.dimmedRegion : LOOK.dimmedUnassigned;
-  }
-  if (categoryFilter !== null) {
-    if (region?.category === categoryFilter) return LOOK.region;
-    return region ? LOOK.dimmedRegion : LOOK.dimmedUnassigned;
-  }
+function dimmed(region: BrainRegion | null): MeshLook {
+  return region ? LOOK.dimmedRegion : LOOK.dimmedUnassigned;
+}
+
+export function lookFor({ region, regionIds, scene }: LookQuery): MeshLook {
+  if (regionIds.some((id) => scene.focusIds.includes(id))) return LOOK.focus;
+  if (scene.ghostOthers && scene.focusIds.length > 0) return dimmed(region);
+  if (scene.keepIds && !regionIds.some((id) => scene.keepIds!.includes(id))) return dimmed(region);
+  // Unassigned slivers are cortical patches and ventricles: peel them too.
+  const cortical = region === null || region.category === "cortical";
+  if (scene.cortexOpacity < 1 && cortical) return { opacity: scene.cortexOpacity, emissive: 0 };
   return region ? LOOK.region : LOOK.unassigned;
 }

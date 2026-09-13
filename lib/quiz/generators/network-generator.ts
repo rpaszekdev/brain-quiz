@@ -166,6 +166,10 @@ function generateNetworkScenarioQuestions(count: number): QuizQuestion[] {
       difficulty: "beginner" as const,
       prompt: scenario.activity,
       answer,
+      scene: {
+        regionIds: [...(correctNetwork.memberRegions as string[])],
+        networkId: scenario.networkId,
+      },
       sceneDirective: "neutral" as const,
       explanation: scenario.explanation,
       tags: ["networks", "scenario"],

@@ -15,24 +15,23 @@ import { BrainModel, type PickRegion } from "./BrainModel";
 import { CameraRig } from "./CameraRig";
 import { FALLBACK_TARGET, homeCameraPosition, fitDistance } from "./camera";
 import type { FocusMode } from "./highlight";
+import { PLAIN_SCENE, type BrainScene } from "./scene";
 
 /** A touch that moves or lingers more than this is an orbit, not a tap. */
 const TAP_MAX_MOVE = 10;
 const TAP_MAX_MS = 300;
 
 export interface BrainCanvasProps {
-  /** Highlighted region. In "isolate" mode everything else fades out. */
-  focus: BrainRegion | null;
-  /**
-   * Explicit highlight set. When provided it replaces the single `focus`
-   * highlight (e.g. every endpoint of a tract, every member of a network);
-   * the camera still flies to `focus`.
-   */
+  /** Region the camera frames (with flyToFocus) and, without a scene, glows. */
+  focus?: BrainRegion | null;
+  /** Quiz highlight set; replaces the single focus glow. */
   highlightIds?: readonly string[] | null;
+  /** Quiz look: isolate ghosts everything but the highlight. */
   mode?: FocusMode;
+  /** Full control of the drawing (Explore). Overrides highlightIds and mode. */
+  scene?: BrainScene | null;
   /** Whether a new focus also moves the camera to that region's preset. */
   flyToFocus?: boolean;
-  categoryFilter?: BrainRegion["category"] | null;
   onTapRegion?: (region: BrainRegion) => void;
   /** Fires on a confirmed tap that hits no region (empty canvas, sliver). */
   onTapEmpty?: () => void;
@@ -65,21 +64,15 @@ function touchPoint(event: GestureResponderEvent): { x: number; y: number } {
  * pixel ratio cannot be lowered because expo-gl draws at native resolution.
  */
 export function BrainCanvas({
-  focus,
+  focus = null,
   highlightIds = null,
   mode = "isolate",
+  scene: sceneProp = null,
   flyToFocus = true,
-  categoryFilter = null,
   onTapRegion,
   onTapEmpty,
   style,
 }: BrainCanvasProps) {
-  // Memoised: a fresh array every render would re-run the material loop.
-  const focusId = focus?.id ?? null;
-  const focusIds = useMemo(
-    () => highlightIds ?? (focusId ? [focusId] : []),
-    [highlightIds, focusId],
-  );
   const [ready, setReady] = useState(false);
   const [target, setTarget] = useState<THREE.Vector3>(FALLBACK_TARGET);
   const pick = useRef<PickRegion | null>(null);
@@ -88,6 +81,18 @@ export function BrainCanvas({
     setTarget(center);
     setReady(true);
   }, []);
+
+  // Memoised: a fresh scene every render would re-run the material loop.
+  const focusId = focus?.id ?? null;
+  const scene = useMemo<BrainScene>(
+    () =>
+      sceneProp ?? {
+        ...PLAIN_SCENE,
+        focusIds: highlightIds ?? (focusId ? [focusId] : []),
+        ghostOthers: mode === "isolate",
+      },
+    [sceneProp, highlightIds, focusId, mode],
+  );
 
   // Touch events reach this view regardless of R3F's pan responder, so a tap
   // can be told apart from an orbit without the model listening for pointers.
@@ -126,13 +131,7 @@ export function BrainCanvas({
         <directionalLight position={[50, 80, 100]} intensity={0.8} />
         <directionalLight position={[-50, -30, -80]} intensity={0.3} />
         <Suspense fallback={null}>
-          <BrainModel
-            focusIds={focusIds}
-            mode={mode}
-            categoryFilter={categoryFilter}
-            pickRef={pick}
-            onReady={onReady}
-          />
+          <BrainModel scene={scene} pickRef={pick} onReady={onReady} />
         </Suspense>
         <CameraRig target={target} focus={flyToFocus ? focus : null} />
       </Canvas>

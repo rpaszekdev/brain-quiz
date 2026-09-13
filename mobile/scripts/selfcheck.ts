@@ -13,6 +13,10 @@ import { QUIZ_GROUPS, findQuizType } from "../src/quiz/catalog";
 import { streakDays } from "../src/quiz/streak";
 import { lookFor } from "../src/viewer/highlight";
 import { FALLBACK_TARGET, fitDistance, regionCameraPosition } from "../src/viewer/camera";
+import { LOBES, lobeOf, regionsInLobe } from "@/lib/lobes";
+import { articleFor } from "../src/explore/content";
+import { BROWSE_CATEGORIES, browseRows, searchAll } from "../src/explore/search";
+import { sceneFor } from "../src/explore/view";
 
 // Every quiz the app offers builds ten answerable multiple-choice questions.
 let quizTypes = 0;
@@ -84,22 +88,66 @@ assert.equal(streakDays([rec(2)], now), 0);
 assert.equal(streakDays([rec(0), rec(2)], now), 1);
 assert.equal(streakDays([], now), 0);
 
+// Explore: every region lands in a lobe and every lobe has members; views cut
+// the brain the way the chip says; search finds by alias; articles exist where
+// there is content and nowhere else.
+for (const region of BRAIN_REGIONS) {
+  assert.ok(LOBES.some((l) => l.id === lobeOf(region)), `${region.id}: no lobe`);
+}
+for (const lobe of LOBES) {
+  assert.ok(regionsInLobe(lobe.id).length > 0, `${lobe.id}: empty lobe`);
+}
+const frontalCut = sceneFor({ kind: "lobe", lobeId: "frontal" }, null);
+assert.ok(frontalCut.keepIds?.includes("prefrontal-cortex") && !frontalCut.keepIds.includes("visual-cortex"));
+const arcuateView = sceneFor({ kind: "tract", tractId: "arcuate-fasciculus" }, "thalamus");
+assert.ok(arcuateView.tract && arcuateView.ghostOthers && arcuateView.focusIds.includes("wernickes-area"));
+assert.ok(arcuateView.focusIds.includes("thalamus"), "tapped region joins the tract glow");
+assert.ok(sceneFor({ kind: "deep", peel: "peeled" }, null).cortexOpacity < 1);
+assert.ok(sceneFor({ kind: "network", networkId: "dmn" }, null).network !== null);
+assert.ok(searchAll("PFC").regions.some((h) => h.id === "prefrontal-cortex"), "alias search");
+assert.equal(searchAll("arcuate").tracts.length, 1);
+assert.ok(searchAll("default").networks.length >= 1);
+assert.equal(searchAll("temporal").lobes.length, 1);
+assert.equal(searchAll("").total, 0);
+for (const category of BROWSE_CATEGORIES) {
+  assert.ok(browseRows(category.id).some((g) => g.hits.length > 0), `${category.id}: empty browse`);
+}
+assert.ok(browseRows("pathways", "wernickes-area").length > 0, "Wernicke's has pathways");
+assert.ok(articleFor("region", "hippocampus"), "hippocampus article");
+assert.equal(articleFor("region", "nope"), null);
+assert.equal(articleFor("bogus", "hippocampus"), null);
+assert.ok(articleFor("tract", "arcuate-fasciculus") && articleFor("network", "dmn"));
+const regionArticles = BRAIN_REGIONS.filter((r) => articleFor("region", r.id) !== null).length;
+
 // Highlight: isolate dims everything but the focus; accent leaves others readable.
 // Shared meshes light when ANY owner is focused (no region left dark by sharing).
 const hippo = BRAIN_REGIONS.find((r) => r.id === "hippocampus") ?? BRAIN_REGIONS[0];
 const other = BRAIN_REGIONS.find((r) => r.id !== hippo.id)!;
-const F = (region: typeof hippo | null, regionIds: readonly string[], focusIds: readonly string[], mode: "isolate" | "accent" = "isolate", categoryFilter: typeof hippo.category | null = null) =>
-  lookFor({ region, regionIds, focusIds, mode, categoryFilter });
+const scene = (focusIds: readonly string[], ghostOthers = true, keepIds: readonly string[] | null = null) => ({
+  focusIds, keepIds, ghostOthers, cortexOpacity: 1, tract: null, network: null,
+});
+const F = (region: typeof hippo | null, regionIds: readonly string[], focusIds: readonly string[], ghostOthers = true) =>
+  lookFor({ region, regionIds, scene: scene(focusIds, ghostOthers) });
 assert.equal(F(hippo, [hippo.id], [hippo.id]).opacity, 1);
 assert.equal(F(other, [other.id], [hippo.id]).opacity, 0.06);
-assert.equal(F(other, [other.id], [hippo.id], "accent").opacity, 1);
+assert.equal(F(other, [other.id], [hippo.id], false).opacity, 1);
 assert.equal(F(null, [], []).opacity, 1);
-assert.equal(F(other, [other.id], [], "accent", other.category === "cortical" ? "subcortical" : "cortical").opacity, 0.06);
+// Lobe cut: members solid, others ghosted, slivers ghosted too.
+assert.equal(lookFor({ region: other, regionIds: [other.id], scene: scene([], false, [hippo.id]) }).opacity, 0.06);
+assert.equal(lookFor({ region: hippo, regionIds: [hippo.id], scene: scene([], false, [hippo.id]) }).opacity, 1);
+assert.equal(lookFor({ region: null, regionIds: [], scene: scene([], false, [hippo.id]) }).opacity, 0.03);
+// Peel: cortex fades, deep structures stay.
+const peeled = { ...scene([], false), cortexOpacity: 0.1 };
+const cortex = BRAIN_REGIONS.find((r) => r.category === "cortical")!;
+assert.equal(lookFor({ region: cortex, regionIds: [cortex.id], scene: peeled }).opacity, 0.1);
+assert.equal(lookFor({ region: hippo, regionIds: [hippo.id], scene: peeled }).opacity, 1);
 // Shared file: every co-owner lights the same mesh.
 assert.equal(F(other, [other.id, hippo.id], [hippo.id]).opacity, 1);
 assert.equal(F(other, [other.id, hippo.id], [other.id]).opacity, 1);
 
-process.stdout.write(`selfcheck ok · ${quizTypes} quiz types · ${BRAIN_REGIONS.length} regions · short quizzes: ${short.join(", ") || "none"}\n`);
+process.stdout.write(
+  `selfcheck ok · ${quizTypes} quiz types · ${BRAIN_REGIONS.length} regions · ${regionArticles} region articles · short quizzes: ${short.join(", ") || "none"}\n`,
+);
 
 // Camera fit: wide canvases keep the website's distance, portrait ones back off.
 assert.equal(fitDistance(1.5), 250);

@@ -21,6 +21,8 @@ export default function RootLayout() {
           name="play/[quizTypeId]"
           options={{ presentation: "fullScreenModal", animation: "slide_from_bottom" }}
         />
+        <Stack.Screen name="find" options={{ presentation: "modal" }} />
+        <Stack.Screen name="info/[kind]/[id]" />
       </Stack>
     </>
   );
