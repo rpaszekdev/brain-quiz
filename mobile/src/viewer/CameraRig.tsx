@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber/native";
 import { OrbitControls } from "@react-three/drei/native";
 import type { BrainRegion } from "@/lib/brain-regions";
-import { fitDistance, homeCameraPosition, regionCameraPosition } from "./camera";
+import { bandedAspect, fitDistance, homeCameraPosition, regionCameraPosition } from "./camera";
+import { BAND_SETTLED, MAX_FRAME_DELTA, useBandTarget } from "./Framing";
 
 /** Higher is snappier; 6 lands in roughly the website's 600 ms. */
 const FLY_DAMPING = 6;
@@ -14,6 +15,16 @@ interface CameraRigProps {
   target: THREE.Vector3;
   /** Region whose camera preset to fly to. null leaves the user in control. */
   focus: BrainRegion | null;
+  /** Live band share from Framing, read every frame. */
+  band: RefObject<number>;
+  heroHeight: number | undefined;
+}
+
+/** The camera's current direction, at a different distance from the target. */
+function dollyPosition(position: THREE.Vector3, target: THREE.Vector3, distance: number): THREE.Vector3 {
+  const offset = position.clone().sub(target);
+  if (offset.lengthSq() < 1e-6) return homeCameraPosition(target, distance);
+  return offset.setLength(distance).add(target);
 }
 
 /**
@@ -23,25 +34,26 @@ interface CameraRigProps {
  *
  * The canvas renders on demand, so every camera change here asks for a frame;
  * OrbitControls asks for its own while the user drags or damping settles.
+ * While the band glides (a sheet opening) the camera dollies to the distance
+ * that fits the new frame, so the brain shrinks or grows smoothly.
  */
-export function CameraRig({ target, focus }: CameraRigProps) {
+export function CameraRig({ target, focus, band, heroHeight }: CameraRigProps) {
   const controls = useRef<React.ComponentRef<typeof OrbitControls>>(null);
   const camera = useThree((state) => state.camera);
-  const aspect = useThree((state) => state.viewport.aspect);
+  const size = useThree((state) => state.size);
   const invalidate = useThree((state) => state.invalidate);
-  const distance = fitDistance(aspect);
+  const bandTarget = useBandTarget(heroHeight);
+  const distance = fitDistance(bandedAspect(size, bandTarget));
 
-  const goal = useMemo(
-    () => (focus ? regionCameraPosition(focus, target, distance) : null),
-    [focus, target, distance],
-  );
-  const lastGoal = useRef<THREE.Vector3 | null>(null);
   const flying = useRef(false);
+  /** The band target changed: dolly to the distance that fits the new frame. */
+  const dollying = useRef(false);
+  const last = useRef<{ focus: BrainRegion | null; target: THREE.Vector3; bandTarget: number } | null>(null);
 
   // A new target means the model just reported its centre (the loading
   // overlay is still up), so snapping rather than flying is invisible. Only
-  // the target triggers it: a resize (the sheet opening) must not throw away
-  // the user's orbit, and a focus that clears mid-quiz must not either.
+  // the target triggers it: a band change must not throw away the user's
+  // orbit, and a focus that clears mid-quiz must not either.
   const latest = useRef({ distance, focus });
   latest.current = { distance, focus };
   useEffect(() => {
@@ -52,29 +64,38 @@ export function CameraRig({ target, focus }: CameraRigProps) {
     invalidate();
   }, [camera, target, invalidate]);
 
-  // A focus change alters no scene prop, so nothing else would start the fly.
+  // None of these alter a scene prop, so nothing else would start the frame loop.
   useEffect(() => {
     invalidate();
-  }, [goal, invalidate]);
+  }, [focus, target, bandTarget, invalidate]);
 
-  useFrame((_, delta) => {
-    const changed =
-      goal !== lastGoal.current &&
-      !(goal && lastGoal.current && goal.equals(lastGoal.current));
-    if (changed) {
-      lastGoal.current = goal;
-      flying.current = goal !== null;
-    }
-    if (!flying.current || !goal) return;
+  useFrame((_, rawDelta) => {
+    const delta = Math.min(rawDelta, MAX_FRAME_DELTA);
+    const was = last.current;
+    if (!was || was.focus !== focus || was.target !== target) flying.current = focus !== null;
+    if (was && was.bandTarget !== bandTarget) dollying.current = true;
+    last.current = { focus, target, bandTarget };
+    if (!flying.current && !dollying.current) return;
 
+    // The distance that fits the frame as it is right now, so the camera
+    // and the band arrive together.
+    const live = fitDistance(bandedAspect(size, band.current));
+    const goal =
+      flying.current && focus
+        ? regionCameraPosition(focus, target, live)
+        : dollyPosition(camera.position, target, live);
     camera.position.set(
       THREE.MathUtils.damp(camera.position.x, goal.x, FLY_DAMPING, delta),
       THREE.MathUtils.damp(camera.position.y, goal.y, FLY_DAMPING, delta),
       THREE.MathUtils.damp(camera.position.z, goal.z, FLY_DAMPING, delta),
     );
     controls.current?.update();
-    if (camera.position.distanceTo(goal) < ARRIVED_DISTANCE) flying.current = false;
-    else invalidate();
+    const bandSettled = Math.abs(band.current - bandTarget) < BAND_SETTLED;
+    if (bandSettled && camera.position.distanceTo(goal) < ARRIVED_DISTANCE) {
+      flying.current = false;
+      dollying.current = false;
+    }
+    invalidate();
   });
 
   return (

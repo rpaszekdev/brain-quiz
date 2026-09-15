@@ -5,8 +5,10 @@ import "@/lib/quiz/generators/register-all";
 import { recordResult } from "@/lib/quiz/history";
 import { INITIAL_QUIZ_STATE, quizReducer } from "@/lib/quiz/quiz-engine";
 import { clearSession, loadSession, saveSession } from "@/lib/quiz/session";
-import type { MultipleChoiceAnswer, QuizQuestion } from "@/lib/types";
+import type { ClickOnBrainAnswer, MultipleChoiceAnswer, QuizQuestion } from "@/lib/types";
+import type { FocusMode } from "../viewer/highlight";
 import { DRILL_SOURCE_TYPES, drillMeta, findQuizType } from "./catalog";
+import { asRetry, bestStreak, isRetry, mixInTaps, stepKind } from "./lesson";
 import { recordRegionOutcome } from "./region-stats";
 import { sceneRegionIds } from "./scene";
 
@@ -18,17 +20,37 @@ export interface PlayOptions {
   quizTypeId: string;
   /** Continue the saved session for this quiz type if there is one. */
   resume?: boolean;
+  /** Defaults to the quiz type's own questionCount. */
   count?: number;
   /** When quizTypeId is "drill", the region id being drilled. */
   drillRegionId?: string;
+}
+
+/** The two answer formats a lesson step can have. */
+type StepAnswer = MultipleChoiceAnswer | ClickOnBrainAnswer;
+
+function stepAnswer(question: QuizQuestion | undefined): StepAnswer | null {
+  const answer = question?.answer;
+  return answer?.type === "multiple-choice" || answer?.type === "click-on-brain" ? answer : null;
 }
 
 function multipleChoice(question: QuizQuestion | undefined): MultipleChoiceAnswer | null {
   return question?.answer.type === "multiple-choice" ? question.answer : null;
 }
 
+/** Every id that counts as right: the option, or the region and its tolerances. */
+function correctIdsOf(answer: StepAnswer): string[] {
+  return answer.type === "multiple-choice"
+    ? [answer.correctId]
+    : [...answer.correctRegionIds, ...(answer.toleranceRegionIds ?? [])];
+}
+
 function regionFor(id: string | undefined): BrainRegion | null {
   return BRAIN_REGIONS.find((region) => region.id === id) ?? null;
+}
+
+function lessonQuestions(quizTypeId: string, count: number): QuizQuestion[] {
+  return mixInTaps(generateQuestions(quizTypeId, count));
 }
 
 /**
@@ -63,7 +85,7 @@ function drillQuestions(regionId: string, count: number): QuizQuestion[] {
     pool.push({ ...extra, id: `${extra.id}-pad${round}` });
   }
   const shuffled = shuffle(pool).slice(0, count);
-  return shuffled.length > 0 ? shuffled : generateQuestions("identify", count);
+  return mixInTaps(shuffled.length > 0 ? shuffled : generateQuestions("identify", count));
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -76,11 +98,13 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 /**
- * One quiz run: the reducer from lib/quiz plus the per-question UI state the
- * website keeps in PlayQuiz.tsx. Also persists progress so Home can offer
- * "continue", and records history and per-region tallies on finish.
+ * One lesson: the reducer from lib/quiz plus the per-step UI state the
+ * website keeps in PlayQuiz.tsx, with two lesson rules on top — a couple of
+ * steps are tap-the-region, and missed steps come back once at the end.
+ * Also persists progress so Home can offer "continue", and records history
+ * and per-region tallies on finish.
  */
-export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT, drillRegionId }: PlayOptions) {
+export function usePlay({ quizTypeId, resume = false, count: countOption, drillRegionId }: PlayOptions) {
   const isDrill = quizTypeId === "drill";
   const meta = useMemo(
     () =>
@@ -89,10 +113,13 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT, dr
         : findQuizType(quizTypeId),
     [quizTypeId, isDrill, drillRegionId],
   );
+  const count = countOption ?? meta?.quizType.questionCount ?? QUESTION_COUNT;
   const [state, dispatch] = useReducer(quizReducer, INITIAL_QUIZ_STATE);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [answered, setAnswered] = useState(false);
+  /** Missed steps waiting to be appended after the last original one. */
+  const [retries, setRetries] = useState<QuizQuestion[]>([]);
   const askedAt = useRef<number>(Date.now());
   const [elapsed, setElapsed] = useState(0);
 
@@ -103,6 +130,7 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT, dr
       setError(`No quiz called "${quizTypeId}".`);
       return;
     }
+    setRetries([]);
     if (isDrill) {
       if (!drillRegionId || !regionFor(drillRegionId)) {
         setError("Pick a region to drill from your weak spots.");
@@ -133,30 +161,44 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT, dr
       return;
     }
     try {
-      dispatch({ type: "START_QUIZ", questions: generateQuestions(quizTypeId, count) });
+      dispatch({ type: "START_QUIZ", questions: lessonQuestions(quizTypeId, count) });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not build this quiz.");
     }
   }, [meta, quizTypeId, resume, count, isDrill, drillRegionId]);
 
   const question = state.questions[state.currentIndex];
-  const answer = useMemo(() => multipleChoice(question), [question]);
-  const correctRegion = useMemo(() => regionFor(answer?.correctId), [answer]);
+  const kind = question ? stepKind(question) : "choice";
+  const answer = useMemo(() => stepAnswer(question), [question]);
+  const correctIds = useMemo(() => (answer ? correctIdsOf(answer) : []), [answer]);
+  const correctRegion = useMemo(() => regionFor(correctIds[0]), [correctIds]);
   const correctLabel =
-    answer?.options.find((option) => option.id === answer.correctId)?.label ?? "";
+    answer?.type === "multiple-choice"
+      ? (answer.options.find((option) => option.id === answer.correctId)?.label ?? "")
+      : (correctRegion?.name ?? "");
+  const isCorrect = answered && selectedId !== null && correctIds.includes(selectedId);
 
-  /** Regions the viewer glows for the current question (tract endpoints,
-   *  network members, or the identified region). */
-  const highlightIds = useMemo(() => sceneRegionIds(question), [question]);
-  /** Camera target: first scene region, falling back to the correct region. */
+  /** Regions the viewer glows: the question's scene, or on a tap step the
+   *  tapped region until it is checked and the right one after. */
+  const sceneIds = useMemo(() => sceneRegionIds(question), [question]);
+  const highlightIds = useMemo(() => {
+    if (kind !== "tap") return sceneIds;
+    if (answered) return correctIds.slice(0, 1);
+    return selectedId ? [selectedId] : [];
+  }, [kind, sceneIds, answered, correctIds, selectedId]);
+  /** A tapped-but-unchecked region is accented, not isolated: the whole
+   *  brain stays solid so the next tap can land anywhere. */
+  const mode: FocusMode = kind === "tap" && !answered ? "accent" : "isolate";
+  /** Camera target: first scene region, falling back to the correct region.
+   *  A tap step flies nowhere until it is checked. */
   const focusRegion = useMemo(
-    () => regionFor(highlightIds[0]) ?? correctRegion,
-    [highlightIds, correctRegion],
+    () => (kind === "tap" && !answered ? null : (regionFor(highlightIds[0]) ?? correctRegion)),
+    [kind, answered, highlightIds, correctRegion],
   );
 
-  // Decided once per run so the viewer never mounts and unmounts mid-quiz.
+  // Decided once per run so the viewer never mounts and unmounts mid-lesson.
   const showsBrain = useMemo(
-    () => state.questions.some((q) => sceneRegionIds(q).length > 0),
+    () => state.questions.some((q) => sceneRegionIds(q).length > 0 || stepKind(q) === "tap"),
     [state.questions],
   );
 
@@ -200,8 +242,10 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT, dr
 
   const submit = useCallback(() => {
     if (!question || !answer || selectedId === null || answered) return;
-    const correct = selectedId === answer.correctId;
+    const correct = correctIds.includes(selectedId);
     setAnswered(true);
+    // A miss is asked once more at the end; a missed retry is not.
+    if (!correct && !isRetry(question)) setRetries((queue) => [...queue, asRetry(question)]);
     // Drills attribute every answer to the drilled region; normal runs to
     // the correct region when the answer itself is one.
     if (isDrill && drillRegionId) recordRegionOutcome(drillRegionId, correct);
@@ -210,46 +254,78 @@ export function usePlay({ quizTypeId, resume = false, count = QUESTION_COUNT, dr
       type: "SUBMIT_ANSWER",
       answer: { questionId: question.id, selectedId, correct, timeMs: Date.now() - askedAt.current },
     });
-  }, [question, answer, selectedId, answered, correctRegion, isDrill, drillRegionId]);
+  }, [question, answer, selectedId, answered, correctIds, correctRegion, isDrill, drillRegionId]);
+
+  const atLastQuestion = state.currentIndex + 1 === state.questions.length;
 
   const next = useCallback(() => {
     setSelectedId(null);
     setAnswered(false);
+    if (atLastQuestion && retries.length > 0) {
+      dispatch({ type: "APPEND_QUESTIONS", questions: retries });
+      setRetries([]);
+    }
     dispatch({ type: "NEXT_QUESTION" });
-  }, []);
+  }, [atLastQuestion, retries]);
 
   const restart = useCallback(() => {
     setSelectedId(null);
     setAnswered(false);
+    setRetries([]);
     try {
       dispatch({
         type: "START_QUIZ",
         questions:
           isDrill && drillRegionId
             ? drillQuestions(drillRegionId, count)
-            : generateQuestions(quizTypeId, count),
+            : lessonQuestions(quizTypeId, count),
       });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not build this quiz.");
     }
   }, [quizTypeId, count, isDrill, drillRegionId]);
 
+  // Fix-it phase bookkeeping and the numbers the result screen counts up.
+  const fixing = question ? isRetry(question) : false;
+  const retryTotal = state.questions.filter(isRetry).length;
+  const retryIndex = fixing
+    ? state.questions.slice(0, state.currentIndex + 1).filter(isRetry).length
+    : 0;
+  const summary = useMemo(() => {
+    const retryIds = new Set(state.questions.filter(isRetry).map((q) => q.id));
+    const firstTry = state.answers.filter((a) => !retryIds.has(a.questionId));
+    const fixed = state.answers.filter((a) => retryIds.has(a.questionId) && a.correct).length;
+    return {
+      accuracy: firstTry.length > 0 ? firstTry.filter((a) => a.correct).length / firstTry.length : 0,
+      totalMs: state.answers.reduce((sum, a) => sum + a.timeMs, 0),
+      bestStreak: bestStreak(state.answers),
+      misses: firstTry.filter((a) => !a.correct).length,
+      fixed,
+    };
+  }, [state.questions, state.answers]);
+
   return {
     meta,
     error,
     state,
     question,
+    kind,
     answer,
     correctRegion,
     focusRegion,
     highlightIds,
+    mode,
     correctLabel,
     showsBrain,
     selectedId,
     setSelectedId,
     answered,
-    isCorrect: answered && selectedId === answer?.correctId,
-    isLast: state.currentIndex + 1 === state.questions.length,
+    isCorrect,
+    isLast: atLastQuestion && retries.length === 0,
+    fixing,
+    retryIndex,
+    retryTotal,
+    summary,
     elapsed,
     submit,
     next,

@@ -14,6 +14,7 @@ import { colors, serif } from "../theme";
 import { BrainModel, type PickRegion } from "./BrainModel";
 import { CameraRig } from "./CameraRig";
 import { FALLBACK_TARGET, homeCameraPosition, fitDistance } from "./camera";
+import { Framing } from "./Framing";
 import type { FocusMode } from "./highlight";
 import { PLAIN_SCENE, type BrainScene } from "./scene";
 
@@ -52,6 +53,11 @@ export interface BrainCanvasProps {
   scene?: BrainScene | null;
   /** Whether a new focus also moves the camera to that region's preset. */
   flyToFocus?: boolean;
+  /**
+   * Frame the picture in only the top N pixels of the canvas (a sheet covers
+   * the rest). The canvas keeps its size; the framing glides to the new band.
+   */
+  heroHeight?: number;
   onTapRegion?: (region: BrainRegion) => void;
   /** Fires on a confirmed tap that hits no region (empty canvas, sliver). */
   onTapEmpty?: () => void;
@@ -89,6 +95,7 @@ export function BrainCanvas({
   mode = "isolate",
   scene: sceneProp = null,
   flyToFocus = true,
+  heroHeight,
   onTapRegion,
   onTapEmpty,
   style,
@@ -97,6 +104,7 @@ export function BrainCanvas({
   const [target, setTarget] = useState<THREE.Vector3>(FALLBACK_TARGET);
   const pick = useRef<PickRegion | null>(null);
   const touchStart = useRef<TouchStart | null>(null);
+  const band = useRef(1);
   const onReady = useCallback((center: THREE.Vector3) => {
     setTarget(center);
     setReady(true);
@@ -153,7 +161,8 @@ export function BrainCanvas({
         <Suspense fallback={null}>
           <BrainModel scene={scene} pickRef={pick} onReady={onReady} />
         </Suspense>
-        <CameraRig target={target} focus={flyToFocus ? focus : null} />
+        <Framing heroHeight={heroHeight} band={band} />
+        <CameraRig target={target} focus={flyToFocus ? focus : null} band={band} heroHeight={heroHeight} />
         <ResizeSettle />
       </Canvas>
       {!ready && (

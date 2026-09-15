@@ -16,6 +16,7 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        animation: "shift",
         tabBarActiveTintColor: colors.ai,
         tabBarInactiveTintColor: colors.sumiLight,
         tabBarStyle: { backgroundColor: colors.washiWhite, borderTopColor: colors.washiWarm },

@@ -84,6 +84,12 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       };
     }
 
+    case "APPEND_QUESTIONS":
+      return {
+        ...state,
+        questions: [...state.questions, ...action.questions],
+      };
+
     case "FINISH_QUIZ":
       return {
         ...state,

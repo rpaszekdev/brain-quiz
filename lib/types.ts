@@ -260,6 +260,8 @@ export type QuizAction =
   | { type: "START_QUIZ"; questions: QuizQuestion[] }
   | { type: "SUBMIT_ANSWER"; answer: UserAnswer }
   | { type: "NEXT_QUESTION" }
+  /** Add questions to the end of a running quiz (missed ones asked again). */
+  | { type: "APPEND_QUESTIONS"; questions: QuizQuestion[] }
   | { type: "FINISH_QUIZ" }
   | { type: "RESET" }
   | { type: "BACK_TO_DIMENSIONS" }

@@ -17,6 +17,10 @@ import { LOBES, lobeOf, regionsInLobe } from "@/lib/lobes";
 import { articleFor } from "../src/explore/content";
 import { BROWSE_CATEGORIES, browseRows, searchAll } from "../src/explore/search";
 import { sceneFor } from "../src/explore/view";
+import { sheetGeometry } from "../src/explore/sheet-geometry";
+import { asRetry, bestStreak, isRetry, mixInTaps, stepKind } from "../src/quiz/lesson";
+import { bandedAspect } from "../src/viewer/camera";
+import { INITIAL_QUIZ_STATE, quizReducer } from "@/lib/quiz/quiz-engine";
 
 // Every quiz the app offers builds ten answerable multiple-choice questions.
 let quizTypes = 0;
@@ -104,6 +108,46 @@ assert.ok(arcuateView.tract && arcuateView.ghostOthers && arcuateView.focusIds.i
 assert.ok(arcuateView.focusIds.includes("thalamus"), "tapped region joins the tract glow");
 assert.ok(sceneFor({ kind: "deep", peel: "peeled" }, null).cortexOpacity < 1);
 assert.ok(sceneFor({ kind: "network", networkId: "dmn" }, null).network !== null);
+// A picked region gets the quiz look (ghost everything else) in every view.
+assert.equal(sceneFor({ kind: "all" }, "hippocampus").ghostOthers, true);
+assert.equal(sceneFor({ kind: "lobe", lobeId: "frontal" }, "hippocampus").ghostOthers, true);
+assert.equal(sceneFor({ kind: "all" }, null).ghostOthers, false);
+
+// Lessons: two of ten identify draws become tap-the-region steps, never the
+// first; a miss is queued once as a retry; the engine appends and still ends.
+{
+  const lesson = mixInTaps(generateQuestions("identify", 10));
+  assert.equal(lesson.length, 10);
+  assert.equal(lesson.filter((q) => stepKind(q) === "tap").length, 2, "identify lesson: tap steps");
+  assert.equal(stepKind(lesson[0]), "choice", "first step must be a choice");
+  assert.equal(new Set(lesson.map((q) => q.id)).size, 10, "lesson ids must be unique");
+  for (const q of lesson) {
+    if (q.answer.type !== "click-on-brain") continue;
+    assert.ok(q.prompt.startsWith("Tap the "), `${q.id}: ${q.prompt}`);
+    assert.ok(BRAIN_REGIONS.some((r) => r.id === q.answer.correctRegionIds[0]), `${q.id}: not a region`);
+  }
+  const nerves = mixInTaps(generateQuestions("nerve-number", 10));
+  assert.equal(nerves.filter((q) => stepKind(q) === "tap").length, 0, "cranial nerves stay choice-only");
+  const retry = asRetry(lesson[3]);
+  assert.ok(isRetry(retry) && !isRetry(lesson[3]) && !isRetry(asRetry(retry)) === false);
+  let engine = quizReducer(INITIAL_QUIZ_STATE, { type: "START_QUIZ", questions: lesson.slice(0, 2) });
+  engine = quizReducer(engine, { type: "APPEND_QUESTIONS", questions: [retry] });
+  assert.equal(engine.questions.length, 3);
+  engine = quizReducer(engine, { type: "NEXT_QUESTION" });
+  engine = quizReducer(engine, { type: "NEXT_QUESTION" });
+  assert.equal(engine.phase, "playing");
+  engine = quizReducer(engine, { type: "NEXT_QUESTION" });
+  assert.equal(engine.phase, "result");
+  assert.equal(bestStreak([{ questionId: "a", selectedId: "x", correct: true, timeMs: 1 }, { questionId: "b", selectedId: "x", correct: true, timeMs: 1 }, { questionId: "c", selectedId: "x", correct: false, timeMs: 1 }, { questionId: "d", selectedId: "x", correct: true, timeMs: 1 }]), 2);
+  for (const q of generateQuestions("receptor-distribution", 10)) {
+    assert.ok((q.scene?.regionIds.length ?? 0) > 0, `${q.id}: receptor question shows no brain`);
+  }
+  const framed = sheetGeometry(660, 341);
+  assert.equal(framed.peekTop, 341, "sheet peek top must be the hero band edge");
+  assert.ok(framed.fullTop < framed.peekTop && framed.fullHeight === 495);
+  assert.ok(Math.abs(fitDistance(bandedAspect({ width: 393, height: 660 }, 341 / 660)) - 250) < 1e-9, "hero band fits like the quiz");
+}
+
 assert.ok(searchAll("PFC").regions.some((h) => h.id === "prefrontal-cortex"), "alias search");
 assert.equal(searchAll("arcuate").tracts.length, 1);
 assert.ok(searchAll("default").networks.length >= 1);

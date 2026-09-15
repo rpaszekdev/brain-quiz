@@ -6,10 +6,13 @@ interface ButtonProps {
   onPress: () => void;
   variant?: "primary" | "quiet";
   disabled?: boolean;
+  /** Primary fill override, e.g. the green / red continue button. */
+  color?: string;
   style?: StyleProp<ViewStyle>;
 }
 
-export function Button({ label, onPress, variant = "primary", disabled = false, style }: ButtonProps) {
+/** Pill button. Primary is loud and uppercase; quiet is an outlined text button. */
+export function Button({ label, onPress, variant = "primary", disabled = false, color, style }: ButtonProps) {
   const primary = variant === "primary";
   return (
     <Pressable
@@ -20,12 +23,21 @@ export function Button({ label, onPress, variant = "primary", disabled = false, 
       style={({ pressed }) => [
         styles.base,
         primary ? styles.primary : styles.quiet,
-        disabled && styles.disabled,
+        primary && color !== undefined && { backgroundColor: color },
+        disabled && (primary ? styles.primaryDisabled : styles.quietDisabled),
         pressed && !disabled && styles.pressed,
         style,
       ]}
     >
-      <Text style={[styles.label, primary ? styles.labelPrimary : styles.labelQuiet]}>{label}</Text>
+      <Text
+        style={[
+          styles.label,
+          primary ? styles.labelPrimary : styles.labelQuiet,
+          primary && disabled && styles.labelPrimaryDisabled,
+        ]}
+      >
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -34,7 +46,7 @@ const styles = StyleSheet.create({
   base: {
     paddingVertical: 14,
     paddingHorizontal: space.xl,
-    borderRadius: radius.sm,
+    borderRadius: radius.pill,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -42,9 +54,11 @@ const styles = StyleSheet.create({
   },
   primary: { backgroundColor: colors.ai },
   quiet: { backgroundColor: "transparent", borderColor: colors.washiWarm },
-  disabled: { opacity: 0.4 },
-  pressed: { opacity: 0.85 },
-  label: { fontSize: 16, fontWeight: "600" },
-  labelPrimary: { color: colors.white },
-  labelQuiet: { color: colors.ai },
+  primaryDisabled: { backgroundColor: colors.washiWarm },
+  quietDisabled: { opacity: 0.4 },
+  pressed: { transform: [{ scale: 0.97 }], opacity: 0.9 },
+  label: { fontSize: 16, fontWeight: "700" },
+  labelPrimary: { color: colors.white, textTransform: "uppercase", letterSpacing: 0.6 },
+  labelPrimaryDisabled: { color: colors.sumiLight },
+  labelQuiet: { color: colors.ai, fontWeight: "600" },
 });

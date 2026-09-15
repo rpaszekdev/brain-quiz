@@ -13,6 +13,14 @@ const BASE_DISTANCE = 250;
     takes about 60% of the width instead of 75%. */
 const COMFORTABLE_ASPECT = 1.0;
 
+/**
+ * Aspect of the frame the picture is composed in: the canvas, or only its top
+ * `band` share when a sheet covers the rest (see Framing).
+ */
+export function bandedAspect(size: { width: number; height: number }, band: number): number {
+  return size.width / (size.height * Math.min(1, Math.max(0.05, band)));
+}
+
 export function fitDistance(aspect: number): number {
   if (!(aspect > 0)) return BASE_DISTANCE;
   return BASE_DISTANCE * Math.max(1, COMFORTABLE_ASPECT / aspect);

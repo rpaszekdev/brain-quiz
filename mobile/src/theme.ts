@@ -25,4 +25,6 @@ export const serif = Platform.select({
 });
 
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 } as const;
-export const radius = { sm: 6, md: 10, lg: 16 } as const;
+export const radius = { sm: 6, md: 10, lg: 16, pill: 999 } as const;
+/** Durations in ms: fast for presses and fades, base for slides, slow for bars. */
+export const motion = { fast: 160, base: 240, slow: 320 } as const;

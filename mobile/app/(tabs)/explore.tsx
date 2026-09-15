@@ -1,15 +1,18 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Pressable, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { getRegion, type BrainRegion } from "@/lib/brain-regions";
 import { RegionActions, RegionBody, ViewActions, ViewBody } from "../../src/explore/cards";
 import { PeekSheet } from "../../src/explore/PeekSheet";
+import { sheetGeometry } from "../../src/explore/sheet-geometry";
 import { explore, useExplore } from "../../src/explore/store";
 import { getNetwork, getTract, sceneFor, viewChip, viewMembers, type ExploreView } from "../../src/explore/view";
-import { colors, radius, serif, space } from "../../src/theme";
+import { colors, motion, radius, serif, space } from "../../src/theme";
 import { BrainCanvas } from "../../src/viewer/BrainCanvas";
+import { heroHeight } from "../../src/viewer/hero";
 
 function viewSubtitle(view: ExploreView, members: readonly BrainRegion[]): string {
   switch (view.kind) {
@@ -26,16 +29,29 @@ function viewSubtitle(view: ExploreView, members: readonly BrainRegion[]): strin
   }
 }
 
+interface SheetContent {
+  readonly title: string;
+  readonly subtitle: string;
+  readonly body: React.ReactNode;
+  readonly actions: React.ReactNode;
+  readonly onClose: () => void;
+}
+
 /**
  * Nothing but the brain and one search button. Everything else — lobes, deep
  * structures, pathways, networks — is chosen in the search hub and comes back
  * as a view: one chip over the brain says what is cut, × clears it.
+ *
+ * The sheet lies over the canvas; the brain is framed into the band above it
+ * (the same hero framing as a lesson), so nothing resizes and nothing hides.
  */
 export default function Explore() {
   const router = useRouter();
+  const { height: windowHeight } = useWindowDimensions();
   const { view, selectedId } = useExplore();
   const [expanded, setExpanded] = useState(false);
-  const selected = useMemo(() => (selectedId ? getRegion(selectedId) ?? null : null), [selectedId]);
+  const [stageHeight, setStageHeight] = useState(0);
+  const selected = useMemo(() => (selectedId ? (getRegion(selectedId) ?? null) : null), [selectedId]);
   const scene = useMemo(() => sceneFor(view, selectedId), [view, selectedId]);
   const members = useMemo(() => viewMembers(view), [view]);
   const chip = viewChip(view);
@@ -49,8 +65,11 @@ export default function Explore() {
   const onTapEmpty = useCallback(() => {
     if (selectedId) explore.select(null);
   }, [selectedId]);
+  const onStageLayout = useCallback((event: LayoutChangeEvent) => {
+    setStageHeight(Math.round(event.nativeEvent.layout.height));
+  }, []);
 
-  const sheet = selected
+  const sheet: SheetContent | null = selected
     ? {
         title: selected.name,
         subtitle: selected.category,
@@ -67,58 +86,73 @@ export default function Explore() {
           onClose: () => explore.reset(),
         }
       : null;
+  // Keep the last content while the sheet slides away, so it does not blank.
+  const lastSheet = useRef<SheetContent | null>(null);
+  if (sheet) lastSheet.current = sheet;
+  const shown = sheet ?? lastSheet.current;
+  const open = sheet !== null && stageHeight > 0;
+
+  const geometry = useMemo(() => sheetGeometry(stageHeight, heroHeight(windowHeight)), [stageHeight, windowHeight]);
+  const hero = !open ? undefined : expanded ? geometry.fullTop : geometry.peekTop;
 
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <View style={styles.header}>
         <Text style={styles.title}>Explore</Text>
       </View>
-      <View style={styles.stage}>
-        {/* In-flow (not absolute): when the sheet opens the canvas shrinks and
-            the brain re-fits above it instead of hiding underneath it. */}
+      <View style={styles.stage} onLayout={onStageLayout}>
         <BrainCanvas
           scene={scene}
           focus={selected}
-          flyToFocus={false}
+          heroHeight={hero}
           onTapRegion={onTapRegion}
           onTapEmpty={onTapEmpty}
           style={styles.canvas}
         />
         {chip && (
-          <Pressable
-            style={styles.chip}
-            onPress={() => explore.reset()}
-            accessibilityRole="button"
-            accessibilityLabel={`Clear ${chip.label}`}
+          <Animated.View
+            entering={FadeIn.duration(motion.fast)}
+            exiting={FadeOut.duration(motion.fast)}
+            style={styles.chipWrap}
           >
-            <Text style={styles.chipText}>
-              {chip.icon} {chip.label}
-            </Text>
-            <Text style={styles.chipClose}>×</Text>
-          </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.chip, pressed && styles.pressed]}
+              onPress={() => explore.reset()}
+              accessibilityRole="button"
+              accessibilityLabel={`Clear ${chip.label}`}
+            >
+              <Text style={styles.chipText}>
+                {chip.icon} {chip.label}
+              </Text>
+              <Text style={styles.chipClose}>×</Text>
+            </Pressable>
+          </Animated.View>
         )}
         <Pressable
-          style={styles.fab}
+          style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
           onPress={() => router.push("/find")}
           accessibilityRole="button"
           accessibilityLabel="Search the brain"
         >
           <Ionicons name="search" size={24} color={colors.white} />
         </Pressable>
+        {shown && (
+          <PeekSheet
+            open={open}
+            expanded={expanded}
+            geometry={geometry}
+            title={shown.title}
+            subtitle={shown.subtitle}
+            onToggle={() => setExpanded((e) => !e)}
+            onExpand={() => setExpanded(true)}
+            onCollapse={() => setExpanded(false)}
+            onClose={shown.onClose}
+            actions={shown.actions}
+          >
+            {shown.body}
+          </PeekSheet>
+        )}
       </View>
-      {sheet && (
-        <PeekSheet
-          title={sheet.title}
-          subtitle={sheet.subtitle}
-          expanded={expanded}
-          onToggle={() => setExpanded((e) => !e)}
-          onExpand={() => setExpanded(true)}
-          onClose={sheet.onClose}
-          actions={sheet.actions}
-        >
-          {sheet.body}
-        </PeekSheet>
-      )}
     </SafeAreaView>
   );
 }
@@ -127,22 +161,21 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.washiWhite },
   header: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
   title: { fontFamily: serif, fontSize: 28, color: colors.sumiDeep },
-  stage: { flex: 1 },
+  stage: { flex: 1, overflow: "hidden" },
   canvas: { flex: 1 },
+  chipWrap: { position: "absolute", top: space.sm, left: space.lg },
   chip: {
-    position: "absolute",
-    top: space.sm,
-    left: space.lg,
     flexDirection: "row",
     alignItems: "center",
     gap: space.sm,
     paddingVertical: space.sm,
     paddingHorizontal: space.md,
-    borderRadius: radius.lg,
+    borderRadius: radius.pill,
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.washiWarm,
   },
+  pressed: { transform: [{ scale: 0.96 }] },
   chipText: { fontSize: 14, fontWeight: "600", color: colors.sumiDeep },
   chipClose: { fontSize: 16, color: colors.sumiLight },
   fab: {
@@ -161,4 +194,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
   },
+  fabPressed: { transform: [{ scale: 0.94 }] },
 });

@@ -52,17 +52,20 @@ function knownRegions(ids: readonly string[]): BrainRegion[] {
 /** What the brain draws for a view, plus the tapped region if any. */
 export function sceneFor(view: ExploreView, selectedId: string | null): BrainScene {
   const selected = selectedId ? [selectedId] : [];
+  // A picked region gets the quiz look: lit, everything else ghosted.
+  const ghostOthers = selected.length > 0;
   switch (view.kind) {
     case "all":
-      return { ...PLAIN_SCENE, focusIds: selected };
+      return { ...PLAIN_SCENE, focusIds: selected, ghostOthers };
     case "lobe":
       return {
         ...PLAIN_SCENE,
         focusIds: selected,
+        ghostOthers,
         keepIds: regionsInLobe(view.lobeId).map((r) => r.id),
       };
     case "deep":
-      return { ...PLAIN_SCENE, focusIds: selected, cortexOpacity: PEEL_OPACITY[view.peel] };
+      return { ...PLAIN_SCENE, focusIds: selected, ghostOthers, cortexOpacity: PEEL_OPACITY[view.peel] };
     case "tract": {
       const tract = getTract(view.tractId) ?? null;
       const endpoints = tract ? tractEndpointIds(tract) : [];

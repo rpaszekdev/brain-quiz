@@ -176,6 +176,7 @@ function generateReceptorDistributionQuestions(count: number): QuizQuestion[] {
       prompt: `Which receptor type has the highest density in the ${regionLabel(regionId)}?`,
       answer,
       sceneDirective: "highlight-region" as const,
+      scene: { regionIds: [regionId] },
       explanation: `${rd.name} receptors are highly concentrated in the ${regionLabel(regionId)}. ${rd.function}`,
       tags: ["cellular", "receptors"],
     };
