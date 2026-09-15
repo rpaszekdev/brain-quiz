@@ -39,14 +39,18 @@ export function CameraRig({ target, focus }: CameraRigProps) {
   const flying = useRef(false);
 
   // A new target means the model just reported its centre (the loading
-  // overlay is still up), so snapping rather than flying is invisible.
+  // overlay is still up), so snapping rather than flying is invisible. Only
+  // the target triggers it: a resize (the sheet opening) must not throw away
+  // the user's orbit, and a focus that clears mid-quiz must not either.
+  const latest = useRef({ distance, focus });
+  latest.current = { distance, focus };
   useEffect(() => {
-    if (focus) return;
-    camera.position.copy(homeCameraPosition(target, distance));
+    if (latest.current.focus) return;
+    camera.position.copy(homeCameraPosition(target, latest.current.distance));
     controls.current?.target.copy(target);
     controls.current?.update();
     invalidate();
-  }, [camera, target, distance, focus, invalidate]);
+  }, [camera, target, invalidate]);
 
   // A focus change alters no scene prop, so nothing else would start the fly.
   useEffect(() => {

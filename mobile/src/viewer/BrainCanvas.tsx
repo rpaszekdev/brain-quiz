@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type * as THREE from "three";
 import {
   StyleSheet,
@@ -8,7 +8,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
-import { Canvas } from "@react-three/fiber/native";
+import { Canvas, useThree } from "@react-three/fiber/native";
 import type { BrainRegion } from "@/lib/brain-regions";
 import { colors, serif } from "../theme";
 import { BrainModel, type PickRegion } from "./BrainModel";
@@ -20,6 +20,26 @@ import { PLAIN_SCENE, type BrainScene } from "./scene";
 /** A touch that moves or lingers more than this is an orbit, not a tap. */
 const TAP_MAX_MOVE = 10;
 const TAP_MAX_MS = 300;
+/** Delays for the extra renders after a resize, until expo-gl has caught up. */
+const RESIZE_SETTLE_MS = [60, 250] as const;
+
+/**
+ * expo-gl resizes its surface a frame or two after the layout changes, so the
+ * first demand render after a resize draws the old buffer stretched into the
+ * new box (a squashed brain when the sheet opens). Render again once it has
+ * caught up.
+ */
+function ResizeSettle() {
+  const size = useThree((state) => state.size);
+  const invalidate = useThree((state) => state.invalidate);
+  useEffect(() => {
+    const timers = RESIZE_SETTLE_MS.map((ms) => setTimeout(() => invalidate(), ms));
+    return () => {
+      for (const timer of timers) clearTimeout(timer);
+    };
+  }, [size.width, size.height, invalidate]);
+  return null;
+}
 
 export interface BrainCanvasProps {
   /** Region the camera frames (with flyToFocus) and, without a scene, glows. */
@@ -134,6 +154,7 @@ export function BrainCanvas({
           <BrainModel scene={scene} pickRef={pick} onReady={onReady} />
         </Suspense>
         <CameraRig target={target} focus={flyToFocus ? focus : null} />
+        <ResizeSettle />
       </Canvas>
       {!ready && (
         <View style={styles.loading} pointerEvents="none">
