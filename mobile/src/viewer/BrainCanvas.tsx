@@ -15,7 +15,6 @@ import { BrainModel, type PickRegion } from "./BrainModel";
 import { CameraRig } from "./CameraRig";
 import { FALLBACK_TARGET, homeCameraPosition, fitDistance } from "./camera";
 import { Framing } from "./Framing";
-import { PointerHygiene } from "./PointerHygiene";
 import type { FocusMode } from "./highlight";
 import { PLAIN_SCENE, type BrainScene } from "./scene";
 
@@ -176,7 +175,6 @@ export function BrainCanvas({
         <Framing heroHeight={heroHeight} band={band} />
         <CameraRig target={target} focus={focus} band={band} heroHeight={heroHeight} motion={focusMotion} />
         <ResizeSettle />
-        <PointerHygiene />
       </Canvas>
       {!ready && (
         <View style={styles.loading} pointerEvents="none">

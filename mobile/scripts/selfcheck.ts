@@ -5,6 +5,7 @@
  * usage: npx tsx scripts/selfcheck.ts   (from mobile/)
  */
 import assert from "node:assert/strict";
+import * as THREE from "three";
 import { readFileSync } from "node:fs";
 import { generateQuestions } from "@/lib/quiz/generators";
 import "@/lib/quiz/generators/register-all";
@@ -21,6 +22,7 @@ import { shelves } from "../src/quiz/shelves";
 import { sheetGeometry } from "../src/explore/sheet-geometry";
 import { asRetry, bestStreak, isRetry } from "../src/quiz/lesson";
 import { bandedAspect } from "../src/viewer/camera";
+import { ROTATE_RAD_PER_PX, spinFor, spun } from "../src/viewer/trackball";
 import { INITIAL_QUIZ_STATE, quizReducer } from "@/lib/quiz/quiz-engine";
 
 // Every quiz the app offers builds ten answerable multiple-choice questions.
@@ -235,3 +237,25 @@ for (const region of BRAIN_REGIONS) {
     assert.ok(taggedIds.has(region.id), `brain.glb: ${region.id} owns files but has no mesh`);
   }
 }
+
+// Trackball: no poles, no wall, finger direction as expected.
+{
+  const target = new THREE.Vector3(0, 20, 0);
+  const home = { position: new THREE.Vector3(0, 20, 250), up: new THREE.Vector3(0, 1, 0) };
+  assert.equal(spinFor(home, target, 0, 0), null, "a still finger is no spin");
+  const right = spun(home, target, spinFor(home, target, 40, 0)!);
+  assert.ok(right.position.x < -1 && Math.abs(right.position.y - 20) < 1e-9, "drag right turns the brain to the right");
+  const down = spun(home, target, spinFor(home, target, 0, 40)!);
+  assert.ok(down.position.y > 21 && Math.abs(down.position.x) < 1e-9, "drag down tips the top toward you");
+  // 300 downward drags of 10 px: several full tumbles straight over the poles.
+  const steps = 300;
+  let pose = home;
+  for (let i = 0; i < steps; i++) pose = spun(pose, target, spinFor(pose, target, 0, 10)!);
+  const turned = new THREE.Vector3(0, 0, 250)
+    .applyAxisAngle(new THREE.Vector3(1, 0, 0), -steps * 10 * ROTATE_RAD_PER_PX)
+    .add(target);
+  assert.ok(pose.position.distanceTo(turned) < 1e-6, "tumbling over the pole keeps turning, no wall");
+  assert.ok(Math.abs(pose.position.distanceTo(target) - 250) < 1e-6, "distance is kept");
+  assert.ok(Math.abs(pose.up.dot(pose.position.clone().sub(target))) < 1e-6, "up stays perpendicular to the view");
+}
+
