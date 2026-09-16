@@ -42,9 +42,11 @@ interface SheetContent {
 }
 
 /**
- * The brain, a search button and a tools button. Everything else — lobes,
- * deep structures, pathways, networks — is chosen in the search hub and
- * comes back as a view: one chip over the brain says what is cut.
+ * A search field, the brain and a tools button. Search is the front door:
+ * lobes, deep structures, pathways, networks and single regions are chosen
+ * in the search hub and come back as a view — one chip over the brain says
+ * what is cut. Tapping the brain picks whatever layer the depth slider has
+ * made solid.
  *
  * The sheet lies over the canvas; the brain is framed into the band above it
  * (the same hero framing as a lesson), so nothing resizes and nothing hides.
@@ -120,6 +122,18 @@ export default function Explore() {
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <View style={styles.header}>
         <Text style={styles.title}>Explore</Text>
+        <Pressable
+          style={({ pressed }) => [styles.search, pressed && styles.pressed]}
+          onPress={() => {
+            press();
+            router.push("/find");
+          }}
+          accessibilityRole="search"
+          accessibilityLabel="Search the brain"
+        >
+          <Ionicons name="search" size={20} color={colors.sumiLight} />
+          <Text style={styles.searchHint}>Region, lobe, pathway, network</Text>
+        </Pressable>
       </View>
       <View style={styles.stage} onLayout={onStageLayout}>
         <BrainCanvas
@@ -163,17 +177,6 @@ export default function Explore() {
         >
           <Ionicons name="options-outline" size={20} color={cutting ? colors.white : colors.sumiMedium} />
         </Pressable>
-        <Pressable
-          style={({ pressed }) => [styles.round, styles.fab, { bottom: floor }, pressed && styles.roundPressed]}
-          onPress={() => {
-            press();
-            router.push("/find");
-          }}
-          accessibilityRole="button"
-          accessibilityLabel="Search the brain"
-        >
-          <Ionicons name="search" size={22} color={colors.white} />
-        </Pressable>
         {shown && (
           <PeekSheet
             open={open}
@@ -206,8 +209,20 @@ export default function Explore() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.washiWhite },
-  header: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
+  header: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.md, gap: space.sm },
   title: { fontFamily: serif, fontSize: 28, color: colors.sumiDeep },
+  search: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.sm,
+    height: 52,
+    paddingHorizontal: space.md,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.washiWarm,
+    borderRadius: radius.lg,
+  },
+  searchHint: { flex: 1, fontSize: 17, color: colors.sumiLight },
   stage: { flex: 1, overflow: "hidden" },
   canvas: { flex: 1 },
   chipWrap: { position: "absolute", top: space.sm, left: space.lg },
@@ -237,9 +252,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   roundPressed: { transform: [{ scale: 0.94 }] },
-  fab: { right: space.lg, backgroundColor: colors.ai },
   tools: {
-    right: space.lg + 48 + space.md,
+    right: space.lg,
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.washiWarm,

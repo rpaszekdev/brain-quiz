@@ -13,6 +13,8 @@ import type { BrainScene } from "./scene";
 import { TractTube } from "./TractTube";
 
 const UNASSIGNED_COLOR = new THREE.Color(0.88, 0.87, 0.85);
+/** Below this cortex opacity a tap passes through the cortex to what is under it. */
+const CORTEX_TAPPABLE_ABOVE = 0.5;
 
 /** Region under a canvas point (in layout pixels), or null. */
 export type PickRegion = (x: number, y: number) => BrainRegion | null;
@@ -52,11 +54,14 @@ function tagMeshes(root: THREE.Object3D): readonly TaggedMesh[] {
     const color = region
       ? new THREE.Color(region.color[0] / 255, region.color[1] / 255, region.color[2] / 255)
       : UNASSIGNED_COLOR;
+    // A near-white region (corpus callosum) glows invisibly on the washi
+    // background, so its glow is a shade darker than its fill.
+    const emissive = color.getHSL({ h: 0, s: 0, l: 0 }).l > 0.8 ? color.clone().offsetHSL(0, 0, -0.35) : color;
     // ponytail: Lambert, front faces only. Standard + DoubleSide + transparent
     // cost the phone GPU ~4× and looked the same at phone size.
     const material = new THREE.MeshLambertMaterial({
       color,
-      emissive: color,
+      emissive,
       emissiveIntensity: 0,
       side: THREE.FrontSide,
     });
@@ -116,8 +121,11 @@ export function BrainModel({ scene, pickRef, onReady }: BrainModelProps) {
   // handler-bearing object on touch down AND up, which is the whole brain in
   // the Hermes interpreter at every drag start. This raycast runs once, and
   // only after the canvas has confirmed a tap.
-  const focusIds = scene.focusIds;
   useEffect(() => {
+    const clip = clipPlaneFor(scene.slice, bounds);
+    // The depth slider decides which layer a finger lands on: a faded cortex
+    // is glass, and the tap reaches the structure beneath it.
+    const throughCortex = scene.cortexOpacity < CORTEX_TAPPABLE_ABOVE;
     pickRef.current = (x, y) => {
       const { camera, raycaster, size } = get();
       const ndc = new THREE.Vector2((x / size.width) * 2 - 1, -(y / size.height) * 2 + 1);
@@ -125,19 +133,23 @@ export function BrainModel({ scene, pickRef, onReady }: BrainModelProps) {
       // The nearest hit is often an unassigned sliver — corpus callosum, a
       // ventricle — so walk the ray to the first mesh that names a region.
       for (const hit of raycaster.intersectObject(root, true)) {
+        // What the slice cut away is not there to be tapped.
+        if (clip && clip.distanceToPoint(hit.point) < 0) continue;
         const ids = ownerIds(hit.object.userData);
         if (ids.length === 0) continue;
         // On a shared mesh prefer the region the viewer is focused on, so a
         // tap on inferiorparietal while exploring the angular gyrus picks it.
-        const focused = ids.find((id) => focusIds.includes(id));
-        return regionById(focused ?? ids[0]);
+        const focused = ids.find((id) => scene.focusIds.includes(id));
+        const region = regionById(focused ?? ids[0]);
+        if (throughCortex && region?.category === "cortical") continue;
+        return region;
       }
       return null;
     };
     return () => {
       pickRef.current = null;
     };
-  }, [get, root, pickRef, focusIds]);
+  }, [get, root, pickRef, scene, bounds]);
 
   // Three materials are mutable by design; this effect is the one place that
   // writes to them, and it derives every value from the scene.

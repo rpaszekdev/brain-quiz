@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from "react";
+import { useCallback, useEffect, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber/native";
 import { OrbitControls } from "@react-three/drei/native";
@@ -20,6 +20,12 @@ interface CameraRigProps {
   /** Live band share from Framing, read every frame. */
   band: RefObject<number>;
   heroHeight: number | undefined;
+  /**
+   * How the camera reaches a new focus. A fly glides there (Explore); a snap
+   * jumps at once (lessons), so there is never a half-second in which the rig
+   * and the user's finger both hold the camera.
+   */
+  motion: "fly" | "snap";
 }
 
 /** The camera's current direction, at a different distance from the target. */
@@ -39,7 +45,7 @@ function dollyPosition(position: THREE.Vector3, target: THREE.Vector3, distance:
  * While the band glides (a sheet opening) the camera dollies to the distance
  * that fits the new frame, so the brain shrinks or grows smoothly.
  */
-export function CameraRig({ target, focus, band, heroHeight }: CameraRigProps) {
+export function CameraRig({ target, focus, band, heroHeight, motion }: CameraRigProps) {
   const controls = useRef<React.ComponentRef<typeof OrbitControls>>(null);
   const camera = useThree((state) => state.camera);
   const size = useThree((state) => state.size);
@@ -56,10 +62,10 @@ export function CameraRig({ target, focus, band, heroHeight }: CameraRigProps) {
    * damps the camera back toward the region on every frame of the drag, and
    * the brain simply refuses to rotate.
    */
-  const release = () => {
+  const release = useCallback(() => {
     flying.current = false;
     dollying.current = false;
-  };
+  }, []);
   const last = useRef<{ focus: BrainRegion | null; target: THREE.Vector3; bandTarget: number } | null>(null);
   const budget = useRef(0);
 
@@ -86,8 +92,15 @@ export function CameraRig({ target, focus, band, heroHeight }: CameraRigProps) {
     const delta = Math.min(rawDelta, MAX_FRAME_DELTA);
     const was = last.current;
     if (!was || was.focus !== focus || was.target !== target) {
-      flying.current = focus !== null;
-      budget.current = FLY_BUDGET_S;
+      if (motion === "snap" && focus) {
+        camera.position.copy(regionCameraPosition(focus, target, fitDistance(bandedAspect(size, band.current))));
+        controls.current?.update();
+        invalidate();
+        flying.current = false;
+      } else {
+        flying.current = focus !== null;
+        budget.current = FLY_BUDGET_S;
+      }
     }
     if (was && was.bandTarget !== bandTarget) {
       dollying.current = true;

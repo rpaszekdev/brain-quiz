@@ -19,7 +19,7 @@ import { BROWSE_CATEGORIES, browseRows, searchAll } from "../src/explore/search"
 import { BARE_OPACITY, SOLID_OPACITY, sceneFor } from "../src/explore/view";
 import { shelves } from "../src/quiz/shelves";
 import { sheetGeometry } from "../src/explore/sheet-geometry";
-import { asRetry, bestStreak, isRetry, mixInTaps, stepKind } from "../src/quiz/lesson";
+import { asRetry, bestStreak, isRetry } from "../src/quiz/lesson";
 import { bandedAspect } from "../src/viewer/camera";
 import { INITIAL_QUIZ_STATE, quizReducer } from "@/lib/quiz/quiz-engine";
 
@@ -125,21 +125,13 @@ assert.equal(sceneFor({ kind: "all" }, "hippocampus").ghostOthers, true);
 assert.equal(sceneFor({ kind: "lobe", lobeId: "frontal" }, "hippocampus").ghostOthers, true);
 assert.equal(sceneFor({ kind: "all" }, null).ghostOthers, false);
 
-// Lessons: two of ten identify draws become tap-the-region steps, never the
-// first; a miss is queued once as a retry; the engine appends and still ends.
+// Lessons are choice-only (no tap-the-brain steps); a miss is queued once as
+// a retry; the engine appends and still ends.
 {
-  const lesson = mixInTaps(generateQuestions("identify", 10));
+  const lesson = generateQuestions("identify", 10);
   assert.equal(lesson.length, 10);
-  assert.equal(lesson.filter((q) => stepKind(q) === "tap").length, 2, "identify lesson: tap steps");
-  assert.equal(stepKind(lesson[0]), "choice", "first step must be a choice");
+  assert.ok(lesson.every((q) => q.answer.type === "multiple-choice"), "lessons are choice-only");
   assert.equal(new Set(lesson.map((q) => q.id)).size, 10, "lesson ids must be unique");
-  for (const q of lesson) {
-    if (q.answer.type !== "click-on-brain") continue;
-    assert.ok(q.prompt.startsWith("Tap the "), `${q.id}: ${q.prompt}`);
-    assert.ok(BRAIN_REGIONS.some((r) => r.id === q.answer.correctRegionIds[0]), `${q.id}: not a region`);
-  }
-  const nerves = mixInTaps(generateQuestions("nerve-number", 10));
-  assert.equal(nerves.filter((q) => stepKind(q) === "tap").length, 0, "cranial nerves stay choice-only");
   const retry = asRetry(lesson[3]);
   assert.ok(isRetry(retry) && !isRetry(lesson[3]) && !isRetry(asRetry(retry)) === false);
   let engine = quizReducer(INITIAL_QUIZ_STATE, { type: "START_QUIZ", questions: lesson.slice(0, 2) });

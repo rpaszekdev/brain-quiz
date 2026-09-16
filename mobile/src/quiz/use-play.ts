@@ -5,10 +5,9 @@ import "@/lib/quiz/generators/register-all";
 import { recordResult } from "@/lib/quiz/history";
 import { INITIAL_QUIZ_STATE, quizReducer } from "@/lib/quiz/quiz-engine";
 import { clearSession, loadSession, saveSession } from "@/lib/quiz/session";
-import type { ClickOnBrainAnswer, MultipleChoiceAnswer, QuizQuestion } from "@/lib/types";
-import type { FocusMode } from "../viewer/highlight";
+import type { MultipleChoiceAnswer, QuizQuestion } from "@/lib/types";
 import { DRILL_SOURCE_TYPES, drillMeta, findQuizType } from "./catalog";
-import { asRetry, bestStreak, isRetry, mixInTaps, stepKind } from "./lesson";
+import { asRetry, bestStreak, isRetry } from "./lesson";
 import { recordRegionOutcome } from "./region-stats";
 import { sceneRegionIds } from "./scene";
 
@@ -26,23 +25,8 @@ export interface PlayOptions {
   drillRegionId?: string;
 }
 
-/** The two answer formats a lesson step can have. */
-type StepAnswer = MultipleChoiceAnswer | ClickOnBrainAnswer;
-
-function stepAnswer(question: QuizQuestion | undefined): StepAnswer | null {
-  const answer = question?.answer;
-  return answer?.type === "multiple-choice" || answer?.type === "click-on-brain" ? answer : null;
-}
-
 function multipleChoice(question: QuizQuestion | undefined): MultipleChoiceAnswer | null {
   return question?.answer.type === "multiple-choice" ? question.answer : null;
-}
-
-/** Every id that counts as right: the option, or the region and its tolerances. */
-function correctIdsOf(answer: StepAnswer): string[] {
-  return answer.type === "multiple-choice"
-    ? [answer.correctId]
-    : [...answer.correctRegionIds, ...(answer.toleranceRegionIds ?? [])];
 }
 
 function regionFor(id: string | undefined): BrainRegion | null {
@@ -50,7 +34,7 @@ function regionFor(id: string | undefined): BrainRegion | null {
 }
 
 function lessonQuestions(quizTypeId: string, count: number): QuizQuestion[] {
-  return mixInTaps(generateQuestions(quizTypeId, count));
+  return generateQuestions(quizTypeId, count);
 }
 
 /**
@@ -85,7 +69,7 @@ function drillQuestions(regionId: string, count: number): QuizQuestion[] {
     pool.push({ ...extra, id: `${extra.id}-pad${round}` });
   }
   const shuffled = shuffle(pool).slice(0, count);
-  return mixInTaps(shuffled.length > 0 ? shuffled : generateQuestions("identify", count));
+  return shuffled.length > 0 ? shuffled : generateQuestions("identify", count);
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -99,8 +83,8 @@ function shuffle<T>(arr: T[]): T[] {
 
 /**
  * One lesson: the reducer from lib/quiz plus the per-step UI state the
- * website keeps in PlayQuiz.tsx, with two lesson rules on top — a couple of
- * steps are tap-the-region, and missed steps come back once at the end.
+ * website keeps in PlayQuiz.tsx, with one lesson rule on top — missed steps
+ * come back once at the end.
  * Also persists progress so Home can offer "continue", and records history
  * and per-region tallies on finish.
  */
@@ -168,37 +152,22 @@ export function usePlay({ quizTypeId, resume = false, count: countOption, drillR
   }, [meta, quizTypeId, resume, count, isDrill, drillRegionId]);
 
   const question = state.questions[state.currentIndex];
-  const kind = question ? stepKind(question) : "choice";
-  const answer = useMemo(() => stepAnswer(question), [question]);
-  const correctIds = useMemo(() => (answer ? correctIdsOf(answer) : []), [answer]);
-  const correctRegion = useMemo(() => regionFor(correctIds[0]), [correctIds]);
-  const correctLabel =
-    answer?.type === "multiple-choice"
-      ? (answer.options.find((option) => option.id === answer.correctId)?.label ?? "")
-      : (correctRegion?.name ?? "");
-  const isCorrect = answered && selectedId !== null && correctIds.includes(selectedId);
+  const answer = useMemo(() => multipleChoice(question), [question]);
+  const correctRegion = useMemo(() => regionFor(answer?.correctId), [answer]);
+  const correctLabel = answer?.options.find((option) => option.id === answer.correctId)?.label ?? "";
+  const isCorrect = answered && selectedId !== null && selectedId === answer?.correctId;
 
-  /** Regions the viewer glows: the question's scene, or on a tap step the
-   *  tapped region until it is checked and the right one after. */
-  const sceneIds = useMemo(() => sceneRegionIds(question), [question]);
-  const highlightIds = useMemo(() => {
-    if (kind !== "tap") return sceneIds;
-    if (answered) return correctIds.slice(0, 1);
-    return selectedId ? [selectedId] : [];
-  }, [kind, sceneIds, answered, correctIds, selectedId]);
-  /** A tapped-but-unchecked region is accented, not isolated: the whole
-   *  brain stays solid so the next tap can land anywhere. */
-  const mode: FocusMode = kind === "tap" && !answered ? "accent" : "isolate";
-  /** Camera target: first scene region, falling back to the correct region.
-   *  A tap step flies nowhere until it is checked. */
+  /** Regions the viewer glows: the question's scene. */
+  const highlightIds = useMemo(() => sceneRegionIds(question), [question]);
+  /** Camera target: first scene region, falling back to the correct region. */
   const focusRegion = useMemo(
-    () => (kind === "tap" && !answered ? null : (regionFor(highlightIds[0]) ?? correctRegion)),
-    [kind, answered, highlightIds, correctRegion],
+    () => regionFor(highlightIds[0]) ?? correctRegion,
+    [highlightIds, correctRegion],
   );
 
   // Decided once per run so the viewer never mounts and unmounts mid-lesson.
   const showsBrain = useMemo(
-    () => state.questions.some((q) => sceneRegionIds(q).length > 0 || stepKind(q) === "tap"),
+    () => state.questions.some((q) => sceneRegionIds(q).length > 0),
     [state.questions],
   );
 
@@ -242,7 +211,7 @@ export function usePlay({ quizTypeId, resume = false, count: countOption, drillR
 
   const submit = useCallback(() => {
     if (!question || !answer || selectedId === null || answered) return;
-    const correct = correctIds.includes(selectedId);
+    const correct = selectedId === answer.correctId;
     setAnswered(true);
     // A miss is asked once more at the end; a missed retry is not.
     if (!correct && !isRetry(question)) setRetries((queue) => [...queue, asRetry(question)]);
@@ -254,7 +223,7 @@ export function usePlay({ quizTypeId, resume = false, count: countOption, drillR
       type: "SUBMIT_ANSWER",
       answer: { questionId: question.id, selectedId, correct, timeMs: Date.now() - askedAt.current },
     });
-  }, [question, answer, selectedId, answered, correctIds, correctRegion, isDrill, drillRegionId]);
+  }, [question, answer, selectedId, answered, correctRegion, isDrill, drillRegionId]);
 
   const atLastQuestion = state.currentIndex + 1 === state.questions.length;
 
@@ -309,12 +278,10 @@ export function usePlay({ quizTypeId, resume = false, count: countOption, drillR
     error,
     state,
     question,
-    kind,
     answer,
     correctRegion,
     focusRegion,
     highlightIds,
-    mode,
     correctLabel,
     showsBrain,
     selectedId,

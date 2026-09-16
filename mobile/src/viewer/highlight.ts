@@ -20,6 +20,9 @@ const LOOK = {
   dimmedUnassigned: { opacity: 0.03, emissive: 0 },
 } as const satisfies Record<string, MeshLook>;
 
+/** How much deep structures brighten as the cortex fades to reveal them. */
+const DEEP_LIFT = 0.35;
+
 export type FocusMode =
   /** Quiz: the focused regions alone stay visible. */
   | "isolate"
@@ -44,6 +47,10 @@ export function lookFor({ region, regionIds, scene }: LookQuery): MeshLook {
   if (scene.keepIds && !regionIds.some((id) => scene.keepIds!.includes(id))) return dimmed(region);
   // Unassigned slivers are cortical patches and ventricles: peel them too.
   const cortical = region === null || region.category === "cortical";
-  if (scene.cortexOpacity < 1 && cortical) return { opacity: scene.cortexOpacity, emissive: 0 };
+  if (scene.cortexOpacity < 1) {
+    if (cortical) return { opacity: scene.cortexOpacity, emissive: 0 };
+    // The layer you are in reads solid and bright — what stands out is what a tap reaches.
+    return { opacity: 1, emissive: LOOK.region.emissive + (1 - scene.cortexOpacity) * DEEP_LIFT };
+  }
   return region ? LOOK.region : LOOK.unassigned;
 }

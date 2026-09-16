@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { press, tick } from "../../src/haptics";
+import { press } from "../../src/haptics";
 import { FeedbackPanel } from "../../src/play/FeedbackPanel";
 import { LessonHeader } from "../../src/play/LessonHeader";
 import { ResultScreen } from "../../src/play/ResultScreen";
@@ -16,7 +16,7 @@ function stepLabel(play: Play): string {
   const total = play.state.questions.length;
   if (play.fixing) return `Fix it · ${play.retryIndex} of ${play.retryTotal}`;
   const n = `${play.state.currentIndex + 1} of ${total}`;
-  return play.kind === "tap" ? `Tap the region · ${n}` : `${play.meta?.quizType.name ?? "Question"} · ${n}`;
+  return `${play.meta?.quizType.name ?? "Question"} · ${n}`;
 }
 
 function Lesson({ play, onClose }: { play: Play; onClose: () => void }) {
@@ -41,7 +41,6 @@ function Lesson({ play, onClose }: { play: Play; onClose: () => void }) {
   }
 
   const total = state.questions.length;
-  const tapping = play.kind === "tap" && !play.answered;
   return (
     <>
       <LessonHeader
@@ -54,15 +53,9 @@ function Lesson({ play, onClose }: { play: Play; onClose: () => void }) {
         <BrainCanvas
           focus={play.focusRegion}
           highlightIds={play.highlightIds}
-          mode={play.mode}
-          onTapRegion={
-            tapping
-              ? (region) => {
-                  tick();
-                  play.setSelectedId(region.id);
-                }
-              : undefined
-          }
+          // A glide fights the finger that is already rotating; the brain jumps
+          // to each step's region and is then the user's to turn.
+          focusMotion="snap"
           // ponytail: one canvas height per lesson; it never resizes.
           style={{ height: lessonHeroHeight(height) }}
         />

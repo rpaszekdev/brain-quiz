@@ -167,7 +167,7 @@ export function BugReporter() {
 const styles = StyleSheet.create({
   trigger: {
     position: "absolute",
-    right: space.md,
+    left: space.md,
     bottom: 96,
     width: 36,
     height: 36,

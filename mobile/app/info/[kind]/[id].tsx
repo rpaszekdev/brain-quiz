@@ -57,7 +57,7 @@ export default function Info() {
         <Pressable onPress={back} style={styles.back} accessibilityRole="button" accessibilityLabel="Back">
           <Ionicons name="chevron-back" size={26} color={colors.sumiDeep} />
         </Pressable>
-        <BrainCanvas scene={scene} focus={focus} flyToFocus style={styles.hero} />
+        <BrainCanvas scene={scene} focus={focus} style={styles.hero} />
         <View style={styles.body}>
           <Text style={styles.title}>{article.title}</Text>
           <Text style={styles.subtitle}>{article.subtitle}</Text>

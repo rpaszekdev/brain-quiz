@@ -43,7 +43,7 @@ function ResizeSettle() {
 }
 
 export interface BrainCanvasProps {
-  /** Region the camera frames (with flyToFocus) and, without a scene, glows. */
+  /** Region the camera frames and, without a scene, glows. */
   focus?: BrainRegion | null;
   /** Quiz highlight set; replaces the single focus glow. */
   highlightIds?: readonly string[] | null;
@@ -51,8 +51,8 @@ export interface BrainCanvasProps {
   mode?: FocusMode;
   /** Full control of the drawing (Explore). Overrides highlightIds and mode. */
   scene?: BrainScene | null;
-  /** Whether a new focus also moves the camera to that region's preset. */
-  flyToFocus?: boolean;
+  /** How the camera reaches a new focus: glide there, or jump at once. */
+  focusMotion?: "fly" | "snap";
   /**
    * Frame the picture in only the top N pixels of the canvas (a sheet covers
    * the rest). The canvas keeps its size; the framing glides to the new band.
@@ -94,7 +94,7 @@ export function BrainCanvas({
   highlightIds = null,
   mode = "isolate",
   scene: sceneProp = null,
-  flyToFocus = true,
+  focusMotion = "fly",
   heroHeight,
   onTapRegion,
   onTapEmpty,
@@ -167,7 +167,7 @@ export function BrainCanvas({
           <BrainModel scene={scene} pickRef={pick} onReady={onReady} />
         </Suspense>
         <Framing heroHeight={heroHeight} band={band} />
-        <CameraRig target={target} focus={flyToFocus ? focus : null} band={band} heroHeight={heroHeight} />
+        <CameraRig target={target} focus={focus} band={band} heroHeight={heroHeight} motion={focusMotion} />
         <ResizeSettle />
       </Canvas>
       {!ready && (
