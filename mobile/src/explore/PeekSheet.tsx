@@ -13,7 +13,7 @@ import { tick } from "../haptics";
 import type { SheetGeometry } from "./sheet-geometry";
 import { colors, radius, serif, space } from "../theme";
 
-/** Finger travel on the handle that closes/collapses (down) or expands (up). */
+/** Finger travel on the header that closes/collapses (down) or expands (up). */
 const SWIPE_CLOSE = 60;
 const SWIPE_EXPAND = 40;
 const SPRING = { damping: 22, stiffness: 220, mass: 0.8 } as const;
@@ -35,15 +35,16 @@ export interface PeekSheetProps {
   onExpand: () => void;
   onCollapse: () => void;
   onClose: () => void;
-  /** Buttons row under the title; stays visible while peeking. */
+  /** The one or two words that do something, pinned at the foot. */
   actions: ReactNode;
   children: ReactNode;
 }
 
 /**
  * Bottom sheet laid over the stage (the canvas underneath keeps its size and
- * frames the brain into the band above the sheet). Springs between closed,
- * peek and full; the handle follows the finger and snaps on release.
+ * frames the brain into the band above the sheet). Drag the header: up to
+ * read the whole write-up, down to put it away. There is no close button —
+ * the gesture is the control.
  *
  * Touch events, not PanResponder: they fire regardless of who owns the
  * responder and behave the same on iOS, Android and the web test surface.
@@ -112,20 +113,22 @@ export function PeekSheet({
         onTouchEnd={onDragEnd}
         accessibilityRole="button"
         accessibilityLabel={expanded ? "Collapse details" : "Expand details"}
-        style={styles.handle}
+        style={styles.header}
       >
         <View style={styles.grabber} />
-      </Pressable>
-      <View style={styles.head}>
-        <Text style={styles.title} numberOfLines={expanded ? undefined : 1}>
+        <Text style={styles.title} numberOfLines={expanded ? 2 : 1}>
           {title}
         </Text>
-        <Text style={styles.meta}>{subtitle}</Text>
-      </View>
+        {subtitle.length > 0 && (
+          <Text style={styles.meta} numberOfLines={1}>
+            {subtitle}
+          </Text>
+        )}
+      </Pressable>
       <View style={styles.actions}>{actions}</View>
       <ScrollView
         scrollEnabled={expanded}
-        showsVerticalScrollIndicator={expanded}
+        showsVerticalScrollIndicator={false}
         style={styles.body}
         contentContainerStyle={styles.bodyContent}
       >
@@ -142,24 +145,31 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingHorizontal: space.lg,
-    gap: space.sm,
     backgroundColor: colors.white,
     borderTopLeftRadius: radius.lg,
     borderTopRightRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.washiWarm,
+    borderTopWidth: 1,
+    borderTopColor: colors.washiWarm,
     shadowColor: colors.sumiDeep,
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: -6 },
     elevation: 8,
   },
-  handle: { paddingTop: space.sm, paddingBottom: space.sm, alignItems: "center" },
-  grabber: { width: 36, height: 4, borderRadius: 2, backgroundColor: colors.washiWarm },
-  head: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: space.md },
-  title: { fontFamily: serif, fontSize: 22, color: colors.sumiDeep, flexShrink: 1 },
-  meta: { fontSize: 12, fontWeight: "600", color: colors.kitsune, textTransform: "capitalize" },
-  actions: { flexDirection: "row", gap: space.sm, flexWrap: "wrap" },
+  header: { paddingTop: space.sm, paddingBottom: space.md, gap: 2 },
+  grabber: {
+    width: 32,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: colors.washiWarm,
+    alignSelf: "center",
+    marginBottom: space.md,
+  },
+  title: { fontFamily: serif, fontSize: 24, color: colors.sumiDeep },
+  meta: { fontSize: 12, color: colors.sumiLight, textTransform: "capitalize" },
   body: { flex: 1 },
-  bodyContent: { gap: space.xs, paddingBottom: space.lg },
+  bodyContent: { gap: space.xs, paddingBottom: space.md },
+  // Above the body, not pinned below it: the sheet is taller than its peek,
+  // so anything at its foot sits off the bottom of the screen while peeking.
+  actions: { flexDirection: "row", paddingBottom: space.md },
 });

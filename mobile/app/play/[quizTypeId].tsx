@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { tick } from "../../src/haptics";
+import { press, tick } from "../../src/haptics";
 import { FeedbackPanel } from "../../src/play/FeedbackPanel";
 import { LessonHeader } from "../../src/play/LessonHeader";
 import { ResultScreen } from "../../src/play/ResultScreen";
@@ -72,7 +72,14 @@ function Lesson({ play, onClose }: { play: Play; onClose: () => void }) {
           <StepBody key={question.id} play={play} label={stepLabel(play)} />
         </View>
         <View style={styles.actions}>
-          <Button label="Check" onPress={play.submit} disabled={play.selectedId === null || play.answered} />
+          <Button
+            label="Check"
+            onPress={() => {
+              press();
+              play.submit();
+            }}
+            disabled={play.selectedId === null || play.answered}
+          />
         </View>
         {play.answered && (
           <FeedbackPanel

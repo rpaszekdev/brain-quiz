@@ -16,7 +16,8 @@ import { FALLBACK_TARGET, fitDistance, regionCameraPosition } from "../src/viewe
 import { LOBES, lobeOf, regionsInLobe } from "@/lib/lobes";
 import { articleFor } from "../src/explore/content";
 import { BROWSE_CATEGORIES, browseRows, searchAll } from "../src/explore/search";
-import { sceneFor } from "../src/explore/view";
+import { BARE_OPACITY, SOLID_OPACITY, sceneFor } from "../src/explore/view";
+import { shelves } from "../src/quiz/shelves";
 import { sheetGeometry } from "../src/explore/sheet-geometry";
 import { asRetry, bestStreak, isRetry, mixInTaps, stepKind } from "../src/quiz/lesson";
 import { bandedAspect } from "../src/viewer/camera";
@@ -106,7 +107,18 @@ assert.ok(frontalCut.keepIds?.includes("prefrontal-cortex") && !frontalCut.keepI
 const arcuateView = sceneFor({ kind: "tract", tractId: "arcuate-fasciculus" }, "thalamus");
 assert.ok(arcuateView.tract && arcuateView.ghostOthers && arcuateView.focusIds.includes("wernickes-area"));
 assert.ok(arcuateView.focusIds.includes("thalamus"), "tapped region joins the tract glow");
-assert.ok(sceneFor({ kind: "deep", peel: "peeled" }, null).cortexOpacity < 1);
+// The layer rail, not the view, decides how much cortex is in the way.
+assert.equal(sceneFor({ kind: "deep" }, null).cortexOpacity, SOLID_OPACITY);
+assert.ok(sceneFor({ kind: "deep" }, null, BARE_OPACITY).cortexOpacity < 1);
+assert.ok(sceneFor({ kind: "all" }, null, BARE_OPACITY).cortexOpacity < 1, "the rail works in every view");
+// Home files every quiz the app offers onto a shelf.
+{
+  const shelved = shelves().flatMap((s) => s.quizTypes.map((q) => q.id));
+  const offered = QUIZ_GROUPS.flatMap((g) => g.quizTypes.map((q) => q.id));
+  assert.equal(new Set(shelved).size, shelved.length, "a quiz is on two shelves");
+  for (const id of offered) assert.ok(shelved.includes(id), `${id} is on no shelf`);
+  assert.equal(shelved.length, offered.length);
+}
 assert.ok(sceneFor({ kind: "network", networkId: "dmn" }, null).network !== null);
 // A picked region gets the quiz look (ghost everything else) in every view.
 assert.equal(sceneFor({ kind: "all" }, "hippocampus").ghostOthers, true);

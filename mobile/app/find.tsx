@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { regionLabel } from "@/lib/brain-regions";
 import type { LobeId } from "@/lib/lobes";
+import { press, tick } from "../src/haptics";
 import { returnToExplore } from "../src/explore/navigate";
 import { loadRecent, pushRecent } from "../src/explore/recent";
 import { BROWSE_CATEGORIES, browseRows, isBrowseCategory, searchAll, type Hit } from "../src/explore/search";
@@ -17,7 +18,11 @@ const KIND_ICON: Readonly<Record<Hit["kind"], string>> = { region: "▓", lobe: 
 
 function Row({ hit, onPress }: { hit: Hit; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={styles.row} accessibilityRole="button">
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+    >
       <Text style={styles.rowIcon}>{KIND_ICON[hit.kind]}</Text>
       <View style={styles.rowText}>
         <Text style={styles.rowLabel}>{hit.label}</Text>
@@ -25,7 +30,6 @@ function Row({ hit, onPress }: { hit: Hit; onPress: () => void }) {
           {hit.detail}
         </Text>
       </View>
-      <Text style={styles.rowChevron}>›</Text>
     </Pressable>
   );
 }
@@ -45,10 +49,11 @@ export default function Find() {
   const rows = useMemo(() => (browsing ? browseRows(browsing, region) : []), [browsing, region]);
 
   const pick = (hit: Hit) => {
+    tick();
     setRecent(pushRecent(hit));
     switch (hit.kind) {
       case "region":
-        explore.setView(browsing === "deep" ? { kind: "deep", peel: "peeled" } : ALL_VIEW, hit.id);
+        explore.setView(browsing === "deep" ? { kind: "deep" } : ALL_VIEW, hit.id);
         break;
       case "lobe":
         explore.setView({ kind: "lobe", lobeId: hit.id as LobeId });
@@ -78,28 +83,45 @@ export default function Find() {
 
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
-      <View style={styles.bar}>
-        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Back" style={styles.back}>
-          <Ionicons name="chevron-back" size={26} color={colors.sumiDeep} />
-        </Pressable>
-        {browseTitle ? (
-          <Text style={styles.barTitle}>{browseTitle}</Text>
-        ) : (
-          <TextInput
-            autoFocus
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Search regions, lobes, pathways, networks"
-            placeholderTextColor={colors.sumiLight}
-            autoCorrect={false}
-            autoCapitalize="none"
-            clearButtonMode="while-editing"
-            returnKeyType="search"
-            style={styles.input}
-          />
+      <View style={styles.head}>
+        <View style={styles.headRow}>
+          <Text style={styles.heading}>{browseTitle ?? "Search"}</Text>
+          <Pressable
+            onPress={() => {
+              press();
+              router.back();
+            }}
+            hitSlop={14}
+            accessibilityRole="button"
+            accessibilityLabel="Close search"
+            style={({ pressed }) => [styles.close, pressed && styles.closePressed]}
+          >
+            <Ionicons name="close" size={22} color={colors.sumiMedium} />
+          </Pressable>
+        </View>
+        {!browsing && (
+          <View style={styles.field}>
+            <Ionicons name="search" size={20} color={colors.sumiLight} />
+            <TextInput
+              autoFocus
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Region, lobe, pathway, network"
+              placeholderTextColor={colors.sumiLight}
+              autoCorrect={false}
+              autoCapitalize="none"
+              clearButtonMode="while-editing"
+              returnKeyType="search"
+              style={styles.input}
+            />
+          </View>
         )}
       </View>
-      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        contentContainerStyle={styles.content}
+      >
         {browsing ? (
           rows.length === 0 ? (
             <Text style={styles.empty}>Nothing recorded here yet.</Text>
@@ -130,18 +152,21 @@ export default function Find() {
           )
         ) : (
           <>
-            <SectionTitle label="Browse" />
-            <View style={styles.tiles}>
+            <View style={styles.group}>
+              <SectionTitle label="Browse" />
               {BROWSE_CATEGORIES.map((c) => (
                 <Pressable
                   key={c.id}
-                  style={styles.tile}
-                  onPress={() => router.push(`/find?category=${c.id}`)}
+                  onPress={() => {
+                    tick();
+                    router.push(`/find?category=${c.id}`);
+                  }}
                   accessibilityRole="button"
+                  style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
                 >
-                  <Text style={styles.tileIcon}>{c.icon}</Text>
-                  <Text style={styles.tileLabel}>{c.label}</Text>
-                  <Text style={styles.tileCount}>{c.count}</Text>
+                  <Text style={styles.rowIcon}>{c.icon}</Text>
+                  <Text style={styles.browseLabel}>{c.label}</Text>
+                  <Text style={styles.rowCount}>{c.count}</Text>
                 </Pressable>
               ))}
             </View>
@@ -162,50 +187,48 @@ export default function Find() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.washiWhite },
-  bar: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingHorizontal: space.md, paddingVertical: space.sm },
-  back: { padding: space.xs },
-  barTitle: { fontFamily: serif, fontSize: 22, color: colors.sumiDeep, flexShrink: 1 },
-  input: {
-    flex: 1,
+  head: { paddingHorizontal: space.lg, paddingTop: space.md, gap: space.md },
+  headRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space.md },
+  heading: { fontFamily: serif, fontSize: 30, color: colors.sumiDeep, flexShrink: 1 },
+  close: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.washiWarm,
-    borderRadius: radius.md,
+  },
+  closePressed: { opacity: 0.6, transform: [{ scale: 0.94 }] },
+  field: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.sm,
+    height: 56,
     paddingHorizontal: space.md,
-    paddingVertical: space.sm,
-    fontSize: 16,
-    color: colors.sumiDeep,
-  },
-  content: { padding: space.lg, gap: space.lg, paddingBottom: space.xxl },
-  group: { gap: space.sm },
-  tiles: { flexDirection: "row", flexWrap: "wrap", gap: space.md },
-  tile: {
-    width: "47%",
-    flexGrow: 1,
-    padding: space.lg,
-    borderRadius: radius.md,
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.washiWarm,
-    backgroundColor: colors.white,
-    gap: space.xs,
+    borderRadius: radius.lg,
   },
-  tileIcon: { fontSize: 20, color: colors.kitsune },
-  tileLabel: { fontFamily: serif, fontSize: 17, color: colors.sumiDeep },
-  tileCount: { fontSize: 12, fontWeight: "600", color: colors.sumiLight },
+  input: { flex: 1, fontSize: 17, color: colors.sumiDeep },
+  content: { padding: space.lg, gap: space.xl, paddingBottom: space.xxl },
+  group: { gap: 0 },
   row: {
     flexDirection: "row",
     alignItems: "center",
     gap: space.md,
-    padding: space.md,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.washiWarm,
-    backgroundColor: colors.white,
+    paddingVertical: space.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.washiWarm,
   },
-  rowIcon: { width: 20, textAlign: "center", color: colors.kitsune, fontSize: 14 },
+  rowPressed: { opacity: 0.5 },
+  rowIcon: { width: 18, textAlign: "center", color: colors.kitsune, fontSize: 13 },
   rowText: { flex: 1, gap: 2 },
-  rowLabel: { fontSize: 15, color: colors.sumiDeep },
+  rowLabel: { fontSize: 16, color: colors.sumiDeep },
   rowDetail: { fontSize: 12, color: colors.sumiLight, textTransform: "capitalize" },
-  rowChevron: { fontSize: 18, color: colors.sumiLight },
+  rowCount: { fontSize: 13, color: colors.sumiLight, fontVariant: ["tabular-nums"] },
+  browseLabel: { flex: 1, fontFamily: serif, fontSize: 18, color: colors.sumiDeep },
   empty: { fontSize: 14, color: colors.sumiLight, textAlign: "center", marginTop: space.xl },
 });

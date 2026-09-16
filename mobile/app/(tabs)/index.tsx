@@ -2,98 +2,41 @@ import { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { loadHistory } from "@/lib/quiz/history";
 import { loadSession, type QuizSession } from "@/lib/quiz/session";
-import type { QuizTypeDefinition } from "@/lib/types";
-import { QUIZ_GROUPS, findQuizType } from "../../src/quiz/catalog";
+import { press, tick } from "../../src/haptics";
+import { findQuizType } from "../../src/quiz/catalog";
 import { loadRegionStats, weakestRegions, type WeakRegion } from "../../src/quiz/region-stats";
+import { shelves, type Shelf } from "../../src/quiz/shelves";
 import { streakDays } from "../../src/quiz/streak";
-import { colors, radius, serif, space } from "../../src/theme";
-import { Chip } from "../../src/ui/Chip";
+import { colors, motion, radius, serif, space } from "../../src/theme";
 import { ProgressBar } from "../../src/ui/ProgressBar";
-import { SectionTitle } from "../../src/ui/SectionTitle";
 
 const STREAK_DOTS = 7;
 
-type DifficultyFilter = "all" | QuizTypeDefinition["difficulty"];
-
-/**
- * Three lanes, ordered from "look" to "reason". Quiz types are curated by id;
- * anything the catalog gains later falls into "More practice" automatically.
- */
-const LANES: readonly {
-  id: string;
-  title: string;
-  blurb: string;
-  quizTypeIds: readonly string[];
-}[] = [
-  {
-    id: "learn",
-    title: "1 · Learn the brain",
-    blurb: "See it in 3D, name it",
-    quizTypeIds: [
-      "identify",
-      "function-to-region",
-      "identify-deep",
-      "name-tract",
-      "tract-endpoints",
-      "region-to-network",
-    ],
-  },
-  {
-    id: "connect",
-    title: "2 · Connect",
-    blurb: "How it works",
-    quizTypeIds: [
-      "network-disruption",
-      "network-scenario",
-      "cell-to-region",
-      "cell-type",
-      "brodmann-to-region",
-      "brodmann-match",
-      "nt-affected",
-      "pharma-bridge",
-      "cortical-layer",
-      "receptor-distribution",
-      "hippocampal-circuit",
-      "modality-selection",
-      "vesicle-origin",
-    ],
-  },
-  {
-    id: "apply",
-    title: "3 · Apply",
-    blurb: "Clinics, cases, nerves",
-    quizTypeIds: [
-      "localize-deficit",
-      "deficit-from-region",
-      "which-artery",
-      "name-syndrome",
-      "case-vignette",
-      "visual-field",
-      "nerve-number",
-      "nerve-function",
-      "nerve-lesion",
-      "nerve-type",
-    ],
-  },
-];
-
-const FILTERS: readonly { id: DifficultyFilter; label: string }[] = [
-  { id: "all", label: "All levels" },
-  { id: "beginner", label: "Beginner" },
-  { id: "intermediate", label: "Intermediate" },
-  { id: "advanced", label: "Advanced" },
-];
+/** One row on a shelf: the quiz, its length and level, nothing else. */
+function QuizRow({ name, meta, onPress }: { name: string; meta: string; onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      style={({ pressed }) => [styles.quizRow, pressed && styles.pressed]}
+    >
+      <Text style={styles.quizName}>{name}</Text>
+      <Text style={styles.quizMeta}>{meta}</Text>
+    </Pressable>
+  );
+}
 
 export default function Home() {
   const router = useRouter();
   const [session, setSession] = useState<QuizSession | null>(null);
   const [streak, setStreak] = useState(0);
   const [weak, setWeak] = useState<WeakRegion | null>(null);
-  const [filter, setFilter] = useState<DifficultyFilter>("all");
+  const [open, setOpen] = useState<string | null>(null);
 
-  // Re-read on every visit: a quiz just finished in the modal above us.
+  // Re-read on every visit: a lesson just finished in the modal above us.
   useFocusEffect(
     useCallback(() => {
       setSession(loadSession());
@@ -103,26 +46,36 @@ export default function Home() {
   );
 
   const resumeMeta = session ? findQuizType(session.quizTypeId) : null;
+  const shelf: readonly Shelf[] = shelves();
 
-  const laneTiles = LANES.map((lane) => ({
-    ...lane,
-    quizTypes: lane.quizTypeIds.flatMap((id) => {
-      const meta = findQuizType(id);
-      if (!meta) return [];
-      if (filter !== "all" && meta.quizType.difficulty !== filter) return [];
-      return [meta.quizType];
-    }),
-  })).filter((lane) => lane.quizTypes.length > 0);
-
-  // Catalog types nobody curated yet — they still show up instead of vanishing.
-  const curated = new Set(LANES.flatMap((lane) => lane.quizTypeIds));
-  const extra = QUIZ_GROUPS.flatMap((group) =>
-    group.quizTypes.filter((q) => !curated.has(q.id)),
-  ).filter((q) => filter === "all" || q.difficulty === filter);
+  const start = (href: string) => {
+    press();
+    router.push(href);
+  };
 
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.kanji}>今日</Text>
+        <Text style={styles.heading}>Today</Text>
+
+        {session && resumeMeta && (
+          <Pressable
+            style={({ pressed }) => [styles.resume, pressed && styles.pressed]}
+            onPress={() => start(`/play/${session.quizTypeId}?resume=1`)}
+            accessibilityRole="button"
+          >
+            <Text style={styles.resumeKicker}>Continue</Text>
+            <View style={styles.resumeHead}>
+              <Text style={styles.resumeTitle}>{resumeMeta.quizType.name}</Text>
+              <Text style={styles.resumeCount}>
+                {session.answers.length} / {session.questions.length}
+              </Text>
+            </View>
+            <ProgressBar value={session.answers.length / session.questions.length} color={colors.white} />
+          </Pressable>
+        )}
+
         <View style={styles.streakRow}>
           <View style={styles.dots}>
             {Array.from({ length: STREAK_DOTS }, (_, i) => (
@@ -134,93 +87,56 @@ export default function Home() {
           </Text>
         </View>
 
-        {session && resumeMeta && (
-          <>
-            <Text style={styles.lead}>Pick up where you left off</Text>
-            <Pressable
-              style={styles.resume}
-              onPress={() => router.push(`/play/${session.quizTypeId}?resume=1`)}
-            >
-              <View style={styles.resumeHead}>
-                <Text style={styles.resumeTitle}>{resumeMeta.quizType.name}</Text>
-                <Text style={styles.resumeCount}>
-                  {session.answers.length} / {session.questions.length}
-                </Text>
-              </View>
-              <ProgressBar value={session.answers.length / session.questions.length} color={colors.white} />
-            </Pressable>
-          </>
-        )}
-
         {weak && (
           <Pressable
-            style={styles.weak}
-            onPress={() => router.push(`/play/drill?region=${weak.region.id}`)}
+            style={({ pressed }) => [styles.weak, pressed && styles.pressed]}
+            onPress={() => start(`/play/drill?region=${weak.region.id}`)}
+            accessibilityRole="button"
           >
-            <Text style={styles.weakLabel}>Weak spot: {weak.region.name}</Text>
-            <Text style={styles.weakCta}>
-              {Math.round(weak.accuracy * 100)}% right · drill it ›
-            </Text>
+            <View style={styles.weakText}>
+              <Text style={styles.weakLabel}>Weak spot · {weak.region.name}</Text>
+              <Text style={styles.weakMeta}>{Math.round(weak.accuracy * 100)}% right</Text>
+            </View>
+            <Text style={styles.chevron}>›</Text>
           </Pressable>
         )}
 
-        <View style={styles.filters}>
-          {FILTERS.map((f) => (
-            <Chip
-              key={f.id}
-              label={f.label}
-              active={filter === f.id}
-              onPress={() => setFilter(f.id)}
-            />
-          ))}
-        </View>
-
-        {laneTiles.map((lane) => (
-          <View key={lane.id}>
-            <SectionTitle label={lane.title} />
-            <Text style={styles.laneBlurb}>{lane.blurb}</Text>
-            <View style={styles.grid}>
-              {lane.quizTypes.map((quizType) => (
-                <Pressable
-                  key={quizType.id}
-                  style={styles.tile}
-                  onPress={() => router.push(`/play/${quizType.id}`)}
-                >
-                  <Text style={styles.tileTitle}>{quizType.name}</Text>
-                  <Text style={styles.tileBlurb} numberOfLines={2}>
-                    {quizType.description}
-                  </Text>
-                  <Text style={styles.tileMeta}>
-                    {quizType.questionCount} q · {quizType.difficulty}
-                  </Text>
-                </Pressable>
-              ))}
+        <Text style={styles.shelfHeading}>Practice</Text>
+        {shelf.map((s) => {
+          const isOpen = open === s.id;
+          return (
+            <View key={s.id}>
+              <Pressable
+                onPress={() => {
+                  tick();
+                  setOpen(isOpen ? null : s.id);
+                }}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: isOpen }}
+                style={({ pressed }) => [styles.shelfRow, pressed && styles.pressed]}
+              >
+                <View style={styles.shelfText}>
+                  <Text style={styles.shelfTitle}>{s.title}</Text>
+                  <Text style={styles.shelfBlurb}>{s.blurb}</Text>
+                </View>
+                <Text style={styles.shelfCount}>{s.quizTypes.length}</Text>
+                <Text style={[styles.chevron, isOpen && styles.chevronOpen]}>›</Text>
+              </Pressable>
+              {isOpen && (
+                <Animated.View entering={FadeIn.duration(motion.fast)} style={styles.quizList}>
+                  {s.quizTypes.map((quizType) => (
+                    <QuizRow
+                      key={quizType.id}
+                      name={quizType.name}
+                      meta={`${quizType.questionCount} · ${quizType.difficulty}`}
+                      onPress={() => start(`/play/${quizType.id}`)}
+                    />
+                  ))}
+                </Animated.View>
+              )}
             </View>
-          </View>
-        ))}
-
-        {extra.length > 0 && (
-          <View>
-            <SectionTitle label="More practice" />
-            <View style={styles.grid}>
-              {extra.map((quizType) => (
-                <Pressable
-                  key={quizType.id}
-                  style={styles.tile}
-                  onPress={() => router.push(`/play/${quizType.id}`)}
-                >
-                  <Text style={styles.tileTitle}>{quizType.name}</Text>
-                  <Text style={styles.tileBlurb} numberOfLines={2}>
-                    {quizType.description}
-                  </Text>
-                  <Text style={styles.tileMeta}>
-                    {quizType.questionCount} q · {quizType.difficulty}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-        )}
+          );
+        })}
       </ScrollView>
     </SafeAreaView>
   );
@@ -228,42 +144,68 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.washiWhite },
-  content: { padding: space.lg, paddingBottom: space.xxl },
-  streakRow: { flexDirection: "row", alignItems: "center", gap: space.md, marginBottom: space.xl },
-  dots: { flexDirection: "row", gap: 6 },
-  dot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.washiWarm },
-  dotLit: { backgroundColor: colors.kitsune },
-  streakLabel: { fontSize: 13, fontWeight: "600", color: colors.sumiLight },
-  lead: { fontFamily: serif, fontSize: 22, color: colors.sumiDeep, marginBottom: space.md },
-  resume: { backgroundColor: colors.ai, borderRadius: radius.md, padding: space.lg, gap: space.md },
-  resumeHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline" },
-  resumeTitle: { color: colors.white, fontSize: 16, fontWeight: "600" },
+  content: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xxl },
+  kanji: { fontSize: 13, color: colors.kitsune, letterSpacing: 2 },
+  heading: { fontFamily: serif, fontSize: 30, color: colors.sumiDeep, marginBottom: space.xl },
+  pressed: { opacity: 0.6 },
+
+  resume: { backgroundColor: colors.ai, borderRadius: radius.lg, padding: space.lg, gap: space.sm },
+  resumeKicker: { fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", color: colors.washiWarm },
+  resumeHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: space.md },
+  resumeTitle: { fontFamily: serif, fontSize: 20, color: colors.white, flexShrink: 1 },
   resumeCount: { color: colors.white, fontSize: 14, fontVariant: ["tabular-nums"] },
+
+  streakRow: { flexDirection: "row", alignItems: "center", gap: space.md, marginTop: space.xl },
+  dots: { flexDirection: "row", gap: 6 },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.washiWarm },
+  dotLit: { backgroundColor: colors.kitsune },
+  streakLabel: { fontSize: 13, color: colors.sumiLight },
+
   weak: {
-    marginTop: space.lg,
-    padding: space.lg,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.washiWarm,
-    backgroundColor: colors.white,
-    gap: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.md,
+    paddingVertical: space.md,
+    marginTop: space.md,
+    borderTopWidth: 1,
+    borderTopColor: colors.washiWarm,
   },
-  weakLabel: { fontSize: 15, fontWeight: "600", color: colors.sumiDeep },
-  weakCta: { fontSize: 13, color: colors.kitsune, fontWeight: "600" },
-  filters: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, marginTop: space.lg },
-  laneBlurb: { fontSize: 13, color: colors.sumiLight, marginBottom: space.md, marginTop: -4 },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: space.md },
-  tile: {
-    width: "48%",
-    flexGrow: 1,
-    padding: space.lg,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.washiWarm,
-    backgroundColor: colors.white,
-    gap: 6,
+  weakText: { flex: 1, gap: 2 },
+  weakLabel: { fontSize: 15, color: colors.sumiDeep },
+  weakMeta: { fontSize: 12, color: colors.kitsune },
+
+  shelfHeading: {
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    color: colors.sumiLight,
+    marginTop: space.xxl,
+    marginBottom: space.xs,
   },
-  tileTitle: { fontFamily: serif, fontSize: 17, color: colors.sumiDeep },
-  tileBlurb: { fontSize: 13, lineHeight: 18, color: colors.sumiLight },
-  tileMeta: { fontSize: 11, fontWeight: "600", color: colors.sumiLight, marginTop: 2 },
+  shelfRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.md,
+    paddingVertical: space.lg,
+    borderTopWidth: 1,
+    borderTopColor: colors.washiWarm,
+  },
+  shelfText: { flex: 1, gap: 2 },
+  shelfTitle: { fontFamily: serif, fontSize: 20, color: colors.sumiDeep },
+  shelfBlurb: { fontSize: 13, color: colors.sumiLight },
+  shelfCount: { fontSize: 13, color: colors.sumiLight, fontVariant: ["tabular-nums"] },
+  chevron: { fontSize: 20, color: colors.sumiLight },
+  chevronOpen: { transform: [{ rotate: "90deg" }] },
+
+  quizList: { paddingLeft: space.md, paddingBottom: space.sm },
+  quizRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: space.md,
+    paddingVertical: space.md,
+  },
+  quizName: { fontSize: 16, color: colors.sumiDeep, flexShrink: 1 },
+  quizMeta: { fontSize: 12, color: colors.sumiLight, textTransform: "capitalize" },
 });

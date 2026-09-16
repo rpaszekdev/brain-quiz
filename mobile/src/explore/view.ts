@@ -5,20 +5,17 @@ import { getLobe, regionsInLobe, type LobeId } from "@/lib/lobes";
 import type { FunctionalNetwork, NeuralPathway } from "@/lib/types";
 import { PLAIN_SCENE, type BrainScene } from "../viewer/scene";
 
-/** How far the cortex is faded in the deep view. */
-export type Peel = "solid" | "half" | "peeled";
-export const PEELS: readonly { id: Peel; label: string }[] = [
-  { id: "solid", label: "Solid" },
-  { id: "half", label: "Half" },
-  { id: "peeled", label: "Peeled" },
-];
-const PEEL_OPACITY: Readonly<Record<Peel, number>> = { solid: 1, half: 0.4, peeled: 0.1 };
+/** Cortex opacity at the two ends of the layer rail. */
+export const SOLID_OPACITY = 1;
+export const BARE_OPACITY = 0.06;
+/** Where the rail clicks: cortex whole, half faded, out of the way. */
+export const OPACITY_DETENTS = [SOLID_OPACITY, 0.45, BARE_OPACITY] as const;
 
 /** The one way the user is currently looking at the brain. */
 export type ExploreView =
   | { readonly kind: "all" }
   | { readonly kind: "lobe"; readonly lobeId: LobeId }
-  | { readonly kind: "deep"; readonly peel: Peel }
+  | { readonly kind: "deep" }
   | { readonly kind: "tract"; readonly tractId: string }
   | { readonly kind: "network"; readonly networkId: string };
 
@@ -49,28 +46,31 @@ function knownRegions(ids: readonly string[]): BrainRegion[] {
   });
 }
 
-/** What the brain draws for a view, plus the tapped region if any. */
-export function sceneFor(view: ExploreView, selectedId: string | null): BrainScene {
+/**
+ * What the brain draws: the view's cut, the tapped region if any, and the
+ * cortex opacity the layer rail is holding.
+ */
+export function sceneFor(
+  view: ExploreView,
+  selectedId: string | null,
+  cortexOpacity: number = SOLID_OPACITY,
+): BrainScene {
   const selected = selectedId ? [selectedId] : [];
   // A picked region gets the quiz look: lit, everything else ghosted.
   const ghostOthers = selected.length > 0;
+  const base = { ...PLAIN_SCENE, focusIds: selected, ghostOthers, cortexOpacity };
   switch (view.kind) {
     case "all":
-      return { ...PLAIN_SCENE, focusIds: selected, ghostOthers };
+      return base;
     case "lobe":
-      return {
-        ...PLAIN_SCENE,
-        focusIds: selected,
-        ghostOthers,
-        keepIds: regionsInLobe(view.lobeId).map((r) => r.id),
-      };
+      return { ...base, keepIds: regionsInLobe(view.lobeId).map((r) => r.id) };
     case "deep":
-      return { ...PLAIN_SCENE, focusIds: selected, ghostOthers, cortexOpacity: PEEL_OPACITY[view.peel] };
+      return base;
     case "tract": {
       const tract = getTract(view.tractId) ?? null;
       const endpoints = tract ? tractEndpointIds(tract) : [];
       return {
-        ...PLAIN_SCENE,
+        ...base,
         focusIds: [...new Set([...endpoints, ...selected])],
         ghostOthers: true,
         tract,
@@ -80,7 +80,7 @@ export function sceneFor(view: ExploreView, selectedId: string | null): BrainSce
       const network = getNetwork(view.networkId) ?? null;
       const members = network ? knownRegions(network.memberRegions).map((r) => r.id) : [];
       return {
-        ...PLAIN_SCENE,
+        ...base,
         focusIds: [...new Set([...members, ...selected])],
         ghostOthers: true,
         network,

@@ -1,13 +1,19 @@
 import { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import Animated, { SlideInDown } from "react-native-reanimated";
+import Animated, { Easing, SlideInDown } from "react-native-reanimated";
 import { error, success } from "../haptics";
 import { colors, radius, serif, space } from "../theme";
 import { Button } from "../ui/Button";
 
 /** Opaque tints (the panel covers the options, so no alpha). */
 const TINT = { correct: "#E1EDE3", wrong: "#F3E1DD" } as const;
+/**
+ * One short move, no spring: a bounce reads as the verdict wobbling and the
+ * answer is the only thing worth looking at. Haptic fires on mount, not at
+ * the end of the animation.
+ */
+const RISE_MS = 140;
 
 interface FeedbackPanelProps {
   correct: boolean;
@@ -29,7 +35,7 @@ export function FeedbackPanel({ correct, answerLabel, explanation, last, onConti
 
   return (
     <Animated.View
-      entering={SlideInDown.springify().damping(18).stiffness(180)}
+      entering={SlideInDown.duration(RISE_MS).easing(Easing.out(Easing.quad))}
       style={[styles.panel, { backgroundColor: correct ? TINT.correct : TINT.wrong, borderColor: tone }]}
       accessibilityLiveRegion="polite"
     >

@@ -5,7 +5,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { getRegion, type BrainRegion } from "@/lib/brain-regions";
+import { press, tick } from "../../src/haptics";
 import { RegionActions, RegionBody, ViewActions, ViewBody } from "../../src/explore/cards";
+import { articleFor } from "../../src/explore/content";
+import { OpacityRail, RAIL_HEIGHT } from "../../src/explore/OpacityRail";
 import { PeekSheet } from "../../src/explore/PeekSheet";
 import { sheetGeometry } from "../../src/explore/sheet-geometry";
 import { explore, useExplore } from "../../src/explore/store";
@@ -38,9 +41,9 @@ interface SheetContent {
 }
 
 /**
- * Nothing but the brain and one search button. Everything else — lobes, deep
- * structures, pathways, networks — is chosen in the search hub and comes back
- * as a view: one chip over the brain says what is cut, × clears it.
+ * Nothing but the brain, a layer rail and one search button. Everything else
+ * — lobes, deep structures, pathways, networks — is chosen in the search hub
+ * and comes back as a view: one chip over the brain says what is cut.
  *
  * The sheet lies over the canvas; the brain is framed into the band above it
  * (the same hero framing as a lesson), so nothing resizes and nothing hides.
@@ -48,11 +51,11 @@ interface SheetContent {
 export default function Explore() {
   const router = useRouter();
   const { height: windowHeight } = useWindowDimensions();
-  const { view, selectedId } = useExplore();
+  const { view, selectedId, opacity } = useExplore();
   const [expanded, setExpanded] = useState(false);
   const [stageHeight, setStageHeight] = useState(0);
   const selected = useMemo(() => (selectedId ? (getRegion(selectedId) ?? null) : null), [selectedId]);
-  const scene = useMemo(() => sceneFor(view, selectedId), [view, selectedId]);
+  const scene = useMemo(() => sceneFor(view, selectedId, opacity), [view, selectedId, opacity]);
   const members = useMemo(() => viewMembers(view), [view]);
   const chip = viewChip(view);
 
@@ -61,7 +64,10 @@ export default function Explore() {
     setExpanded(false);
   }, [view, selectedId]);
 
-  const onTapRegion = useCallback((region: BrainRegion) => explore.select(region.id), []);
+  const onTapRegion = useCallback((region: BrainRegion) => {
+    tick();
+    explore.select(region.id);
+  }, []);
   const onTapEmpty = useCallback(() => {
     if (selectedId) explore.select(null);
   }, [selectedId]);
@@ -72,7 +78,7 @@ export default function Explore() {
   const sheet: SheetContent | null = selected
     ? {
         title: selected.name,
-        subtitle: selected.category,
+        subtitle: articleFor("region", selected.id)?.subtitle ?? selected.category,
         body: <RegionBody region={selected} expanded={expanded} />,
         actions: <RegionActions region={selected} />,
         onClose: () => explore.select(null),
@@ -94,6 +100,9 @@ export default function Explore() {
 
   const geometry = useMemo(() => sheetGeometry(stageHeight, heroHeight(windowHeight)), [stageHeight, windowHeight]);
   const hero = !open ? undefined : expanded ? geometry.fullTop : geometry.peekTop;
+  // Everything that floats over the brain lives in the band the brain is in,
+  // so the sheet never buries it.
+  const band = hero ?? stageHeight;
 
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
@@ -109,33 +118,45 @@ export default function Explore() {
           onTapEmpty={onTapEmpty}
           style={styles.canvas}
         />
-        {chip && (
-          <Animated.View
-            entering={FadeIn.duration(motion.fast)}
-            exiting={FadeOut.duration(motion.fast)}
-            style={styles.chipWrap}
-          >
-            <Pressable
-              style={({ pressed }) => [styles.chip, pressed && styles.pressed]}
-              onPress={() => explore.reset()}
-              accessibilityRole="button"
-              accessibilityLabel={`Clear ${chip.label}`}
+        <View style={[styles.band, { height: band }]} pointerEvents="box-none">
+          {chip && (
+            <Animated.View
+              entering={FadeIn.duration(motion.fast)}
+              exiting={FadeOut.duration(motion.fast)}
+              style={styles.chipWrap}
             >
-              <Text style={styles.chipText}>
-                {chip.icon} {chip.label}
-              </Text>
-              <Text style={styles.chipClose}>×</Text>
-            </Pressable>
-          </Animated.View>
-        )}
-        <Pressable
-          style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
-          onPress={() => router.push("/find")}
-          accessibilityRole="button"
-          accessibilityLabel="Search the brain"
-        >
-          <Ionicons name="search" size={24} color={colors.white} />
-        </Pressable>
+              <Pressable
+                style={({ pressed }) => [styles.chip, pressed && styles.pressed]}
+                onPress={() => {
+                  press();
+                  explore.reset();
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={`Clear ${chip.label}`}
+              >
+                <Text style={styles.chipText}>
+                  {chip.icon} {chip.label}
+                </Text>
+              </Pressable>
+            </Animated.View>
+          )}
+          {band > RAIL_HEIGHT + space.xxl && (
+            <View style={styles.railWrap} pointerEvents="box-none">
+              <OpacityRail value={opacity} onChange={explore.setOpacity} />
+            </View>
+          )}
+          <Pressable
+            style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
+            onPress={() => {
+              press();
+              router.push("/find");
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Search the brain"
+          >
+            <Ionicons name="search" size={22} color={colors.white} />
+          </Pressable>
+        </View>
         {shown && (
           <PeekSheet
             open={open}
@@ -163,34 +184,39 @@ const styles = StyleSheet.create({
   title: { fontFamily: serif, fontSize: 28, color: colors.sumiDeep },
   stage: { flex: 1, overflow: "hidden" },
   canvas: { flex: 1 },
+  band: { position: "absolute", top: 0, left: 0, right: 0 },
   chipWrap: { position: "absolute", top: space.sm, left: space.lg },
   chip: {
     flexDirection: "row",
     alignItems: "center",
-    gap: space.sm,
-    paddingVertical: space.sm,
+    paddingVertical: space.xs,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
-    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.washiWarm,
+    backgroundColor: colors.washiWhite,
   },
-  pressed: { transform: [{ scale: 0.96 }] },
-  chipText: { fontSize: 14, fontWeight: "600", color: colors.sumiDeep },
-  chipClose: { fontSize: 16, color: colors.sumiLight },
+  pressed: { opacity: 0.6 },
+  chipText: { fontSize: 13, color: colors.sumiMedium },
+  railWrap: {
+    position: "absolute",
+    right: space.xs,
+    top: "50%",
+    marginTop: -RAIL_HEIGHT / 2,
+  },
   fab: {
     position: "absolute",
     right: space.lg,
     bottom: space.lg,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.ai,
     shadowColor: colors.sumiDeep,
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
   },

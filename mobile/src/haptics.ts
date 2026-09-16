@@ -8,9 +8,14 @@ function fire(run: () => Promise<void>) {
   run().catch(() => {});
 }
 
-/** A light tick for picking an option or grabbing a handle. */
+/** A light tick for moving through choices: options, chips, rows, detents. */
 export function tick() {
   fire(() => Haptics.selectionAsync());
+}
+
+/** A fuller knock for committing to something: check, start, open. */
+export function press() {
+  fire(() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light));
 }
 
 export function success() {
