@@ -40,6 +40,13 @@
           "backgroundColor": "#F5F2EB"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b435f3ce-3a37-4cac-b16f-4172f9678f79"
+      }
+    },
+    "owner": "robertdev125"
   }
 }
