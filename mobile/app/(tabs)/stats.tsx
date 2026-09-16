@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { loadHistory, relativeTime, type QuizResultRecord } from "@/lib/quiz/history";
@@ -9,6 +9,11 @@ import { colors, radius, serif, space } from "../../src/theme";
 import { SectionTitle } from "../../src/ui/SectionTitle";
 
 const WEAK_LIMIT = 5;
+/** The meshes are CC BY-SA 3.0: the source and the licence must be named. */
+const CREDITS = [
+  { label: "3D brain: Brain for Blender (A. Winkler)", url: "https://brainder.org/" },
+  { label: "CC BY-SA 3.0", url: "https://creativecommons.org/licenses/by-sa/3.0/" },
+] as const;
 
 function accuracy(history: readonly QuizResultRecord[]): number | null {
   const total = history.reduce((sum, h) => sum + h.total, 0);
@@ -71,6 +76,18 @@ export default function Stats() {
             </View>
           ))
         )}
+
+        <View style={styles.credits}>
+          {CREDITS.map((credit) => (
+            <Pressable
+              key={credit.url}
+              onPress={() => void Linking.openURL(credit.url).catch(() => undefined)}
+              accessibilityRole="link"
+            >
+              <Text style={styles.creditsText}>{credit.label}</Text>
+            </Pressable>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -116,4 +133,6 @@ const styles = StyleSheet.create({
   rowSub: { fontSize: 12, color: colors.sumiLight, marginTop: 2 },
   rowMeta: { fontSize: 13, color: colors.kitsune, fontWeight: "600", fontVariant: ["tabular-nums"] },
   rowScore: { fontFamily: serif, fontSize: 18, color: colors.sumiDeep, fontVariant: ["tabular-nums"] },
+  credits: { flexDirection: "row", flexWrap: "wrap", gap: space.md, marginTop: space.xxl },
+  creditsText: { fontSize: 12, color: colors.sumiLight, textDecorationLine: "underline" },
 });

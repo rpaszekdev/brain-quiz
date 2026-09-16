@@ -17,6 +17,7 @@ export function SiteFooter() {
         <Link href="/browse">Browse all</Link>
         <Link href="/quiz/label-the-brain">Quizzes</Link>
         <Link href="/3d-brain-model">3D model</Link>
+        <Link href="/privacy">Privacy</Link>
       </nav>
     </footer>
   );
