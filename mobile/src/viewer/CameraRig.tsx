@@ -9,6 +9,8 @@ import { BAND_SETTLED, MAX_FRAME_DELTA, useBandTarget } from "./Framing";
 /** Higher is snappier; 6 lands in roughly the website's 600 ms. */
 const FLY_DAMPING = 6;
 const ARRIVED_DISTANCE = 0.5;
+/** Longest a fly or dolly may run before it gives the camera back, in seconds. */
+const FLY_BUDGET_S = 1.5;
 
 interface CameraRigProps {
   /** Orbit centre — the model's measured centre once it has loaded. */
@@ -48,7 +50,18 @@ export function CameraRig({ target, focus, band, heroHeight }: CameraRigProps) {
   const flying = useRef(false);
   /** The band target changed: dolly to the distance that fits the new frame. */
   const dollying = useRef(false);
+
+  /**
+   * The moment a finger takes hold, the rig lets go. Without this the fly
+   * damps the camera back toward the region on every frame of the drag, and
+   * the brain simply refuses to rotate.
+   */
+  const release = () => {
+    flying.current = false;
+    dollying.current = false;
+  };
   const last = useRef<{ focus: BrainRegion | null; target: THREE.Vector3; bandTarget: number } | null>(null);
+  const budget = useRef(0);
 
   // A new target means the model just reported its centre (the loading
   // overlay is still up), so snapping rather than flying is invisible. Only
@@ -72,10 +85,23 @@ export function CameraRig({ target, focus, band, heroHeight }: CameraRigProps) {
   useFrame((_, rawDelta) => {
     const delta = Math.min(rawDelta, MAX_FRAME_DELTA);
     const was = last.current;
-    if (!was || was.focus !== focus || was.target !== target) flying.current = focus !== null;
-    if (was && was.bandTarget !== bandTarget) dollying.current = true;
+    if (!was || was.focus !== focus || was.target !== target) {
+      flying.current = focus !== null;
+      budget.current = FLY_BUDGET_S;
+    }
+    if (was && was.bandTarget !== bandTarget) {
+      dollying.current = true;
+      budget.current = FLY_BUDGET_S;
+    }
     last.current = { focus, target, bandTarget };
     if (!flying.current && !dollying.current) return;
+    // Damping is asymptotic, so "arrived" can be missed forever if anything
+    // keeps moving the goal. The move is over when the budget runs out.
+    budget.current -= delta;
+    if (budget.current <= 0) {
+      release();
+      return;
+    }
 
     // The distance that fits the frame as it is right now, so the camera
     // and the band arrive together.
@@ -104,6 +130,7 @@ export function CameraRig({ target, focus, band, heroHeight }: CameraRigProps) {
       target={target}
       enablePan={false}
       enableDamping
+      onStart={release}
       minDistance={distance * 0.5}
       maxDistance={distance * 1.6}
     />

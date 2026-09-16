@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { BRAIN_DETAILS } from "@/lib/brain-details";
 import type { BrainRegion } from "@/lib/brain-regions";
 import { regionLabel } from "@/lib/brain-regions";
 import { getLobe } from "@/lib/lobes";
@@ -12,14 +11,6 @@ import { articleFor } from "./content";
 import { tractsTouching } from "./search";
 import { explore } from "./store";
 import { getNetwork, getTract, tractEndpointIds, type ExploreView } from "./view";
-
-/** Lines shown while the sheet is collapsed; drag it up for the rest. */
-const PEEK_BODY_LINES = 3;
-const PEEK_BULLETS = 2;
-
-interface BodyProps {
-  expanded: boolean;
-}
 
 /** A word you can press. The sheet's only actions — nothing shouts here. */
 function Link({ label, onPress }: { label: string; onPress: () => void }) {
@@ -42,23 +33,12 @@ function Links({ children }: { children: ReactNode }) {
   return <View style={styles.links}>{children}</View>;
 }
 
-export function RegionBody({ region, expanded }: BodyProps & { region: BrainRegion }) {
+export function RegionBody({ region }: { region: BrainRegion }) {
   const article = articleFor("region", region.id);
-  if (expanded && article) return <ArticleBody article={article} />;
-
-  const details = BRAIN_DETAILS[region.id];
-  return (
-    <>
-      <Text style={styles.body} numberOfLines={PEEK_BODY_LINES}>
-        {region.description}
-      </Text>
-      {details?.functions.slice(0, PEEK_BULLETS).map((fn) => (
-        <Text key={fn} style={styles.bullet} numberOfLines={1}>
-          — {fn}
-        </Text>
-      ))}
-    </>
-  );
+  // One body, always the full one: the peek is a shorter window onto the
+  // same text, not a different, smaller card.
+  if (article) return <ArticleBody article={article} />;
+  return <Text style={styles.body}>{region.description}</Text>;
 }
 
 export function RegionActions({ region }: { region: BrainRegion }) {
@@ -98,7 +78,7 @@ function MemberLinks({ members }: { members: readonly BrainRegion[] }) {
   );
 }
 
-export function ViewBody({ view, members, expanded }: BodyProps & { view: ExploreView; members: readonly BrainRegion[] }) {
+export function ViewBody({ view, members }: { view: ExploreView; members: readonly BrainRegion[] }) {
   switch (view.kind) {
     case "all":
       return null;
@@ -115,12 +95,10 @@ export function ViewBody({ view, members, expanded }: BodyProps & { view: Explor
       const tract = getTract(view.tractId);
       if (!tract) return null;
       const article = articleFor("tract", view.tractId);
-      if (expanded && article) return <ArticleBody article={article} />;
+      if (article) return <ArticleBody article={article} />;
       return (
         <>
-          <Text style={styles.body} numberOfLines={PEEK_BODY_LINES}>
-            {tract.description}
-          </Text>
+          <Text style={styles.body}>{tract.description}</Text>
           <Text style={styles.bullet}>↔ {tractEndpointIds(tract).map(regionLabel).join(" · ")}</Text>
         </>
       );
@@ -129,12 +107,17 @@ export function ViewBody({ view, members, expanded }: BodyProps & { view: Explor
       const network = getNetwork(view.networkId);
       if (!network) return null;
       const article = articleFor("network", view.networkId);
-      if (expanded && article) return <ArticleBody article={article} />;
+      if (article) {
+        return (
+          <>
+            <ArticleBody article={article} />
+            <MemberLinks members={members} />
+          </>
+        );
+      }
       return (
         <>
-          <Text style={styles.body} numberOfLines={PEEK_BODY_LINES}>
-            {network.description}
-          </Text>
+          <Text style={styles.body}>{network.description}</Text>
           <MemberLinks members={members} />
         </>
       );

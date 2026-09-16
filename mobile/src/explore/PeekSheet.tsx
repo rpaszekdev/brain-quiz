@@ -13,9 +13,12 @@ import { tick } from "../haptics";
 import type { SheetGeometry } from "./sheet-geometry";
 import { colors, radius, serif, space } from "../theme";
 
-/** Finger travel on the header that closes/collapses (down) or expands (up). */
-const SWIPE_CLOSE = 60;
-const SWIPE_EXPAND = 40;
+/**
+ * Finger travel on the header that moves the sheet one step. Generous, and
+ * one step per gesture: a flick used to collapse and close in a single
+ * motion, which felt like the sheet running away.
+ */
+const SWIPE_STEP = 90;
 const SPRING = { damping: 22, stiffness: 220, mass: 0.8 } as const;
 
 /** Page-space Y of a touch; react-native-web hands over the raw DOM TouchEvent. */
@@ -86,13 +89,14 @@ export function PeekSheet({
     drag.current = null;
     if (!start) return;
     const dy = touchY(event) - start.startY;
-    if (dy > SWIPE_CLOSE) {
+    if (dy > SWIPE_STEP) {
       tick();
+      // One step down: expanded falls back to peek, peek closes.
       if (expanded) onCollapse();
       else onClose();
       return;
     }
-    if (dy < -SWIPE_EXPAND && !expanded) {
+    if (dy < -SWIPE_STEP && !expanded) {
       tick();
       onExpand();
       return;
@@ -127,7 +131,7 @@ export function PeekSheet({
       </Pressable>
       <View style={styles.actions}>{actions}</View>
       <ScrollView
-        scrollEnabled={expanded}
+        scrollEnabled
         showsVerticalScrollIndicator={false}
         style={styles.body}
         contentContainerStyle={styles.bodyContent}

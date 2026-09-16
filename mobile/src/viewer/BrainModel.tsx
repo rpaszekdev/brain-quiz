@@ -6,6 +6,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { useLoader, useThree } from "@react-three/fiber/native";
 import { BRAIN_REGIONS, type BrainRegion } from "@/lib/brain-regions";
 import brainGlb from "../../assets/brain.glb";
+import { clipPlaneFor, isWholeBrain } from "./clip";
 import { lookFor } from "./highlight";
 import { NetworkLinks } from "./NetworkLinks";
 import type { BrainScene } from "./scene";
@@ -103,13 +104,13 @@ export function BrainModel({ scene, pickRef, onReady }: BrainModelProps) {
   }, [gltf.scene]);
   const tagged = useMemo(() => tagMeshes(root), [root]);
   const centres = useMemo(() => regionCentres(tagged), [tagged]);
+  const bounds = useMemo(() => new THREE.Box3().setFromObject(root), [root]);
   const get = useThree((state) => state.get);
   const invalidate = useThree((state) => state.invalidate);
 
   useEffect(() => {
-    const center = new THREE.Box3().setFromObject(root).getCenter(new THREE.Vector3());
-    onReady?.(center);
-  }, [root, tagged, onReady]);
+    onReady?.(bounds.getCenter(new THREE.Vector3()));
+  }, [bounds, tagged, onReady]);
 
   // Picking is done here rather than with R3F's onClick: R3F raycasts every
   // handler-bearing object on touch down AND up, which is the whole brain in
@@ -141,7 +142,17 @@ export function BrainModel({ scene, pickRef, onReady }: BrainModelProps) {
   // Three materials are mutable by design; this effect is the one place that
   // writes to them, and it derives every value from the scene.
   useEffect(() => {
+    const clip = clipPlaneFor(scene.slice, bounds);
+    const planes = clip ? [clip] : null;
+    // A cut mesh is a hollow shell seen from inside, so show its back faces
+    // while a cut is open; front faces alone are cheaper the rest of the time.
+    const side = isWholeBrain(scene.slice) ? THREE.FrontSide : THREE.DoubleSide;
     for (const { region, regionIds, material } of tagged) {
+      if (material.side !== side) {
+        material.side = side;
+        material.needsUpdate = true;
+      }
+      material.clippingPlanes = planes;
       const look = lookFor({ region, regionIds, scene });
       const transparent = look.opacity < 1;
       if (material.transparent !== transparent) {
@@ -155,7 +166,7 @@ export function BrainModel({ scene, pickRef, onReady }: BrainModelProps) {
       material.emissiveIntensity = look.emissive;
     }
     invalidate();
-  }, [tagged, scene, invalidate]);
+  }, [tagged, scene, bounds, invalidate]);
 
   return (
     <>

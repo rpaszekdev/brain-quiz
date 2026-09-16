@@ -10,7 +10,7 @@ import { usePlay, type Play } from "../../src/quiz/use-play";
 import { colors, space } from "../../src/theme";
 import { Button } from "../../src/ui/Button";
 import { BrainCanvas } from "../../src/viewer/BrainCanvas";
-import { heroHeight } from "../../src/viewer/hero";
+import { lessonHeroHeight } from "../../src/viewer/hero";
 
 function stepLabel(play: Play): string {
   const total = play.state.questions.length;
@@ -64,7 +64,7 @@ function Lesson({ play, onClose }: { play: Play; onClose: () => void }) {
               : undefined
           }
           // ponytail: one canvas height per lesson; it never resizes.
-          style={{ height: heroHeight(height) }}
+          style={{ height: lessonHeroHeight(height) }}
         />
       )}
       <View style={styles.lower}>
@@ -126,5 +126,5 @@ const styles = StyleSheet.create({
   note: { fontSize: 16, color: colors.sumiLight, textAlign: "center" },
   lower: { flex: 1 },
   stage: { flex: 1 },
-  actions: { padding: space.lg, paddingTop: space.sm },
+  actions: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
 });

@@ -3,6 +3,7 @@ import { FUNCTIONAL_NETWORKS } from "@/lib/data/networks";
 import { NEURAL_PATHWAYS } from "@/lib/data/pathways";
 import { getLobe, regionsInLobe, type LobeId } from "@/lib/lobes";
 import type { FunctionalNetwork, NeuralPathway } from "@/lib/types";
+import { NO_SLICE, type Slice } from "../viewer/clip";
 import { PLAIN_SCENE, type BrainScene } from "../viewer/scene";
 
 /** Cortex opacity at the two ends of the layer rail. */
@@ -54,11 +55,12 @@ export function sceneFor(
   view: ExploreView,
   selectedId: string | null,
   cortexOpacity: number = SOLID_OPACITY,
+  slice: Slice = NO_SLICE,
 ): BrainScene {
   const selected = selectedId ? [selectedId] : [];
   // A picked region gets the quiz look: lit, everything else ghosted.
   const ghostOthers = selected.length > 0;
-  const base = { ...PLAIN_SCENE, focusIds: selected, ghostOthers, cortexOpacity };
+  const base = { ...PLAIN_SCENE, focusIds: selected, ghostOthers, cortexOpacity, slice };
   switch (view.kind) {
     case "all":
       return base;

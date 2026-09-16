@@ -144,6 +144,11 @@ export function BrainCanvas({
       <Canvas
         style={styles.canvas}
         gl={{ antialias: false }}
+        // Clipping is per-material, so the slice can cut the brain without
+        // taking the tract tube and network links with it.
+        onCreated={({ gl }) => {
+          gl.localClippingEnabled = true;
+        }}
         frameloop="demand"
         camera={{
           position: homeCameraPosition(FALLBACK_TARGET, fitDistance(1)).toArray(),

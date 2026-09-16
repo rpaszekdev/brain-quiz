@@ -61,10 +61,10 @@ export function StepBody({ play, label }: StepBodyProps) {
 }
 
 const styles = StyleSheet.create({
-  body: { padding: space.lg, gap: space.md, paddingBottom: space.xxl },
+  body: { padding: space.lg, gap: space.sm, paddingBottom: space.lg },
   label: { fontSize: 12, fontWeight: "700", letterSpacing: 0.8, textTransform: "uppercase", color: colors.kitsune },
-  prompt: { fontFamily: serif, fontSize: 22, lineHeight: 30, color: colors.sumiDeep },
-  options: { gap: space.sm, marginTop: space.xs },
+  prompt: { fontFamily: serif, fontSize: 20, lineHeight: 27, color: colors.sumiDeep },
+  options: { gap: 6, marginTop: space.xs },
   tapHint: {
     marginTop: space.xs,
     paddingVertical: 14,

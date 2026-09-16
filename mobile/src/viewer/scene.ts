@@ -1,4 +1,5 @@
 import type { FunctionalNetwork, NeuralPathway } from "@/lib/types";
+import { NO_SLICE, type Slice } from "./clip";
 
 /**
  * Everything the 3D brain needs to know about how to draw itself. Explore
@@ -17,6 +18,8 @@ export interface BrainScene {
   readonly tract: NeuralPathway | null;
   /** Functional network drawn as links between its members. */
   readonly network: FunctionalNetwork | null;
+  /** Where the brain is cut open, so the inside can be seen. */
+  readonly slice: Slice;
 }
 
 export const PLAIN_SCENE: BrainScene = {
@@ -26,4 +29,5 @@ export const PLAIN_SCENE: BrainScene = {
   cortexOpacity: 1,
   tract: null,
   network: null,
+  slice: NO_SLICE,
 };
