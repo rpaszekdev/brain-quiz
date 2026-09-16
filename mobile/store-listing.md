@@ -25,8 +25,8 @@ Later releases: bump `expo.version` in `app.json` (1.0.1, 1.1.0 …); the build 
 
 | Field | Value |
 |---|---|
-| Name (30) | Brain Quiz: 3D Neuroanatomy — the bare "Brain Quiz" is almost certainly taken |
-| Subtitle (30) | Learn brain anatomy in 3D |
+| Name (30) | Brain Anatomy Quiz: 3D Atlas |
+| Subtitle (30) | Neuroanatomy regions & lobes |
 | Bundle ID | study.brainquiz.app |
 | Primary category | Education |
 | Secondary category | Medical |
@@ -71,7 +71,20 @@ The 3D model derives from "Brain for Blender" by Anderson Winkler (brainder.org)
 
 ### Keywords (100)
 
-neuroanatomy,brain,anatomy,quiz,neuroscience,medical,3d,flashcards,usmle,psychology,nursing
+neuroscience,flashcards,medical,student,nursing,psychology,usmle,parts,neurology,study,learn,cortex
+
+Apple indexes the name, subtitle and this field, and matches words across all three, so no word is repeated
+between them. The description is not indexed on iOS.
+
+### Why this name
+
+On the App Store "brain quiz" belongs to puzzle games with hundreds of thousands to over a million ratings
+(Brain Test, Brain Out, Trivia Crack); nobody searching it wants anatomy, and no anatomy app can outrank them.
+"brain anatomy", "neuroanatomy", "brain atlas" and "3d brain" return small apps (3D Brain 144 ratings, Brain
+Anatomy 23, Brain Tutor 3D 11, Neuroanatomy SecondLook 7), while "brain anatomy", "brain lobes", "parts of the
+brain" and "brain regions and functions" each draw 10k to 100k web searches a month. "anatomy quiz" is a real
+category term with mid-size apps (Anatomist, Daily Anatomy Flashcards). The name leads with the strongest
+uncontested term and still contains "brain" and "quiz" for the brand.
 
 ### What's new (1.0)
 
