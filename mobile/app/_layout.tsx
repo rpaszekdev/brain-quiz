@@ -23,7 +23,6 @@ export default function RootLayout() {
           options={{ presentation: "fullScreenModal", animation: "slide_from_bottom" }}
         />
         <Stack.Screen name="find" options={{ presentation: "modal" }} />
-        <Stack.Screen name="info/[kind]/[id]" />
       </Stack>
       {/* Dev only: Metro strips a __DEV__ branch, so nothing renders and
           nothing hooks console.error in a release build. */}

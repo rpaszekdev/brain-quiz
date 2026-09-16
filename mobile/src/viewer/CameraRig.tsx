@@ -11,6 +11,14 @@ const FLY_DAMPING = 6;
 const ARRIVED_DISTANCE = 0.5;
 /** Longest a fly or dolly may run before it gives the camera back, in seconds. */
 const FLY_BUDGET_S = 1.5;
+/**
+ * Pinch range, as multiples of the distance that fits the brain in the current
+ * frame — the same range in every screen, whatever the frame's size.
+ */
+const ZOOM_IN = 0.5;
+const ZOOM_OUT = 1.6;
+/** One finger turns the brain, two fingers pinch it. Never anything else. */
+const TOUCHES = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN } as const;
 
 interface CameraRigProps {
   /** Orbit centre — the model's measured centre once it has loaded. */
@@ -141,11 +149,15 @@ export function CameraRig({ target, focus, band, heroHeight, motion }: CameraRig
     <OrbitControls
       ref={controls}
       target={target}
+      // Pan off, so DOLLY_PAN with two fingers is a pure pinch-zoom.
       enablePan={false}
+      enableRotate
+      enableZoom
+      touches={TOUCHES}
       enableDamping
       onStart={release}
-      minDistance={distance * 0.5}
-      maxDistance={distance * 1.6}
+      minDistance={distance * ZOOM_IN}
+      maxDistance={distance * ZOOM_OUT}
     />
   );
 }

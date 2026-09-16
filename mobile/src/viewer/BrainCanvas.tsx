@@ -15,6 +15,7 @@ import { BrainModel, type PickRegion } from "./BrainModel";
 import { CameraRig } from "./CameraRig";
 import { FALLBACK_TARGET, homeCameraPosition, fitDistance } from "./camera";
 import { Framing } from "./Framing";
+import { PointerHygiene } from "./PointerHygiene";
 import type { FocusMode } from "./highlight";
 import { PLAIN_SCENE, type BrainScene } from "./scene";
 
@@ -68,6 +69,11 @@ interface TouchStart {
   readonly x: number;
   readonly y: number;
   readonly at: number;
+}
+
+/** Fingers still on the screen after this event (0 at the end of a tap). */
+function fingersDown(event: GestureResponderEvent): number {
+  return (event.nativeEvent as { touches?: readonly unknown[] }).touches?.length ?? 0;
 }
 
 /**
@@ -125,12 +131,13 @@ export function BrainCanvas({
   // Touch events reach this view regardless of R3F's pan responder, so a tap
   // can be told apart from an orbit without the model listening for pointers.
   const onTouchStart = (event: GestureResponderEvent) => {
-    touchStart.current = { ...touchPoint(event), at: Date.now() };
+    // A second finger means a pinch, never a tap.
+    touchStart.current = fingersDown(event) > 1 ? null : { ...touchPoint(event), at: Date.now() };
   };
   const onTouchEnd = (event: GestureResponderEvent) => {
     const start = touchStart.current;
     touchStart.current = null;
-    if (!start || (!onTapRegion && !onTapEmpty)) return;
+    if (!start || fingersDown(event) > 0 || (!onTapRegion && !onTapEmpty)) return;
     const { x, y } = touchPoint(event);
     const moved = Math.hypot(x - start.x, y - start.y);
     if (moved > TAP_MAX_MOVE || Date.now() - start.at > TAP_MAX_MS) return;
@@ -169,6 +176,7 @@ export function BrainCanvas({
         <Framing heroHeight={heroHeight} band={band} />
         <CameraRig target={target} focus={focus} band={band} heroHeight={heroHeight} motion={focusMotion} />
         <ResizeSettle />
+        <PointerHygiene />
       </Canvas>
       {!ready && (
         <View style={styles.loading} pointerEvents="none">
