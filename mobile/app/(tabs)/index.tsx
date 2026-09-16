@@ -56,7 +56,6 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.screen} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.kanji}>今日</Text>
         <Text style={styles.heading}>Today</Text>
 
         {session && resumeMeta && (
@@ -145,7 +144,6 @@ export default function Home() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.washiWhite },
   content: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.xxl },
-  kanji: { fontSize: 13, color: colors.kitsune, letterSpacing: 2 },
   heading: { fontFamily: serif, fontSize: 30, color: colors.sumiDeep, marginBottom: space.xl },
   pressed: { opacity: 0.6 },
 
