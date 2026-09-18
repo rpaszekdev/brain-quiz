@@ -1,0 +1,68 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "version": "1.0",
+    "release": {
+      "automaticRelease": false
+    },
+    "info": {
+      "en-US": {
+        "title": "Brain Anatomy Quiz: 3D Atlas",
+        "subtitle": "Neuroanatomy regions & lobes",
+        "privacyPolicyUrl": "https://brainquiz.study/privacy",
+        "keywords": [
+          "neuroscience",
+          "flashcards",
+          "medical",
+          "student",
+          "nursing",
+          "psychology",
+          "usmle",
+          "parts",
+          "neurology",
+          "study",
+          "learn",
+          "cortex"
+        ],
+        "description": "Brain Quiz turns a real 3D brain into a study partner.\n\nEXPLORE\nSpin the brain freely in every direction, pinch to zoom, slice it along any plane and fade the cortex to reach the deep structures. Search lobes, deep structures, pathways and networks, and tap a region to read what it does, how it is wired and what happens when it breaks.\n\nLEARN\n29 quiz types cover regions, lobes, pathways, networks, cranial nerves, neurotransmitters, cortical layers, receptors and more. Each lesson shows the region on the brain as you answer, explains the answer, and comes back to the questions you missed before the lesson ends.\n\nTRACK\nYour streak, accuracy and weakest regions are always one tab away, so you know what to review next.\n\nMADE FOR\nMedical, nursing, psychology and neuroscience students, and anyone curious about the brain.\n\nEverything works offline. No account, no ads, no tracking.\n\nThe 3D model derives from \"Brain for Blender\" by Anderson Winkler (brainder.org), CC BY-SA 3.0.",
+        "releaseNotes": "First release.",
+        "supportUrl": "https://brainquiz.study",
+        "promoText": "Rotate a real 3D brain, cut it open, and learn every region with short lessons that repeat what you miss."
+      }
+    },
+    "advisory": {
+      "ageRatingOverride": "NONE",
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gambling": false,
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "kidsAgeBand": null,
+      "koreaAgeRatingOverride": "NONE",
+      "lootBox": false,
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "unrestrictedWebAccess": false,
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "advertising": false,
+      "ageAssurance": false,
+      "ageRatingOverrideV2": "NONE",
+      "developerAgeRatingInfoUrl": null,
+      "gunsOrOtherWeapons": "NONE",
+      "healthOrWellnessTopics": false,
+      "messagingAndChat": false,
+      "parentalControls": false,
+      "userGeneratedContent": false
+    },
+    "copyright": "2026 Robert Paszek",
+    "categories": [
+      "EDUCATION",
+      "MEDICAL"
+    ]
+  }
+}
