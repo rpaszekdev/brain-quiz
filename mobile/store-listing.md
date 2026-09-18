@@ -47,31 +47,47 @@ Rotate a real 3D brain, cut it open, and learn every region with short lessons t
 
 ### Description
 
-Brain Quiz turns a real 3D brain into a study partner.
+Brain Quiz turns a real 3D brain into a study partner. Rotate it, cut it open, and learn every region by name, function and wiring.
 
-EXPLORE
-Spin the brain freely in every direction, pinch to zoom, slice it along any plane and fade the cortex to reach the
-deep structures. Search lobes, deep structures, pathways and networks, and tap a region to read what it does, how it
-is wired and what happens when it breaks.
+A REAL 3D BRAIN, NOT A DIAGRAM
+The model is an anatomical surface built from the Desikan-Killiany atlas: 70 cortical regions and 32 subcortical structures reconstructed from real scan data. Spin it endlessly in any direction with one finger and pinch to zoom. Slice it along the sagittal, coronal or horizontal plane, then fade the cortex away to reach the deep structures underneath and tap them directly.
 
-LEARN
-29 quiz types cover regions, lobes, pathways, networks, cranial nerves, neurotransmitters, cortical layers, receptors
-and more. Each lesson shows the region on the brain as you answer, explains the answer, and comes back to the
-questions you missed before the lesson ends.
+EXPLORE 49 REGIONS
+Search by name or browse by category:
+- 9 lobes and divisions: frontal, parietal, temporal, occipital, insula, limbic system, subcortical, brainstem, cerebellum
+- 12 deep structures: hippocampus, amygdala, thalamus, hypothalamus, caudate nucleus, putamen, globus pallidus, nucleus accumbens, basal ganglia, corpus callosum, brainstem, cerebellum
+- 22 white matter pathways, including the superior and inferior longitudinal fasciculus, the inferior fronto-occipital fasciculus and the fornix
+- 9 functional networks, including the default mode, salience and frontoparietal networks
 
-TRACK
-Your streak, accuracy and weakest regions are always one tab away, so you know what to review next.
+Every region opens an article: what it does, how it is wired, what happens when it breaks, and its Brodmann areas.
+
+29 QUIZ TYPES
+- Regions: Identify Region, Function to Region, Deep Structures
+- Pathways: Name the Tract, Tract Endpoints
+- Networks: Region to Network, Network Disruption, Network Activity
+- Neurotransmitters: Which NT?, Pharma Bridge
+- Clinical: Predict the Deficit, Localize the Deficit, Which Artery?, Name the Syndrome, Case Study, Visual Field Defects
+- Cortex: Choose the Modality, Brodmann Match, Brodmann to Region
+- Cells and layers: Signature Cell, Cell to Region, Cortical Layer, Receptor Map, Hippocampal Circuit
+- Cranial nerves: Name and Number, Nerve Function, Lesion Effects, Sensory, Motor or Both
+
+LESSONS THAT MAKE IT STICK
+Each lesson is ten questions. The brain shows you the region while you answer, the answer is explained rather than just marked, and anything you miss comes back before the lesson ends. You can also drill a single region until it is solid.
+
+TRACK WHAT YOU KNOW
+Your streak, your accuracy and your weakest regions sit in one tab, so you always know what to review next.
 
 MADE FOR
-Medical, nursing, psychology and neuroscience students, and anyone curious about the brain.
+Medical and nursing students, psychology and neuroscience undergraduates, physician assistant and physical therapy students, and residents brushing up on neurology. Useful for revising neuroanatomy ahead of exams such as USMLE Step 1, the NCLEX or the MCAT, and for anyone simply curious about the brain.
 
-Everything works offline. No account, no ads, no tracking.
+WORKS OFFLINE
+The 3D model, every question and every article ship inside the app. No account, no internet, no ads, no tracking. Your progress never leaves your phone.
 
 The 3D model derives from "Brain for Blender" by Anderson Winkler (brainder.org), CC BY-SA 3.0.
 
 ### Keywords (100)
 
-neuroscience,flashcards,medical,student,nursing,psychology,usmle,parts,neurology,study,learn,cortex
+neuroanatomy,brain,anatomy,quiz,neuroscience,medical,3d,flashcards,usmle,psychology,nursing,student
 
 Apple indexes the name, subtitle and this field, and matches words across all three, so no word is repeated
 between them. The description is not indexed on iOS.
