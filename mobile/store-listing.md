@@ -87,7 +87,7 @@ The 3D model derives from "Brain for Blender" by Anderson Winkler (brainder.org)
 
 ### Keywords (100)
 
-neuroanatomy,brain,anatomy,quiz,neuroscience,medical,3d,flashcards,usmle,psychology,nursing,student
+neuroanatomy,brain,anatomy,quiz,neuroscience,medical,3d,flashcards,study,psychology,nursing,student
 
 Apple indexes the name, subtitle and this field, and matches words across all three, so no word is repeated
 between them. The description is not indexed on iOS.
