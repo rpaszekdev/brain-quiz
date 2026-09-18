@@ -113,14 +113,18 @@ to jump to a region.
 
 ## Screenshots
 
-Take them on your iPhone from the TestFlight build (side button + volume up); an iPhone 15/16 Pro Max gives the 6.9"
-size App Store Connect requires, which also covers smaller phones. Five is plenty:
+Take them on your iPhone from the TestFlight build (side button + volume up). App Store Connect uses the 6.5" set
+(1284x2778) for every iPhone size. The five uploaded on 2026-09-18:
 
-1. Explore — whole brain, rotated to a three-quarter view.
-2. Explore — a region selected with its sheet open.
-3. Explore — the brain sliced with the tools panel showing.
-4. A lesson step with the region lit and four options.
-5. Stats.
+1. Explore, whole brain in a three-quarter view.
+2. Explore, Prefrontal Cortex selected with its sheet open.
+3. Lesson, Identify Region with the region lit and four options.
+4. Lesson, Name the Tract.
+5. Search hub.
+
+Before uploading, paint the top 130 px (the iOS status bar: clock, signal, battery) in the image's own top-left
+colour with `sharp`, so every shot is clean and consistent. Upload one file at a time; a multi-file upload scrambles
+the order.
 
 iPad is switched off (`supportsTablet: false`), so no iPad screenshots are needed. Turn it back on only after the
 layout has been checked on an iPad.
