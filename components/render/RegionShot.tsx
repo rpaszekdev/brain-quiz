@@ -8,6 +8,7 @@ import {
 } from "@/components/brain-viewer/BrainViewerContext";
 import { BrainViewer } from "@/components/brain-viewer/BrainViewer";
 import { TurntableShot } from "@/components/render/Turntable";
+import { RegionShots } from "@/components/render/RegionShots";
 import { getRegion } from "@/lib/brain-regions";
 
 /**
@@ -136,7 +137,7 @@ function Shot({
 export function RegionShot() {
   const [slug, setSlug] = useState<string | null>(null);
   const [spin, setSpin] = useState(false);
-  const [turntable, setTurntable] = useState(false);
+  const [mode, setMode] = useState<string | null>(null);
 
   // Read from location rather than useSearchParams: this is a client-only dev
   // tool, and useSearchParams would force a Suspense boundary for no benefit.
@@ -144,10 +145,11 @@ export function RegionShot() {
     const params = new URLSearchParams(window.location.search);
     setSlug(params.get("region") ?? "hippocampus");
     setSpin(params.has("spin"));
-    setTurntable(params.get("mode") === "turntable");
+    setMode(params.get("mode"));
   }, []);
 
-  if (turntable) return <TurntableShot />;
+  if (mode === "turntable") return <TurntableShot />;
+  if (mode === "shots") return <RegionShots />;
   if (!slug) return null;
 
   return (

@@ -17,12 +17,21 @@ import { PARIETAL_LOBE_ARTICLE } from "./parietal-lobe";
 import { SPINOTHALAMIC_TRACT_ARTICLE } from "./spinothalamic-tract";
 import { TEMPORAL_LOBE_ARTICLE } from "./temporal-lobe";
 import type {
+  ArticleBlock,
   ArticleCollection,
   ArticleFigure,
   ArticleInlineLink,
   ArticlePage,
   ArticleParagraph,
 } from "./types";
+import { isInlineLink, isList } from "@/lib/seo/prose";
+import {
+  validateBlocks,
+  validateFigure,
+  validateIsoDate,
+  validateSources,
+  wordCount,
+} from "@/lib/seo/validate";
 
 /** Every long-form article, ordered by estimated search demand. */
 export const ARTICLE_PAGES = [
@@ -71,16 +80,20 @@ export function getArticleSlugs(
 
 function paragraphLinks(paragraph: ArticleParagraph): ArticleInlineLink[] {
   if (typeof paragraph === "string") return [];
-  return paragraph.filter(
-    (part): part is ArticleInlineLink => typeof part !== "string",
-  );
+  return paragraph.filter(isInlineLink);
+}
+
+/** Lists hold paragraphs, so their links need validating too. */
+function blockLinks(block: ArticleBlock): ArticleInlineLink[] {
+  if (isList(block)) return block.items.flatMap(paragraphLinks);
+  return paragraphLinks(block);
 }
 
 function inlineLinks(page: ArticlePage): ArticleInlineLink[] {
   return page.sections.flatMap((section) => [
-    ...section.body.flatMap(paragraphLinks),
+    ...section.body.flatMap(blockLinks),
     ...(section.subsections ?? []).flatMap((subsection) =>
-      subsection.body.flatMap(paragraphLinks),
+      subsection.body.flatMap(blockLinks),
     ),
   ]);
 }
@@ -94,32 +107,6 @@ function internalPathExists(href: string): boolean {
   if (parts[1] === "brain") return getRegionPage(parts[2]) !== undefined;
   if (parts[1] === "quiz") return getQuizPage(parts[2]) !== undefined;
   return false;
-}
-
-function wordCount(value: string): number {
-  return value.trim().split(/\s+/u).length;
-}
-
-function validateFigure(figure: ArticleFigure, location: string): string[] {
-  return [
-    ...(figure.alt.trim().length === 0
-      ? [`${location}: figure alt cannot be empty`]
-      : figure.alt.trim().length < 20
-        ? [`${location}: figure alt must be at least 20 characters`]
-        : []),
-    ...(figure.caption.trim().length === 0
-      ? [`${location}: figure caption cannot be empty`]
-      : []),
-    ...(!figure.src.startsWith("/figures/")
-      ? [`${location}: figure src must start with "/figures/"`]
-      : []),
-    ...(!Number.isInteger(figure.width) || figure.width <= 0
-      ? [`${location}: figure width must be a positive integer`]
-      : []),
-    ...(!Number.isInteger(figure.height) || figure.height <= 0
-      ? [`${location}: figure height must be a positive integer`]
-      : []),
-  ];
 }
 
 function validatePage(page: ArticlePage): string[] {
@@ -173,7 +160,16 @@ function validatePage(page: ArticlePage): string[] {
               ],
         )
       : []),
+    ...(page.updated ? validateIsoDate(page.updated, path) : []),
+    ...(page.sources ? validateSources(page.sources, path) : []),
     ...page.sections.flatMap((section) => [
+      ...validateBlocks(section.body, `${path}: ${section.heading}`),
+      ...(section.subsections ?? []).flatMap((subsection) =>
+        validateBlocks(
+          subsection.body,
+          `${path}: ${section.heading} > ${subsection.heading}`,
+        ),
+      ),
       ...(section.figure
         ? validateFigure(section.figure, `${path}: ${section.heading}`)
         : []),

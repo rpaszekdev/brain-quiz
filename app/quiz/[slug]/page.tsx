@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { QuizLanding } from "@/components/seo/QuizLanding";
+import { breadcrumbs, browseTrail, faqPage, graph, quiz } from "@/lib/seo/jsonld";
 import { ALL_SLUGS, getQuizPage, getRelated } from "@/lib/seo/pages";
 // ponytail: quiz generators are only imported by a ssr:false component, so
 // nothing else evaluates them at build time. This import makes `next build`
@@ -51,37 +54,22 @@ export default async function QuizLandingPage({ params }: Params) {
 
   const related = getRelated(page);
 
-  // FAQPage schema drives rich results and gives AI assistants clean
-  // question/answer pairs to quote. Quiz schema describes the tool itself.
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Quiz",
-        name: page.h1,
-        description: page.description,
-        educationalLevel: "University",
-        isAccessibleForFree: true,
-        inLanguage: "en",
-        about: { "@type": "Thing", name: "Neuroanatomy" },
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: page.faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: { "@type": "Answer", text: faq.answer },
-        })),
-      },
-    ],
-  };
+  const trail = browseTrail(page.h1, `/quiz/${page.slug}`);
+  const jsonLd = graph(
+    quiz({
+      name: page.h1,
+      description: page.description,
+      path: `/quiz/${page.slug}`,
+      about: "Neuroanatomy",
+    }),
+    breadcrumbs(trail),
+    faqPage(page.faqs),
+  );
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
+      <Breadcrumbs trail={trail} />
       <QuizLanding page={page} related={related} />
     </>
   );

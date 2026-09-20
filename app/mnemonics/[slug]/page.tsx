@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleLanding } from "@/components/seo/ArticleLanding";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  article,
+  breadcrumbs,
+  browseTrail,
+  faqPage,
+  graph,
+  quiz,
+} from "@/lib/seo/jsonld";
 import { getArticlePage, getArticleSlugs } from "@/lib/seo/articles";
 
 interface Params {
@@ -43,51 +53,30 @@ export default async function MnemonicArticlePage({ params }: Params) {
   const page = getArticlePage("mnemonics", slug);
   if (!page) notFound();
 
-  const canonicalUrl = `https://brainquiz.study/mnemonics/${page.slug}`;
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Article",
-        headline: page.h1,
-        description: page.description,
-        mainEntityOfPage: canonicalUrl,
-        inLanguage: "en",
-        educationalLevel: "University",
-        isAccessibleForFree: true,
-        ...(page.updated ? { dateModified: page.updated } : {}),
-        about: { "@type": "Thing", name: page.primaryKeyword },
-        author: { "@type": "Organization", name: "Brain Atlas" },
-        speakable: {
-          "@type": "SpeakableSpecification",
-          cssSelector: [".article-intro"],
-        },
-      },
-      {
-        "@type": "Quiz",
-        name: "Cranial nerves quiz",
-        url: "https://brainquiz.study/quiz/cranial-nerves",
-        educationalLevel: "University",
-        isAccessibleForFree: true,
-        about: { "@type": "Thing", name: page.primaryKeyword },
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: page.faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: { "@type": "Answer", text: faq.answer },
-        })),
-      },
-    ],
-  };
+  const trail = browseTrail(page.primaryKeyword, `/mnemonics/${page.slug}`);
+  const jsonLd = graph(
+    article({
+      headline: page.h1,
+      description: page.description,
+      path: `/mnemonics/${page.slug}`,
+      about: page.primaryKeyword,
+      updated: page.updated,
+      sources: page.sources,
+      speakable: [".seo-answer", ".article-intro"],
+    }),
+    quiz({
+      name: "Cranial nerves quiz",
+      path: "/quiz/cranial-nerves",
+      about: page.primaryKeyword,
+    }),
+    breadcrumbs(trail),
+    faqPage(page.faqs),
+  );
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
+      <Breadcrumbs trail={trail} />
       <ArticleLanding page={page} />
     </>
   );

@@ -1,9 +1,15 @@
 import type { DimensionId } from "@/lib/types";
+import type { ArticleBlock } from "@/lib/seo/prose";
 
 /** A section of visible, crawlable prose on a landing page. */
 export interface SeoSection {
   heading: string;
-  body: string[];
+  /**
+   * Plain strings still satisfy this — every existing `string[]` literal
+   * type-checks unchanged. The widening exists so a section can also carry
+   * lists and bolded claim sentences.
+   */
+  body: readonly ArticleBlock[];
 }
 
 /** Question/answer pair — rendered visibly and emitted as FAQPage schema. */
@@ -29,6 +35,13 @@ export interface QuizPage {
   description: string;
   /** Visible <h1>. Mirrors the title tag. */
   h1: string;
+  /**
+   * Bottom line up front: one or two sentences, at most 40 words, rendered
+   * directly under the h1. Both readers and answer engines weight the top of
+   * a passage most heavily, so the answer goes there rather than after the
+   * setup.
+   */
+  answer?: string;
   /** Opening paragraphs, directly answering the query. */
   intro: string[];
   sections: SeoSection[];

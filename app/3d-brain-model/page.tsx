@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ExploreLanding } from "@/components/seo/ExploreLanding";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbs, faqPage, graph, webApplication } from "@/lib/seo/jsonld";
 import { getQuizPage } from "@/lib/seo/pages";
 import { THREE_D_BRAIN_PAGE } from "@/lib/seo/three-d-brain";
 
@@ -29,36 +32,24 @@ export default function ThreeDBrainModelPage() {
     const quiz = getQuizPage(slug);
     return quiz ? [quiz] : [];
   });
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        name: page.h1,
-        url: `https://brainquiz.study${canonicalPath}`,
-        description: page.description,
-        applicationCategory: "EducationalApplication",
-        operatingSystem: "Any device with a modern web browser",
-        isAccessibleForFree: true,
-        inLanguage: "en",
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: page.faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: { "@type": "Answer", text: faq.answer },
-        })),
-      },
-    ],
-  };
+  const trail = [
+    { name: "Home", path: "/" },
+    { name: page.h1, path: canonicalPath },
+  ];
+  const jsonLd = graph(
+    webApplication({
+      name: page.h1,
+      description: page.description,
+      path: canonicalPath,
+    }),
+    breadcrumbs(trail),
+    faqPage(page.faqs),
+  );
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
+      <Breadcrumbs trail={trail} />
       <ExploreLanding page={page} relatedQuizzes={relatedQuizzes} />
     </>
   );

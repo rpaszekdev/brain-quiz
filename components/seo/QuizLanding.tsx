@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import PlayQuizLazy from "@/components/play/PlayQuizLazy";
 import type { QuizPage } from "@/lib/seo/types";
+import { headingSlug } from "@/lib/seo/slug";
+import { Answer, Block, paragraphKey } from "./Prose";
 
 /**
  * Every quiz is answered the same way now: the model above, the question and
@@ -64,9 +66,9 @@ export function QuizLanding({ page, related }: QuizLandingProps) {
       <div className="seo-wrap">
         {page.sections.map((section) => (
           <section key={section.heading}>
-            <h2>{section.heading}</h2>
-            {section.body.map((para) => (
-              <p key={para.slice(0, 40)}>{para}</p>
+            <h2 id={headingSlug(section.heading)}>{section.heading}</h2>
+            {section.body.map((block) => (
+              <Block key={paragraphKey(block)} block={block} />
             ))}
           </section>
         ))}

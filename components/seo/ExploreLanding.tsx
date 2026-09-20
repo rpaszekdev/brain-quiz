@@ -5,6 +5,8 @@ import Link from "next/link";
 import BrainQuizLazy from "@/components/BrainQuizLazy";
 import type { QuizPage } from "@/lib/seo/types";
 import type { ThreeDBrainPage } from "@/lib/seo/three-d-brain";
+import { headingSlug } from "@/lib/seo/slug";
+import { Answer, Block, paragraphKey } from "./Prose";
 
 interface ExploreLandingProps {
   page: ThreeDBrainPage;
@@ -54,9 +56,9 @@ export function ExploreLanding({ page, relatedQuizzes }: ExploreLandingProps) {
       <div className="seo-wrap">
         {page.sections.map((section) => (
           <section key={section.heading}>
-            <h2>{section.heading}</h2>
-            {section.body.map((paragraph) => (
-              <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+            <h2 id={headingSlug(section.heading)}>{section.heading}</h2>
+            {section.body.map((block) => (
+              <Block key={paragraphKey(block)} block={block} />
             ))}
           </section>
         ))}

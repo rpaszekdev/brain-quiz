@@ -1178,6 +1178,56 @@ html, body {
   margin-top: -0.5rem;
 }
 
+.seo-breadcrumbs {
+  max-width: var(--seo-measure, 42rem);
+  margin: 1.5rem auto 0;
+  padding: 0 1.5rem;
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.seo-breadcrumbs ol {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0;
+}
+
+.seo-breadcrumbs li + li::before {
+  content: "/";
+  margin-right: 0.4rem;
+  opacity: 0.5;
+}
+
+/*
+ * Bottom line up front. Set apart by weight and a rule rather than a "Short
+ * answer:" label — a repeated label across 78 pages is boilerplate, and the
+ * position already says what this is.
+ */
+.seo-answer {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  font-weight: 500;
+  border-left: 3px solid var(--foreground);
+  padding-left: 1rem;
+  margin: 1.5rem 0 1.75rem;
+}
+
+.seo-sources {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: var(--border-subtle);
+}
+
+.seo-sources ol {
+  padding-left: 1.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
 .seo-related {
   margin-top: 3.5rem;
   padding-top: 2rem;

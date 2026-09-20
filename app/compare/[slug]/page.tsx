@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleLanding } from "@/components/seo/ArticleLanding";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  article,
+  breadcrumbs,
+  browseTrail,
+  faqPage,
+  graph,
+  quiz,
+} from "@/lib/seo/jsonld";
 import {
   getArticlePage,
   getArticleSlugs,
@@ -46,38 +56,25 @@ export default async function ComparisonArticlePage({ params }: Params) {
   const page = getArticlePage("compare", slug);
   if (!page) notFound();
 
-  const canonicalUrl = `https://brainquiz.study/compare/${page.slug}`;
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Article",
-        headline: page.h1,
-        description: page.description,
-        mainEntityOfPage: canonicalUrl,
-        inLanguage: "en",
-        educationalLevel: "University",
-        isAccessibleForFree: true,
-        about: { "@type": "Thing", name: page.primaryKeyword },
-        author: { "@type": "Organization", name: "Brain Atlas" },
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: page.faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: { "@type": "Answer", text: faq.answer },
-        })),
-      },
-    ],
-  };
+  const trail = browseTrail(page.primaryKeyword, `/compare/${page.slug}`);
+  const jsonLd = graph(
+    article({
+      headline: page.h1,
+      description: page.description,
+      path: `/compare/${page.slug}`,
+      about: page.primaryKeyword,
+      updated: page.updated,
+      sources: page.sources,
+      speakable: [".seo-answer", ".article-intro"],
+    }),
+    breadcrumbs(trail),
+    faqPage(page.faqs),
+  );
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
+      <Breadcrumbs trail={trail} />
       <ArticleLanding page={page} />
     </>
   );

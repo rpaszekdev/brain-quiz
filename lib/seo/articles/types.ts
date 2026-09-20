@@ -2,33 +2,38 @@ import type { SeoFaq } from "@/lib/seo/types";
 
 export type ArticleCollection = "mnemonics" | "compare" | "anatomy";
 
-export interface ArticleInlineLink {
-  readonly href: string;
-  readonly label: string;
-}
+import type {
+  ArticleBlock,
+  ArticleFigure,
+  ArticleInlineLink as InlineLink,
+} from "@/lib/seo/prose";
 
-/** A paragraph can be plain copy or copy with typed, crawlable links. */
-export type ArticleParagraph = string | readonly (string | ArticleInlineLink)[];
-
-export interface ArticleFigure {
-  readonly src: string;
-  readonly alt: string;
-  readonly caption: string;
-  readonly width: number;
-  readonly height: number;
-}
+/**
+ * The prose vocabulary lives in `lib/seo/prose.ts` so quiz pages can share it
+ * without importing this module. Re-exported here because every content file
+ * already imports these names from "./types".
+ */
+export type {
+  ArticleBlock,
+  ArticleBold,
+  ArticleFigure,
+  ArticleInline,
+  ArticleInlineLink,
+  ArticleList,
+  ArticleParagraph,
+} from "@/lib/seo/prose";
 
 export interface ArticleSubsection {
   /** Rendered as h3 beneath its parent section h2. */
   readonly heading: string;
-  readonly body: readonly ArticleParagraph[];
+  readonly body: readonly ArticleBlock[];
   readonly figure?: ArticleFigure;
 }
 
 export interface ArticleSection {
   /** Rendered as h2. */
   readonly heading: string;
-  readonly body: readonly ArticleParagraph[];
+  readonly body: readonly ArticleBlock[];
   readonly figure?: ArticleFigure;
   readonly subsections?: readonly ArticleSubsection[];
 }
@@ -41,7 +46,7 @@ export interface ArticleTable {
   readonly rows: readonly (readonly string[])[];
 }
 
-export interface ArticleRelatedLink extends ArticleInlineLink {
+export interface ArticleRelatedLink extends InlineLink {
   readonly description: string;
 }
 
@@ -63,6 +68,12 @@ export interface ArticlePage {
   readonly faqs: readonly SeoFaq[];
   readonly related: readonly ArticleRelatedLink[];
   readonly table?: ArticleTable;
+  /**
+   * Textbook citations, rendered as a Sources section and emitted as schema
+   * `citation`. Plain strings: the drafts' references (Purves, Snell,
+   * Blumenfeld) have no stable URLs.
+   */
+  readonly sources?: readonly string[];
   /** ISO date of the last substantive edit — schema dateModified + visible. */
   readonly updated?: string;
   /**

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { RegionLanding } from "@/components/seo/RegionLanding";
+import { article, breadcrumbs, browseTrail, faqPage, graph } from "@/lib/seo/jsonld";
 import { getQuizPage } from "@/lib/seo/pages";
 import {
   getRegionPage,
@@ -51,38 +54,25 @@ export default async function BrainRegionPage({ params }: Params) {
   const quiz = getQuizPage(page.quizSlug);
   if (!quiz) notFound();
 
-  const canonicalUrl = `https://brainquiz.study/brain/${page.slug}`;
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Article",
-        headline: page.h1,
-        description: page.description,
-        mainEntityOfPage: canonicalUrl,
-        inLanguage: "en",
-        educationalLevel: "University",
-        isAccessibleForFree: true,
-        about: { "@type": "AnatomicalStructure", name: page.region.name },
-        author: { "@type": "Organization", name: "Brain Atlas" },
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: page.faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: { "@type": "Answer", text: faq.answer },
-        })),
-      },
-    ],
-  };
+  const trail = browseTrail(page.region.name, `/brain/${page.slug}`);
+  const jsonLd = graph(
+    article({
+      headline: page.h1,
+      description: page.description,
+      path: `/brain/${page.slug}`,
+      about: page.region.name,
+      updated: page.updated,
+      sources: page.sources,
+      speakable: [".seo-answer"],
+    }),
+    breadcrumbs(trail),
+    faqPage(page.faqs),
+  );
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
+      <Breadcrumbs trail={trail} />
       <RegionLanding
         page={page}
         relatedRegions={getRelatedRegions(page)}

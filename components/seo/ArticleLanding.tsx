@@ -1,79 +1,17 @@
 import { Fragment } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import type {
-  ArticleFigure,
-  ArticlePage,
-  ArticleParagraph,
-  ArticleSection,
-  ArticleTable,
-} from "@/lib/seo/articles/types";
+import type { ArticlePage, ArticleTable } from "@/lib/seo/articles/types";
 import { headingSlug } from "@/lib/seo/slug";
 import { ArticleToc } from "./ArticleToc";
+import {
+  Answer,
+  SectionBlock,
+  Sources,
+  UpdatedLine,
+} from "./Prose";
 
 interface ArticleLandingProps {
   readonly page: ArticlePage;
-}
-
-function paragraphKey(paragraph: ArticleParagraph): string {
-  if (typeof paragraph === "string") return paragraph.slice(0, 60);
-  return paragraph
-    .map((part) => (typeof part === "string" ? part : part.href))
-    .join("")
-    .slice(0, 60);
-}
-
-function Paragraph({ paragraph }: { readonly paragraph: ArticleParagraph }) {
-  if (typeof paragraph === "string") return <p>{paragraph}</p>;
-
-  return (
-    <p>
-      {paragraph.map((part, index) =>
-        typeof part === "string" ? (
-          <span key={`${index}-${part.slice(0, 24)}`}>{part}</span>
-        ) : (
-          <Link href={part.href} key={`${part.href}-${part.label}`}>
-            {part.label}
-          </Link>
-        ),
-      )}
-    </p>
-  );
-}
-
-export function Figure({ figure }: { readonly figure: ArticleFigure }) {
-  return (
-    <figure className="seo-figure">
-      <Image
-        src={figure.src}
-        alt={figure.alt}
-        width={figure.width}
-        height={figure.height}
-      />
-      <figcaption>{figure.caption}</figcaption>
-    </figure>
-  );
-}
-
-function SectionBlock({ section }: { readonly section: ArticleSection }) {
-  return (
-    <section>
-      <h2 id={headingSlug(section.heading)}>{section.heading}</h2>
-      {section.body.map((paragraph) => (
-        <Paragraph key={paragraphKey(paragraph)} paragraph={paragraph} />
-      ))}
-      {section.figure && <Figure figure={section.figure} />}
-      {section.subsections?.map((subsection) => (
-        <div className="seo-subsection" key={subsection.heading}>
-          <h3>{subsection.heading}</h3>
-          {subsection.body.map((paragraph) => (
-            <Paragraph key={paragraphKey(paragraph)} paragraph={paragraph} />
-          ))}
-          {subsection.figure && <Figure figure={subsection.figure} />}
-        </div>
-      ))}
-    </section>
-  );
 }
 
 function TableBlock({ table }: { readonly table: ArticleTable }) {
@@ -123,19 +61,12 @@ export function ArticleLanding({ page }: ArticleLandingProps) {
     <article className="seo-page">
       <div className="seo-wrap seo-article-wrap">
         <h1>{page.h1}</h1>
-        {page.updated && (
-          <p className="seo-updated">
-            Updated{" "}
-            <time dateTime={page.updated}>
-              {new Date(`${page.updated}T12:00:00Z`).toLocaleDateString(
-                "en-US",
-                { year: "numeric", month: "long", day: "numeric" },
-              )}
-            </time>
-          </p>
-        )}
+        {page.updated && <UpdatedLine updated={page.updated} />}
         <div className="article-intro">
-          {page.intro.map((paragraph) => (
+          {/* intro[0] is build-enforced to 40 words, so it already is the
+              bottom-line-up-front answer — it just needed the markup. */}
+          <Answer answer={page.intro[0]} />
+          {page.intro.slice(1).map((paragraph) => (
             <p key={paragraph.slice(0, 60)}>{paragraph}</p>
           ))}
         </div>
@@ -160,6 +91,8 @@ export function ArticleLanding({ page }: ArticleLandingProps) {
             </div>
           ))}
         </section>
+
+        {page.sources && <Sources sources={page.sources} />}
 
         <nav className="seo-related" aria-label="Related study pages">
           <h2 id="related-study-pages">Related study pages</h2>

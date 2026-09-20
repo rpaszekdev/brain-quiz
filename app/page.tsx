@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { faqPage, graph } from "@/lib/seo/jsonld";
 import Link from "next/link";
 import { LandingSections } from "@/components/landing/LandingSections";
 import { BRAIN_REGIONS } from "@/lib/brain-regions";
@@ -27,22 +29,11 @@ const regionsByCategory = Object.entries(categories).map(([key, label]) => ({
 }));
 
 export default function BrainQuizPage() {
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: HOME_FAQS.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: { "@type": "Answer", text: faq.answer },
-    })),
-  };
+  const jsonLd = graph(faqPage(HOME_FAQS));
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       {/* The landing is the front door: hero, quiz tiles, subjects. The 3D app
           no longer mounts here — it costs ~50 mesh requests before a visitor
           has chosen anything, and it lives one click away at /3d-brain-model. */}
