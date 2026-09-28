@@ -52,6 +52,8 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
   },
   robots: { index: true, follow: true },
+  // iOS Safari shows its native Smart App Banner linking to the App Store listing.
+  itunes: { appId: "6812868476" },
 };
 
 const jsonLd = {
