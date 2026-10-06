@@ -3,6 +3,7 @@ import { BRAIN_REGIONS, type BrainRegion } from "@/lib/brain-regions";
 import { generateQuestions } from "@/lib/quiz/generators";
 import "@/lib/quiz/generators/register-all";
 import { recordResult } from "@/lib/quiz/history";
+import { track } from "../analytics";
 import { INITIAL_QUIZ_STATE, quizReducer } from "@/lib/quiz/quiz-engine";
 import { clearSession, loadSession, saveSession } from "@/lib/quiz/session";
 import type { MultipleChoiceAnswer, QuizQuestion } from "@/lib/types";
@@ -172,6 +173,11 @@ export function usePlay({ quizTypeId, resume = false, count: countOption, drillR
   );
 
   useEffect(() => {
+    if (state.startedAt) track("quiz_start", { quizTypeId, drill: isDrill });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per run
+  }, [state.startedAt]);
+
+  useEffect(() => {
     askedAt.current = Date.now();
     setElapsed(0);
   }, [state.currentIndex, state.startedAt]);
@@ -199,6 +205,11 @@ export function usePlay({ quizTypeId, resume = false, count: countOption, drillR
 
   useEffect(() => {
     if (state.phase !== "result" || !meta) return;
+    track("quiz_complete", {
+      quizTypeId,
+      score: state.score,
+      total: state.questions.length,
+    });
     recordResult({
       dimensionId: meta.dimension.id,
       quizTypeId,

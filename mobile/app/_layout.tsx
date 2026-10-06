@@ -1,4 +1,7 @@
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
+import { PostHogProvider } from "posthog-react-native";
+import { useEffect } from "react";
+import { posthog } from "../src/analytics";
 import { StatusBar } from "expo-status-bar";
 import { installStorage } from "../src/storage";
 import { colors } from "../src/theme";
@@ -7,8 +10,14 @@ import { colors } from "../src/theme";
 installStorage();
 
 export default function RootLayout() {
+  // expo-router hides the NavigationContainer, so screens are captured by path.
+  const pathname = usePathname();
+  useEffect(() => {
+    posthog.screen(pathname);
+  }, [pathname]);
+
   return (
-    <>
+    <PostHogProvider client={posthog} autocapture={{ captureScreens: false }}>
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -23,6 +32,6 @@ export default function RootLayout() {
         />
         <Stack.Screen name="find" options={{ presentation: "modal" }} />
       </Stack>
-    </>
+    </PostHogProvider>
   );
 }

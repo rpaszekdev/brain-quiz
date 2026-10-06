@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { AdBanner } from "../ads";
 import { success } from "../haptics";
 import type { Play } from "../quiz/use-play";
 import { colors, motion, radius, serif, space } from "../theme";
@@ -69,6 +70,7 @@ export function ResultScreen({ play, onClose }: ResultScreenProps) {
         <Button label="Continue" onPress={onClose} />
         <Button label="Play again" variant="quiet" onPress={play.restart} />
       </View>
+      <AdBanner />
     </View>
   );
 }

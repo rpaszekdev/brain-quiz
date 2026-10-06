@@ -2,7 +2,7 @@
   "expo": {
     "name": "Brain Quiz",
     "slug": "brain-quiz",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -36,6 +36,15 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#F5F2EB"
+        }
+      ],
+      "expo-localization",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "iosAppId": "ca-app-pub-1781125740417720~6311281496",
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "delayAppMeasurementInit": true
         }
       ]
     ],
