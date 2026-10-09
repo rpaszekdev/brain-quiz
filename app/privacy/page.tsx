@@ -2,18 +2,18 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy policy",
-  description: "What Brain Quiz for iOS and brainquiz.study do with your data: nothing is collected.",
+  description: "What the Brain Quiz app and brainquiz.study collect: anonymous usage analytics and, where shown, ads.",
   alternates: { canonical: "/privacy" },
   robots: { index: true, follow: true },
 };
 
-const UPDATED = "16 September 2026";
+const UPDATED = "9 October 2026";
 const ISSUES_URL = "https://github.com/rpaszekdev/brain-quiz/issues";
 
 /**
- * Required by the App Store; kept short because there is little to say. The
- * app has no accounts, no analytics and no network calls, and the site sets
- * no cookies. Keep this page true when that changes.
+ * Required by the App Store and Google Play. The app ships PostHog (analytics,
+ * session replay, feature flags) and AdMob (flag-gated banner); the site runs
+ * PostHog. Keep this page true when that changes.
  */
 export default function PrivacyPage() {
   return (
@@ -25,19 +25,26 @@ export default function PrivacyPage() {
         </header>
 
         <section>
-          <h2>Brain Quiz for iOS</h2>
-          <p>The app collects no personal data and has no accounts.</p>
+          <h2>Brain Quiz app (iOS and Android)</h2>
+          <p>The app has no accounts and never asks for your name, email or contacts.</p>
           <ul>
             <li>
-              Your quiz results, streak and per-region statistics are stored in a database on your device only. They
-              never leave the phone.
+              Your quiz results, streak and per-region statistics are stored on your device. Deleting the app deletes
+              them.
             </li>
             <li>
-              The app makes no network requests. The 3D brain model, the questions and the articles are bundled with
-              the app.
+              Usage analytics: the app sends anonymous usage events (screens opened, lessons started and finished,
+              answers given), a random install identifier, device model, OS version and app version to PostHog, hosted
+              in the EU. Sessions may be recorded as screen replays to find bugs; text you type is masked. This data
+              is used only to improve the app and is never sold.
             </li>
-            <li>There are no analytics, no advertising and no third-party SDKs that send data anywhere.</li>
-            <li>Deleting the app deletes everything it stored.</li>
+            <li>
+              Ads: the app may show a banner from Google AdMob. Ads are non-personalized. In the EU and UK you are
+              asked for consent first. AdMob may collect your device&apos;s advertising ID, IP address and ad
+              interaction data under{" "}
+              <a href="https://policies.google.com/technologies/partner-sites">Google&apos;s privacy policy</a>.
+            </li>
+            <li>The 3D brain model, the questions and the articles are bundled with the app.</li>
           </ul>
           <p>
             Links to external sites (for example the source of the 3D model) open in your browser; their privacy
@@ -48,9 +55,9 @@ export default function PrivacyPage() {
         <section>
           <h2>brainquiz.study</h2>
           <p>
-            The website serves static pages. It sets no cookies, runs no analytics and has no accounts or forms. Like
-            any website, the hosting provider receives your IP address in order to deliver the pages; we do not use
-            it to identify you.
+            The website has no accounts or forms. It uses PostHog (EU-hosted) for anonymous usage analytics, which
+            stores a random identifier in your browser. The hosting provider receives your IP address in order to
+            deliver the pages; we do not use it to identify you.
           </p>
         </section>
 
